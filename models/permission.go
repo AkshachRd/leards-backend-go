@@ -1,9 +1,13 @@
 package models
 
+import "github.com/google/uuid"
+
 type Permission struct {
 	Base
-	StorageID      string
-	StorageType    string
-	User           User
-	PermissionType PermissionType
+	StorageID        uuid.UUID
+	StorageType      string
+	UserId           uuid.UUID
+	User             User
+	PermissionTypeID uint8
+	PermissionType   PermissionType
 }

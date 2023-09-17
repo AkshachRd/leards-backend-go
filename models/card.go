@@ -2,6 +2,7 @@ package models
 
 import (
 	"database/sql"
+	"github.com/google/uuid"
 )
 
 type Card struct {
@@ -11,5 +12,6 @@ type Card struct {
 	NextPracticeTime         sql.NullTime
 	ConsecutiveCorrectAnswer uint16
 	LastTimeEasy             sql.NullTime
+	DeckID                   uuid.UUID
 	Deck                     Deck
 }
