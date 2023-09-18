@@ -1,0 +1,5 @@
+POST /api/revoke-token HTTP/2.0
+Host: localhost:8080
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer <token>

@@ -1,41 +1,40 @@
 package main
 
 import (
+	"github.com/AkshachRd/leards-backend-go/handlers"
 	"github.com/AkshachRd/leards-backend-go/models"
 	"github.com/gin-gonic/gin"
-	"github.com/glebarez/sqlite"
 	"gorm.io/gorm"
-	"net/http"
+	"log"
 )
 
 func main() {
-	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
-	if err != nil {
-		panic("failed to connect database")
-	}
+	r := SetupRouter()
 
-	// Migrate the schema
-	err = db.AutoMigrate(&models.AccessType{}, &models.Card{}, &models.Deck{}, &models.Folder{}, &models.Permission{}, &models.PermissionType{}, &models.User{})
-	if err != nil {
-		return
-	}
+	r.Run(":8080")
+}
 
-	err = models.NewUser(db, "Admin", "admin@leards.space", "123")
+func DbInit() *gorm.DB {
+	db, err := models.Setup()
 	if err != nil {
-		return
+		log.Println("Problem setting up database")
 	}
+	return db
+}
 
+func SetupRouter() *gin.Engine {
 	r := gin.Default()
 
-	// Group using gin.BasicAuth() middleware
-	// gin.Accounts is a shortcut for map[string]string
-	authorized := r.Group("/", Auth())
+	db := DbInit()
 
-	// hit "localhost:8080/admin/dashboard
-	authorized.GET("/hello", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"success": true})
-	})
+	server := handlers.NewServer(db)
 
-	// Listen and serve on 0.0.0.0:8080
-	r.Run(":8080")
+	router := r.Group("/api")
+	authorizedRouter := r.Group("/api", server.AuthService())
+
+	router.POST("/register", server.Register)
+	authorizedRouter.POST("/refresh-token", server.RefreshToken)
+	authorizedRouter.POST("/revoke-token", server.RevokeToken)
+
+	return r
 }

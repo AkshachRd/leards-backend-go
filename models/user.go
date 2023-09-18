@@ -15,8 +15,8 @@ const TokenExpiration = time.Hour
 
 type User struct {
 	Base
-	Name                string
-	Email               string
+	Name                string `gorm:"unique"`
+	Email               string `gorm:"unique"`
 	PasswordHashed      string
 	AuthToken           sql.NullString `gorm:"index"`
 	AuthTokenExpiration sql.NullTime
@@ -35,14 +35,20 @@ func checkPasswordHash(password, hash string) bool {
 	return err == nil
 }
 
-func NewUser(db *gorm.DB, name string, email string, password string) error {
+func NewUser(db *gorm.DB, name string, email string, password string) (*User, error) {
 	passwordHashed, err := hashPassword(password)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	result := db.Create(&User{Name: name, Email: email, PasswordHashed: passwordHashed})
-	return result.Error
+	user := &User{Name: name, Email: email, PasswordHashed: passwordHashed}
+
+	err = db.Create(user).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return user, nil
 }
 
 func (u *User) SetPassword(db *gorm.DB, password string) error {
@@ -52,19 +58,19 @@ func (u *User) SetPassword(db *gorm.DB, password string) error {
 	}
 
 	u.PasswordHashed = passwordHashed
-	result := db.Save(u)
-	return result.Error
+	err = db.Save(u).Error
+	return err
 }
 
 func FetchUserByLogin(db *gorm.DB, login string) (*User, error) {
-	var user *User
+	var user User
 
-	result := db.Where("name = ?", login).Or("email = ?", login).First(user)
-	if result.Error != nil {
-		return nil, result.Error
+	err := db.Where("name = ?", login).Or("email = ?", login).First(&user).Error
+	if err != nil {
+		return nil, err
 	}
 
-	return user, nil
+	return &user, nil
 }
 
 func (u *User) IsPasswordCorrect(password string) bool {
@@ -100,24 +106,28 @@ func (u *User) GenerateAuthToken(db *gorm.DB) error {
 	u.AuthToken = sql.NullString{String: randomToken, Valid: true}
 	u.AuthTokenExpiration = sql.NullTime{Time: time.Now().UTC().Add(TokenExpiration), Valid: true}
 
-	result := db.Save(u)
-	return result.Error
+	err = db.Save(u).Error
+	return err
 }
 
 func (u *User) RevokeAuthToken(db *gorm.DB) error {
 	u.AuthTokenExpiration = sql.NullTime{Time: time.Now().UTC(), Valid: true}
 
-	result := db.Save(u)
-	return result.Error
+	err := db.Save(u).Error
+	return err
 }
 
 func FetchUserByToken(db *gorm.DB, authToken string) (*User, error) {
-	var user *User
+	var user User
 
-	result := db.Where("auth_token = ?", authToken).First(user)
-	if result.Error != nil {
-		return nil, result.Error
+	err := db.Where("auth_token = ?", authToken).First(&user).Error
+	if err != nil {
+		return nil, err
 	}
 
-	return user, nil
+	return &user, nil
+}
+
+func (u *User) IsTokenValid() bool {
+	return u.AuthTokenExpiration.Valid && u.AuthTokenExpiration.Time.After(time.Now().UTC())
 }
