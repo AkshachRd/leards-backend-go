@@ -11,17 +11,40 @@ import (
 
 func Auth() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		auth := strings.SplitN(c.Request.Header.Get("Authorization"), " ", 2)
+		authHeaderContent := strings.SplitN(c.Request.Header.Get("Authorization"), " ", 2)
 
-		if len(auth) != 2 || auth[0] != "Basic" {
-			respondWithError(401, "Unauthorized", c)
+		switch {
+		case len(authHeaderContent) != 2, authHeaderContent[0] != "Basic", authHeaderContent[0] != "Bearer":
+			respondWithError(400, "Bad Request", c)
 			return
 		}
-		payload, _ := base64.StdEncoding.DecodeString(auth[1])
-		pair := strings.SplitN(string(payload), ":", 2)
 
-		if len(pair) != 2 || !authenticateUser(pair[0], pair[1]) {
-			respondWithError(401, "Unauthorized", c)
+		payload, err := base64.StdEncoding.DecodeString(authHeaderContent[1])
+		if err != nil {
+			respondWithError(500, "Internal Server Error", c)
+			return
+		}
+
+		db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+		if err != nil {
+			respondWithError(500, "Internal Server Error", c)
+			return
+		}
+
+		switch authHeaderContent[0] {
+		case "Basic":
+			parsedPayload := strings.SplitN(string(payload), ":", 2)
+			if len(parsedPayload) != 2 || !basicAuth(db, parsedPayload[0], parsedPayload[1]) {
+				respondWithError(401, "Unauthorized", c)
+				return
+			}
+		case "Bearer":
+			if !tokenAuth(db, string(payload)) {
+				respondWithError(401, "Unauthorized", c)
+				return
+			}
+		default:
+			respondWithError(400, "Bad Request", c)
 			return
 		}
 
@@ -29,20 +52,22 @@ func Auth() gin.HandlerFunc {
 	}
 }
 
-func authenticateUser(login, password string) bool {
-	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+func basicAuth(db *gorm.DB, login, password string) bool {
+	user, err := models.FetchUserByLogin(db, login)
 	if err != nil {
-		panic("failed to connect database")
-	}
-
-	var user *models.User
-	db.Where("name = ?", login).Or("email = ?", login).First(user)
-
-	tx := db.First(&user)
-	if tx.Error != nil {
 		return false
 	}
+
 	return user.IsPasswordCorrect(password)
+}
+
+func tokenAuth(db *gorm.DB, token string) bool {
+	_, err := models.FetchUserByToken(db, token)
+	if err != nil {
+		return false
+	}
+
+	return true
 }
 
 func respondWithError(code int, message string, c *gin.Context) {
