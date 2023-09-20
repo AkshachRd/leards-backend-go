@@ -34,7 +34,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "auth"
+                    "accounts"
                 ],
                 "summary": "Register new user",
                 "parameters": [
@@ -80,7 +80,10 @@ const docTemplate = `{
             "get": {
                 "security": [
                     {
-                        "BasicAuth, BearerAuth": []
+                        "BasicAuth": []
+                    },
+                    {
+                        "Bearer": []
                     }
                 ],
                 "description": "when token is expired you need to refresh it",
@@ -139,7 +142,10 @@ const docTemplate = `{
             "delete": {
                 "security": [
                     {
-                        "BasicAuth, BearerAuth": []
+                        "BasicAuth": []
+                    },
+                    {
+                        "Bearer": []
                     }
                 ],
                 "description": "when user signs out token needs to be revoked",
@@ -257,6 +263,12 @@ const docTemplate = `{
     "securityDefinitions": {
         "BasicAuth": {
             "type": "basic"
+        },
+        "Bearer": {
+            "description": "ATTENTION! HOW TO USE: Type \"Bearer\" followed by a space and a token. Example: \"Bearer \\\u003ctoken\\\u003e\".",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     },
     "externalDocs": {

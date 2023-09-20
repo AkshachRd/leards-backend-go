@@ -27,6 +27,10 @@ import (
 // @BasePath  /api/v1
 
 // @securityDefinitions.basic  BasicAuth
+// @securityDefinitions.apikey Bearer
+// @in header
+// @name Authorization
+// @description ATTENTION! HOW TO USE: Type "Bearer" followed by a space and a token. Example: "Bearer \<token\>".
 
 // @externalDocs.description  OpenAPI
 // @externalDocs.url          https://swagger.io/resources/open-api/

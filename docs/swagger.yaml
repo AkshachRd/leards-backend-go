@@ -93,7 +93,7 @@ paths:
             $ref: '#/definitions/httputils.HTTPError'
       summary: Register new user
       tags:
-      - auth
+      - accounts
   /auth/{id}:
     delete:
       consumes:
@@ -125,7 +125,8 @@ paths:
           schema:
             $ref: '#/definitions/httputils.HTTPError'
       security:
-      - BasicAuth, BearerAuth: []
+      - BasicAuth: []
+      - Bearer: []
       summary: Revokes user's token
       tags:
       - auth
@@ -163,11 +164,18 @@ paths:
           schema:
             $ref: '#/definitions/httputils.HTTPError'
       security:
-      - BasicAuth, BearerAuth: []
+      - BasicAuth: []
+      - Bearer: []
       summary: Refresh user's token
       tags:
       - auth
 securityDefinitions:
   BasicAuth:
     type: basic
+  Bearer:
+    description: 'ATTENTION! HOW TO USE: Type "Bearer" followed by a space and a token.
+      Example: "Bearer \<token\>".'
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

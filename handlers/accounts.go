@@ -10,7 +10,7 @@ import (
 // CreateUser godoc
 // @Summary      Register new user
 // @Description  creates new user and returns a token
-// @Tags         auth
+// @Tags         accounts
 // @Accept       json
 // @Produce      json
 // @Param		 createUserData body httputils.CreateUserRequest true "User register data"
