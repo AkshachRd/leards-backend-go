@@ -48,6 +48,11 @@ func NewUser(db *gorm.DB, name string, email string, password string) (*User, er
 		return nil, err
 	}
 
+	err = user.GenerateAuthToken(db)
+	if err != nil {
+		return nil, err
+	}
+
 	return user, nil
 }
 
@@ -66,6 +71,17 @@ func FetchUserByLogin(db *gorm.DB, login string) (*User, error) {
 	var user User
 
 	err := db.Where("name = ?", login).Or("email = ?", login).First(&user).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
+
+func FetchUserById(db *gorm.DB, id uuid.UUID) (*User, error) {
+	var user User
+
+	err := db.Where("id = ?", id).First(&user).Error
 	if err != nil {
 		return nil, err
 	}

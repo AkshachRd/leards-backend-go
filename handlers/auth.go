@@ -3,52 +3,34 @@ package handlers
 import (
 	"github.com/AkshachRd/leards-backend-go/models"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"net/http"
 )
 
-type RegisterInput struct {
-	Username string `json:"username" binding:"required"`
-	Email    string `json:"email" binding:"required"`
-	Password string `json:"password" binding:"required"`
-}
-
-func (s *Server) Register(c *gin.Context) {
-	var input RegisterInput
-
-	if err := c.ShouldBind(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input or username/email already exists"})
-		return
-	}
-
-	user, err := models.NewUser(s.db, input.Username, input.Email, input.Password)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input or username/email already exists"})
-		return
-	}
-
-	err = user.GenerateAuthToken(s.db)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Token generation error"})
-		return
-	}
-
-	if !user.AuthToken.Valid {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid token"})
-		return
-	}
-
-	c.JSON(http.StatusCreated, gin.H{"message": "User successfully created", "token": user.AuthToken.String,
-		"token_type": "bearer"})
-}
-
+// RefreshToken godoc
+// @Summary      Refresh user's token
+// @Description  when token is expired you need to refresh it
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Security     BasicAuth, BearerAuth
+// @Param		 id	  path		string	true	"User ID"
+// @Success      200  {object}  httputils.TokenResponse
+// @Failure      400  {object}  httputils.HTTPError
+// @Failure      403  {object}  httputils.HTTPError
+// @Failure      404  {object}  httputils.HTTPError
+// @Failure      500  {object}  httputils.HTTPError
+// @Router       /auth/{id} [get]
 func (s *Server) RefreshToken(c *gin.Context) {
-	login, ok := c.Get("login")
-	if !ok {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Username was not provided"})
+	id := c.Param("id")
+	userUuid, err := uuid.Parse(id)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "User id parsing error"})
 		return
 	}
 
-	user, err := models.FetchUserByLogin(s.db, login.(string))
+	user, err := models.FetchUserById(s.db, userUuid)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
 		return
@@ -80,16 +62,31 @@ func (s *Server) RefreshToken(c *gin.Context) {
 		"token_type": "bearer"})
 }
 
+// RevokeToken godoc
+// @Summary      Revokes user's token
+// @Description  when user signs out token needs to be revoked
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Security     BasicAuth, BearerAuth
+// @Param		 id	  path		string	true	"User ID"
+// @Success      200  {object}  httputils.BasicResponse
+// @Failure      400  {object}  httputils.HTTPError
+// @Failure      401  {object}  httputils.HTTPError
+// @Failure      500  {object}  httputils.HTTPError
+// @Router       /auth/{id} [delete]
 func (s *Server) RevokeToken(c *gin.Context) {
-	token, ok := c.Get("token")
-	if !ok {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "User token was not provided"})
+	id := c.Param("id")
+	userUuid, err := uuid.Parse(id)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "User id parsing error"})
 		return
 	}
 
-	user, err := models.FetchUserByToken(s.db, token.(string))
+	user, err := models.FetchUserById(s.db, userUuid)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Token is invalid or expired"})
+		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
 		return
 	}
 

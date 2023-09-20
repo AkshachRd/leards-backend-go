@@ -1,0 +1,173 @@
+basePath: /api/v1
+definitions:
+  httputils.BasicResponse:
+    properties:
+      message:
+        example: Successfully
+        type: string
+    type: object
+  httputils.CreateUserRequest:
+    properties:
+      email:
+        example: bob@leards.space
+        type: string
+      password:
+        example: "123"
+        type: string
+      username:
+        example: Bob
+        type: string
+    required:
+    - email
+    - password
+    - username
+    type: object
+  httputils.HTTPError:
+    properties:
+      code:
+        example: 400
+        type: integer
+      message:
+        example: status bad request
+        type: string
+    type: object
+  httputils.TokenResponse:
+    properties:
+      message:
+        example: Successfully
+        type: string
+      token:
+        example: <token>
+        type: string
+      token_type:
+        example: bearer
+        type: string
+    type: object
+externalDocs:
+  description: OpenAPI
+  url: https://swagger.io/resources/open-api/
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a leards language learning app api.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Leards Backend API
+  version: "1.0"
+paths:
+  /:
+    post:
+      consumes:
+      - application/json
+      description: creates new user and returns a token
+      parameters:
+      - description: User register data
+        in: body
+        name: createUserData
+        required: true
+        schema:
+          $ref: '#/definitions/httputils.CreateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/httputils.TokenResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputils.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputils.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputils.HTTPError'
+      summary: Register new user
+      tags:
+      - auth
+  /auth/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: when user signs out token needs to be revoked
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httputils.BasicResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputils.HTTPError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/httputils.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputils.HTTPError'
+      security:
+      - BasicAuth, BearerAuth: []
+      summary: Revokes user's token
+      tags:
+      - auth
+    get:
+      consumes:
+      - application/json
+      description: when token is expired you need to refresh it
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httputils.TokenResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputils.HTTPError'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/httputils.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputils.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputils.HTTPError'
+      security:
+      - BasicAuth, BearerAuth: []
+      summary: Refresh user's token
+      tags:
+      - auth
+securityDefinitions:
+  BasicAuth:
+    type: basic
+swagger: "2.0"
