@@ -18,7 +18,7 @@ import (
 // @Failure      400  {object}  httputils.HTTPError
 // @Failure      404  {object}  httputils.HTTPError
 // @Failure      500  {object}  httputils.HTTPError
-// @Router       / [post]
+// @Router       /accounts [post]
 func (s *Server) CreateUser(c *gin.Context) {
 	var input httputils.CreateUserRequest
 

@@ -60,7 +60,7 @@ info:
   title: Leards Backend API
   version: "1.0"
 paths:
-  /:
+  /accounts:
     post:
       consumes:
       - application/json

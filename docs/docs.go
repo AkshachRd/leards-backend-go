@@ -24,7 +24,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/": {
+        "/accounts": {
             "post": {
                 "description": "creates new user and returns a token",
                 "consumes": [
