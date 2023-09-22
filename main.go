@@ -4,6 +4,7 @@ import (
 	"github.com/AkshachRd/leards-backend-go/docs"
 	"github.com/AkshachRd/leards-backend-go/handlers"
 	"github.com/AkshachRd/leards-backend-go/models"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -50,6 +51,11 @@ func DbInit() *gorm.DB {
 
 func SetupRouter() *gin.Engine {
 	r := gin.Default()
+
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{"*"} // Allow requests from any origin
+	config.AllowMethods = []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}
+	r.Use(cors.New(config))
 
 	db := DbInit()
 
