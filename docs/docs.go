@@ -25,6 +25,50 @@ const docTemplate = `{
     "basePath": "{{.BasePath}}",
     "paths": {
         "/accounts": {
+            "get": {
+                "security": [
+                    {
+                        "BasicAuth": []
+                    }
+                ],
+                "description": "returns user id of an existing user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "accounts"
+                ],
+                "summary": "Login an existing user",
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/httputils.UserResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httputils.HTTPError"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/httputils.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httputils.HTTPError"
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "creates new user and returns a token",
                 "consumes": [
@@ -52,7 +96,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/httputils.TokenResponse"
+                            "$ref": "#/definitions/httputils.UserResponse"
                         }
                     },
                     "400": {
@@ -79,9 +123,6 @@ const docTemplate = `{
         "/auth/{id}": {
             "get": {
                 "security": [
-                    {
-                        "BasicAuth": []
-                    },
                     {
                         "Bearer": []
                     }
@@ -141,9 +182,6 @@ const docTemplate = `{
             },
             "delete": {
                 "security": [
-                    {
-                        "BasicAuth": []
-                    },
                     {
                         "Bearer": []
                     }
@@ -252,10 +290,23 @@ const docTemplate = `{
                 "token": {
                     "type": "string",
                     "example": "\u003ctoken\u003e"
-                },
-                "token_type": {
+                }
+            }
+        },
+        "httputils.UserResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
                     "type": "string",
-                    "example": "bearer"
+                    "example": "Successfully"
+                },
+                "token": {
+                    "type": "string",
+                    "example": "\u003ctoken\u003e"
+                },
+                "userId": {
+                    "type": "string",
+                    "example": "53f4cf69-9da6-49e4-8651-450b74abdf9e"
                 }
             }
         }

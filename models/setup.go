@@ -11,7 +11,23 @@ func Setup() (*gorm.DB, error) {
 		return nil, err
 	}
 
-	err = db.AutoMigrate(&AccessType{}, &Card{}, &Deck{}, &Folder{}, &Permission{}, &PermissionType{}, &User{})
+	err = db.AutoMigrate(
+		&AccessType{},
+		&Card{},
+		&Deck{},
+		&Folder{},
+		&Permission{},
+		&PermissionType{},
+		&Repetition{},
+		&RepetitionState{},
+		&StorageHasTag{},
+		&Tag{},
+		&User{},
+		&UserHasWorkspace{},
+		&UserSetting{},
+		&Workspace{},
+		&UserWorkspaceRole{},
+	)
 	if err != nil {
 		return nil, err
 	}

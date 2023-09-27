@@ -1,10 +1,10 @@
-POST /api/register HTTP/2.0
+POST /api/v1/accounts HTTP/2.0
 Host: localhost:8080
 Accept: application/json
 Content-Type: application/json
 
 {
-  "username": "",
-  "email": "",
-  "password": ""
+  "email": "bob@leards.space",
+  "password": "123",
+  "username": "Bob"
 }

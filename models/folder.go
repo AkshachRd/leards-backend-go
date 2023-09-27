@@ -9,5 +9,6 @@ type Folder struct {
 	AccessType     AccessType
 	ParentFolderID *uuid.UUID
 	ParentFolder   *Folder
-	Permissions    []Permission `gorm:"polymorphic:Storage;polymorphicValue:folder"`
+	Permissions    []Permission    `gorm:"polymorphic:Storage;polymorphicValue:folder"`
+	StorageHasTags []StorageHasTag `gorm:"polymorphic:Storage;polymorphicValue:folder"`
 }

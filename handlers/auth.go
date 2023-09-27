@@ -13,7 +13,6 @@ import (
 // @Tags         auth
 // @Accept       json
 // @Produce      json
-// @Security     BasicAuth
 // @Security     Bearer
 // @Param		 id	  path		string	true	"User ID"
 // @Success      200  {object}  httputils.TokenResponse
@@ -69,7 +68,6 @@ func (s *Server) RefreshToken(c *gin.Context) {
 // @Tags         auth
 // @Accept       json
 // @Produce      json
-// @Security     BasicAuth
 // @Security     Bearer
 // @Param		 id	  path		string	true	"User ID"
 // @Success      200  {object}  httputils.BasicResponse

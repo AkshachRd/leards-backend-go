@@ -23,6 +23,7 @@ type User struct {
 	ProfileIconPath     sql.NullString
 	RootFolderID        uuid.NullUUID
 	RootFolder          Folder
+	Settings            []UserSetting
 }
 
 func hashPassword(password string) (string, error) {
@@ -44,11 +45,6 @@ func NewUser(db *gorm.DB, name string, email string, password string) (*User, er
 	user := &User{Name: name, Email: email, PasswordHashed: passwordHashed}
 
 	err = db.Create(user).Error
-	if err != nil {
-		return nil, err
-	}
-
-	err = user.GenerateAuthToken(db)
 	if err != nil {
 		return nil, err
 	}

@@ -39,8 +39,17 @@ definitions:
       token:
         example: <token>
         type: string
-      token_type:
-        example: bearer
+    type: object
+  httputils.UserResponse:
+    properties:
+      message:
+        example: Successfully
+        type: string
+      token:
+        example: <token>
+        type: string
+      userId:
+        example: 53f4cf69-9da6-49e4-8651-450b74abdf9e
         type: string
     type: object
 externalDocs:
@@ -61,6 +70,34 @@ info:
   version: "1.0"
 paths:
   /accounts:
+    get:
+      consumes:
+      - application/json
+      description: returns user id of an existing user
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/httputils.UserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputils.HTTPError'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/httputils.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputils.HTTPError'
+      security:
+      - BasicAuth: []
+      summary: Login an existing user
+      tags:
+      - accounts
     post:
       consumes:
       - application/json
@@ -78,7 +115,7 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/httputils.TokenResponse'
+            $ref: '#/definitions/httputils.UserResponse'
         "400":
           description: Bad Request
           schema:
@@ -125,7 +162,6 @@ paths:
           schema:
             $ref: '#/definitions/httputils.HTTPError'
       security:
-      - BasicAuth: []
       - Bearer: []
       summary: Revokes user's token
       tags:
@@ -164,7 +200,6 @@ paths:
           schema:
             $ref: '#/definitions/httputils.HTTPError'
       security:
-      - BasicAuth: []
       - Bearer: []
       summary: Refresh user's token
       tags:

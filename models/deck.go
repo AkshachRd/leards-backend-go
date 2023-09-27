@@ -10,5 +10,6 @@ type Deck struct {
 	AccessTypeID   uint8
 	AccessType     AccessType
 	Cards          []Card
-	Permissions    []Permission `gorm:"polymorphic:Storage;polymorphicValue:deck"`
+	Permissions    []Permission    `gorm:"polymorphic:Storage;polymorphicValue:deck"`
+	StorageHasTags []StorageHasTag `gorm:"polymorphic:Storage;polymorphicValue:deck"`
 }

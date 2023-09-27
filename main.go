@@ -66,8 +66,10 @@ func SetupRouter() *gin.Engine {
 	authorizedV1 := v1.Group("/", server.AuthService())
 	{
 		accounts := v1.Group("/accounts")
+		accountsAuthorized := authorizedV1.Group("/accounts")
 		{
 			accounts.POST("", server.CreateUser)
+			accountsAuthorized.GET("", server.LoginUser)
 		}
 		auth := authorizedV1.Group("auth")
 		{
