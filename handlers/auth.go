@@ -58,8 +58,7 @@ func (s *Server) RefreshToken(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid token"})
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Token successfully refreshed", "token": user.AuthToken.String,
-		"token_type": "bearer"})
+	c.JSON(http.StatusOK, gin.H{"message": "Token successfully refreshed", "token": user.AuthToken.String})
 }
 
 // RevokeToken godoc
