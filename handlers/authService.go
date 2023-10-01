@@ -32,13 +32,13 @@ func (s *Server) AuthService() gin.HandlerFunc {
 				return
 			}
 
-			login, password := parsedPayload[0], parsedPayload[1]
-			if !basicAuth(s.db, login, password) {
+			email, password := parsedPayload[0], parsedPayload[1]
+			if !basicAuth(s.db, email, password) {
 				respondWithError(http.StatusUnauthorized, "Unauthorized", c)
 				return
 			}
 
-			c.Set("login", login)
+			c.Set("email", email)
 			c.Set("password", password)
 		case "Bearer":
 			token := string(payload)
@@ -57,8 +57,8 @@ func (s *Server) AuthService() gin.HandlerFunc {
 	}
 }
 
-func basicAuth(db *gorm.DB, login, password string) bool {
-	user, err := models.FetchUserByLogin(db, login)
+func basicAuth(db *gorm.DB, email, password string) bool {
+	user, err := models.FetchUserByEmail(db, email)
 	if err != nil {
 		return false
 	}

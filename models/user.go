@@ -63,10 +63,10 @@ func (u *User) SetPassword(db *gorm.DB, password string) error {
 	return err
 }
 
-func FetchUserByLogin(db *gorm.DB, login string) (*User, error) {
+func FetchUserByEmail(db *gorm.DB, email string) (*User, error) {
 	var user User
 
-	err := db.Where("name = ?", login).Or("email = ?", login).First(&user).Error
+	err := db.Where("email = ?", email).First(&user).Error
 	if err != nil {
 		return nil, err
 	}

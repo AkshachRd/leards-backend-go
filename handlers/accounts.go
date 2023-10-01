@@ -60,13 +60,13 @@ func (s *Server) CreateUser(c *gin.Context) {
 // @Failure      500  {object}  httputils.HTTPError
 // @Router       /accounts [get]
 func (s *Server) LoginUser(c *gin.Context) {
-	login, ok := c.Get("login")
+	email, ok := c.Get("email")
 	if !ok {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "User is not authorized"})
 		return
 	}
 
-	switch login.(type) {
+	switch email.(type) {
 	case string:
 		break
 	default:
@@ -74,7 +74,7 @@ func (s *Server) LoginUser(c *gin.Context) {
 		return
 	}
 
-	user, err := models.FetchUserByLogin(s.db, fmt.Sprintf("%v", login))
+	user, err := models.FetchUserByEmail(s.db, fmt.Sprintf("%v", email))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid login or username/email do not exist"})
 		return
