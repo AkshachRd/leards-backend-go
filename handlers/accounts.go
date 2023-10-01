@@ -76,7 +76,7 @@ func (s *Server) LoginUser(c *gin.Context) {
 
 	user, err := models.FetchUserByEmail(s.db, fmt.Sprintf("%v", email))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid login or username/email do not exist"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid login or user do not exist"})
 		return
 	}
 
