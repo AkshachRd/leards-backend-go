@@ -1,7 +1,5 @@
 package models
 
-import "github.com/google/uuid"
-
 type Setting string
 
 const (
@@ -11,8 +9,8 @@ const (
 
 type UserSetting struct {
 	Base
-	UserID       uuid.UUID
+	UserID       string `gorm:"size:36"`
 	User         User
-	SettingName  Setting
-	SettingValue string
+	SettingName  Setting `gorm:"size:255"`
+	SettingValue string  `gorm:"size:255"`
 }

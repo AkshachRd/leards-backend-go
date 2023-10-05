@@ -1,11 +1,9 @@
 package models
 
-import "github.com/google/uuid"
-
 type UserHasWorkspace struct {
-	UserID      uuid.UUID `gorm:"primaryKey"`
+	UserID      string `gorm:"primaryKey; size:36;"`
 	User        User
-	WorkspaceID uuid.UUID `gorm:"primaryKey"`
+	WorkspaceID string `gorm:"primaryKey; size:36"`
 	Workspace   Workspace
 	RoleID      uint8
 	Role        UserWorkspaceRole

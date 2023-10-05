@@ -9,5 +9,5 @@ const (
 
 type UserWorkspaceRole struct {
 	ID   uint8 `gorm:"primaryKey"`
-	Role role
+	Role role  `gorm:"size:255"`
 }

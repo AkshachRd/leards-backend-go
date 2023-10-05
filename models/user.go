@@ -15,13 +15,13 @@ const TokenExpiration = time.Hour
 
 type User struct {
 	Base
-	Name                string `gorm:"unique"`
-	Email               string `gorm:"unique"`
-	PasswordHashed      string
-	AuthToken           sql.NullString `gorm:"index"`
+	Name                string         `gorm:"size:255; not null"`
+	Email               string         `gorm:"size:255; not null; unique"`
+	PasswordHashed      string         `gorm:"size:255; not null"`
+	AuthToken           sql.NullString `gorm:"size:255; index"`
 	AuthTokenExpiration sql.NullTime
-	ProfileIconPath     sql.NullString
-	RootFolderID        uuid.NullUUID
+	ProfileIconPath     sql.NullString `gorm:"size:255"`
+	RootFolderID        string         `gorm:"size:36; not null"`
 	RootFolder          Folder
 	Settings            []UserSetting
 }

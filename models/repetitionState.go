@@ -11,5 +11,5 @@ const (
 
 type RepetitionState struct {
 	ID    uint8 `gorm:"primaryKey"`
-	State state
+	State state `gorm:"size:255; not null"`
 }

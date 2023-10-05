@@ -1,10 +1,8 @@
 package models
 
-import "github.com/google/uuid"
-
 type StorageHasTag struct {
-	StorageID   uuid.UUID `gorm:"primaryKey"`
-	StorageType string    `gorm:"primaryKey"`
-	TagID       uuid.UUID `gorm:"primaryKey"`
+	StorageID   string `gorm:"primaryKey; size:36;"`
+	StorageType string `gorm:"primaryKey; size:255"`
+	TagID       string `gorm:"primaryKey; size:36;"`
 	Tag         Tag
 }

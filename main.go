@@ -1,9 +1,9 @@
 package main
 
 import (
+	"github.com/AkshachRd/leards-backend-go/dbSetup"
 	"github.com/AkshachRd/leards-backend-go/docs"
 	"github.com/AkshachRd/leards-backend-go/handlers"
-	"github.com/AkshachRd/leards-backend-go/models"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -42,7 +42,7 @@ func main() {
 }
 
 func DbInit() *gorm.DB {
-	db, err := models.Setup()
+	db, err := dbSetup.Setup()
 	if err != nil {
 		log.Println("Problem setting up database")
 	}

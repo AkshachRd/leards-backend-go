@@ -1,13 +1,11 @@
 package models
 
-import "github.com/google/uuid"
-
 type Deck struct {
 	Base
-	Name           string
-	ParentFolderId uuid.UUID
+	Name           string `gorm:"size:255; not null"`
+	ParentFolderId string `gorm:"size:36; not null"`
 	ParentFolder   Folder
-	AccessTypeID   uint8
+	AccessTypeID   uint8 `gorm:"not null"`
 	AccessType     AccessType
 	Cards          []Card
 	Permissions    []Permission    `gorm:"polymorphic:Storage;polymorphicValue:deck"`

@@ -1,10 +1,8 @@
 package models
 
-import "github.com/google/uuid"
-
 type Workspace struct {
 	Base
-	Name         string
-	RootFolderID uuid.UUID
+	Name         string `gorm:"size:255"`
+	RootFolderID string `gorm:"size:36"`
 	RootFolder   Folder
 }

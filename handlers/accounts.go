@@ -42,7 +42,7 @@ func (s *Server) CreateUser(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, gin.H{
 		"message": "User successfully created",
-		"userId":  user.ID.String(),
+		"userId":  user.ID,
 		"token":   user.AuthToken.String,
 	})
 }
@@ -88,7 +88,7 @@ func (s *Server) LoginUser(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "User successfully signed in",
-		"userId":  user.ID.String(),
+		"userId":  user.ID,
 		"token":   user.AuthToken.String,
 	})
 }
