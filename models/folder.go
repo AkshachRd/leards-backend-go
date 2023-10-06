@@ -5,7 +5,7 @@ import "gorm.io/gorm"
 type Folder struct {
 	Base
 	Name           string `gorm:"size:255; not null"`
-	AccessTypeId   uint8  `gorm:"not null"`
+	AccessTypeID   uint8  `gorm:"not null"`
 	AccessType     AccessType
 	ParentFolderID *string `gorm:"size:36"`
 	ParentFolder   *Folder
@@ -13,10 +13,20 @@ type Folder struct {
 	StorageHasTags []StorageHasTag `gorm:"polymorphic:Storage;polymorphicValue:folder"`
 }
 
-func NewFolder(db *gorm.DB, name string, accessTypeId uint8) *Folder {
-	folder := Folder{Name: name, AccessTypeId: accessTypeId}
-	db.Create(&folder)
-	return &folder
+func NewFolder(db *gorm.DB, name string, accessType Access) (*Folder, error) {
+	var accType AccessType
+	err := db.First(&accType, "type = ?", accessType).Error
+	if err != nil {
+		return &Folder{}, nil
+	}
+
+	folder := Folder{Name: name, AccessTypeID: accType.ID}
+	err = db.Create(&folder).Error
+	if err != nil {
+		return &Folder{}, nil
+	}
+
+	return &folder, nil
 }
 
 func FetchFolderById(db *gorm.DB, id string) (*Folder, error) {

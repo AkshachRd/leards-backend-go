@@ -43,15 +43,35 @@ func main() {
 }
 
 func MockData(db *gorm.DB) error {
-	_, err := models.NewUser(db, "Owner", "owner", "12345Q")
+	user, err := models.NewUser(db, "Owner", "owner", "12345Q")
 	if err != nil {
 		return err
 	}
 
-	accessType := models.AccessType{Type: string(models.Public)}
-	db.First(&accessType)
+	folder, err := models.NewFolder(db, "folder1", models.Private)
+	if err != nil {
+		return err
+	}
 
-	models.NewFolder(db, "folder1", accessType.ID)
+	folder.ParentFolderID = &user.RootFolderID
+	err = db.Save(&folder).Error
+	if err != nil {
+		return err
+	}
+
+	deck, err := models.NewDeck(db, "deck1", models.Private, folder.ID)
+	if err != nil {
+		return err
+	}
+
+	deck.Cards = []models.Card{
+		{DeckID: deck.ID, FrontSide: "Apple", BackSide: "Яблокоф"},
+		{DeckID: deck.ID, FrontSide: "Banana", BackSide: "Бананоф"},
+	}
+	err = db.Save(&deck).Error
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
@@ -62,10 +82,7 @@ func DbInit() *gorm.DB {
 		log.Println("Problem setting up database", err)
 	}
 
-	acc := models.AccessType{Type: string(models.Public)}
-	db.Create(&acc)
-	acc = models.AccessType{Type: string(models.Private)}
-	db.Create(&acc)
+	models.FillAccessTypes(db)
 
 	err = MockData(db)
 	if err != nil {

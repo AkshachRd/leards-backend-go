@@ -30,13 +30,7 @@ func (s *Server) GetSingleDeck(c *gin.Context) {
 
 	var content []httputils.Card
 
-	cards, err := models.FetchCardsByDeckId(s.db, deck.ID)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Can't fetch decks from the database"})
-		return
-	}
-
-	for _, card := range *cards {
+	for _, card := range deck.Cards {
 		content = append(content, httputils.Card{CardId: card.ID, FrontSide: card.FrontSide, BackSide: card.BackSide})
 	}
 

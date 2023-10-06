@@ -38,14 +38,19 @@ func checkPasswordHash(password, hash string) bool {
 func NewUser(db *gorm.DB, name string, email string, password string) (*User, error) {
 	passwordHashed, err := hashPassword(password)
 	if err != nil {
-		return nil, err
+		return &User{}, err
 	}
 
-	user := User{Name: name, Email: email, PasswordHashed: passwordHashed}
+	folder, err := NewFolder(db, "rootFolder", Private)
+	if err != nil {
+		return &User{}, err
+	}
+
+	user := User{Name: name, Email: email, PasswordHashed: passwordHashed, RootFolderID: folder.ID}
 
 	err = db.Create(&user).Error
 	if err != nil {
-		return nil, err
+		return &User{}, err
 	}
 
 	return &user, nil
