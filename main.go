@@ -43,7 +43,7 @@ func main() {
 }
 
 func MockData(db *gorm.DB) error {
-	_, err := models.NewUser(db, "admin", "admin@leards.space", "admin")
+	_, err := models.NewUser(db, "Owner", "owner", "12345Q")
 	if err != nil {
 		return err
 	}
@@ -89,24 +89,25 @@ func SetupRouter() *gin.Engine {
 	docs.SwaggerInfo.Title = "Leards Backend API"
 
 	v1 := r.Group("/api/v1")
-	authorizedV1 := v1.Group("/", server.AuthService())
+	basicAuthorizedV1 := v1.Group("", server.AuthService(handlers.BasicAuth))
+	bearerAuthorizedV1 := v1.Group("", server.AuthService(handlers.BearerAuth))
 	{
 		accounts := v1.Group("/accounts")
-		accountsAuthorized := authorizedV1.Group("/accounts")
+		accountsAuthorized := basicAuthorizedV1.Group("/accounts")
 		{
 			accounts.POST("", server.CreateUser)
 			accountsAuthorized.GET("", server.LoginUser)
 		}
-		auth := authorizedV1.Group("/auth")
+		auth := bearerAuthorizedV1.Group("/auth")
 		{
 			auth.GET(":id", server.RefreshToken)
 			auth.DELETE(":id", server.RevokeToken)
 		}
-		folders := authorizedV1.Group("/folders")
+		folders := bearerAuthorizedV1.Group("/folders")
 		{
 			folders.GET(":id", server.GetSingleFolder)
 		}
-		decks := authorizedV1.Group("/decks")
+		decks := bearerAuthorizedV1.Group("/decks")
 		{
 			decks.GET(":id", server.GetSingleDeck)
 		}

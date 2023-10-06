@@ -9,7 +9,14 @@ import (
 	"strings"
 )
 
-func (s *Server) AuthService() gin.HandlerFunc {
+type AuthType int
+
+const (
+	BasicAuth AuthType = iota
+	BearerAuth
+)
+
+func (s *Server) AuthService(authType AuthType) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authHeaderContent := strings.SplitN(c.Request.Header.Get("Authorization"), " ", 2)
 
@@ -24,8 +31,8 @@ func (s *Server) AuthService() gin.HandlerFunc {
 			return
 		}
 
-		switch authHeaderContent[0] {
-		case "Basic":
+		switch authType {
+		case BasicAuth:
 			parsedPayload := strings.SplitN(string(payload), ":", 2)
 			if len(parsedPayload) != 2 {
 				respondWithError(http.StatusUnauthorized, "Unauthorized", c)
@@ -40,7 +47,7 @@ func (s *Server) AuthService() gin.HandlerFunc {
 
 			c.Set("email", email)
 			c.Set("password", password)
-		case "Bearer":
+		case BearerAuth:
 			token := string(payload)
 			if !tokenAuth(s.db, token) {
 				respondWithError(http.StatusUnauthorized, "Unauthorized", c)
