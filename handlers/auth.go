@@ -29,18 +29,6 @@ func (s *Server) RefreshToken(c *gin.Context) {
 		return
 	}
 
-	password, ok := c.Get("password")
-	if !ok {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Password was not provided"})
-		return
-	}
-
-	ok = user.IsPasswordCorrect(password.(string))
-	if !ok {
-		c.JSON(http.StatusForbidden, gin.H{"error": "Wrong password"})
-		return
-	}
-
 	err = user.GenerateAuthToken(s.db)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Token generation error"})
