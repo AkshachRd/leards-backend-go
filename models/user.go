@@ -76,7 +76,7 @@ func FetchUserByEmail(db *gorm.DB, email string) (*User, error) {
 func FetchUserById(db *gorm.DB, id string) (*User, error) {
 	var user User
 
-	err := db.First(&user, id).Error
+	err := db.First(&user, "id_user = ?", id).Error
 	if err != nil {
 		return nil, err
 	}

@@ -22,7 +22,7 @@ func NewFolder(db *gorm.DB, name string, accessTypeId uint8) *Folder {
 func FetchFolderById(db *gorm.DB, id string) (*Folder, error) {
 	var folder Folder
 
-	err := db.First(&folder, id).Error
+	err := db.First(&folder, "id_folder = ?", id).Error
 	if err != nil {
 		return nil, err
 	}

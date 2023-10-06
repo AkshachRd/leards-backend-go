@@ -17,7 +17,7 @@ type Deck struct {
 func FetchDeckById(db *gorm.DB, id string) (*Deck, error) {
 	var deck Deck
 
-	err := db.First(&deck, id).Error
+	err := db.First(&deck, "id_deck = ?", id).Error
 	if err != nil {
 		return nil, err
 	}
