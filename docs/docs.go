@@ -213,12 +213,6 @@ const docTemplate = `{
                             "$ref": "#/definitions/httputils.BasicResponse"
                         }
                     },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/httputils.HTTPError"
-                        }
-                    },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
