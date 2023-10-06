@@ -13,6 +13,12 @@ type Folder struct {
 	StorageHasTags []StorageHasTag `gorm:"polymorphic:Storage;polymorphicValue:folder"`
 }
 
+func NewFolder(db *gorm.DB, name string, accessTypeId uint8) *Folder {
+	folder := Folder{Name: name, AccessTypeId: accessTypeId}
+	db.Create(&folder)
+	return &folder
+}
+
 func FetchFolderById(db *gorm.DB, id string) (*Folder, error) {
 	var folder Folder
 

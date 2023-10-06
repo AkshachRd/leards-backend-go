@@ -4,7 +4,6 @@ import (
 	"crypto/rand"
 	"database/sql"
 	"encoding/base64"
-	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 	"time"
@@ -42,14 +41,14 @@ func NewUser(db *gorm.DB, name string, email string, password string) (*User, er
 		return nil, err
 	}
 
-	user := &User{Name: name, Email: email, PasswordHashed: passwordHashed}
+	user := User{Name: name, Email: email, PasswordHashed: passwordHashed}
 
-	err = db.Create(user).Error
+	err = db.Create(&user).Error
 	if err != nil {
 		return nil, err
 	}
 
-	return user, nil
+	return &user, nil
 }
 
 func (u *User) SetPassword(db *gorm.DB, password string) error {
@@ -66,7 +65,7 @@ func (u *User) SetPassword(db *gorm.DB, password string) error {
 func FetchUserByEmail(db *gorm.DB, email string) (*User, error) {
 	var user User
 
-	err := db.Where("email = ?", email).First(&user).Error
+	err := db.First(&user, "email = ?", email).Error
 	if err != nil {
 		return nil, err
 	}
@@ -74,10 +73,10 @@ func FetchUserByEmail(db *gorm.DB, email string) (*User, error) {
 	return &user, nil
 }
 
-func FetchUserById(db *gorm.DB, id uuid.UUID) (*User, error) {
+func FetchUserById(db *gorm.DB, id string) (*User, error) {
 	var user User
 
-	err := db.Where("id = ?", id).First(&user).Error
+	err := db.First(&user, id).Error
 	if err != nil {
 		return nil, err
 	}
@@ -132,7 +131,7 @@ func (u *User) RevokeAuthToken(db *gorm.DB) error {
 func FetchUserByToken(db *gorm.DB, authToken string) (*User, error) {
 	var user User
 
-	err := db.Where("auth_token = ?", authToken).First(&user).Error
+	err := db.First(&user, "auth_token = ?", authToken).Error
 	if err != nil {
 		return nil, err
 	}

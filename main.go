@@ -4,6 +4,7 @@ import (
 	"github.com/AkshachRd/leards-backend-go/dbSetup"
 	"github.com/AkshachRd/leards-backend-go/docs"
 	"github.com/AkshachRd/leards-backend-go/handlers"
+	"github.com/AkshachRd/leards-backend-go/models"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -41,11 +42,36 @@ func main() {
 	r.Run(":8080")
 }
 
+func MockData(db *gorm.DB) error {
+	_, err := models.NewUser(db, "admin", "admin@leards.space", "admin")
+	if err != nil {
+		return err
+	}
+
+	accessType := models.AccessType{Type: string(models.Public)}
+	db.First(&accessType)
+
+	models.NewFolder(db, "folder1", accessType.ID)
+
+	return nil
+}
+
 func DbInit() *gorm.DB {
 	db, err := dbSetup.Setup()
 	if err != nil {
-		log.Println("Problem setting up database")
+		log.Println("Problem setting up database", err)
 	}
+
+	acc := models.AccessType{Type: string(models.Public)}
+	db.Create(&acc)
+	acc = models.AccessType{Type: string(models.Private)}
+	db.Create(&acc)
+
+	err = MockData(db)
+	if err != nil {
+		log.Println("Problem setting up database", err)
+	}
+
 	return db
 }
 
@@ -71,10 +97,18 @@ func SetupRouter() *gin.Engine {
 			accounts.POST("", server.CreateUser)
 			accountsAuthorized.GET("", server.LoginUser)
 		}
-		auth := authorizedV1.Group("auth")
+		auth := authorizedV1.Group("/auth")
 		{
 			auth.GET(":id", server.RefreshToken)
 			auth.DELETE(":id", server.RevokeToken)
+		}
+		folders := authorizedV1.Group("/folders")
+		{
+			folders.GET(":id", server.GetSingleFolder)
+		}
+		decks := authorizedV1.Group("/decks")
+		{
+			decks.GET(":id", server.GetSingleDeck)
 		}
 	}
 
