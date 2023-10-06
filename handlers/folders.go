@@ -22,7 +22,7 @@ import (
 func (s *Server) GetSingleFolder(c *gin.Context) {
 	id := c.Param("id")
 
-	folder, err := models.FetchFolderById(s.db, id)
+	folder, err := models.FetchFolderById(s.db, id, true)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input or folder doesn't exist"})
 		return

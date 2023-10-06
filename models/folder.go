@@ -29,10 +29,15 @@ func NewFolder(db *gorm.DB, name string, accessType Access) (*Folder, error) {
 	return &folder, nil
 }
 
-func FetchFolderById(db *gorm.DB, id string) (*Folder, error) {
+func FetchFolderById(db *gorm.DB, id string, preloadParentFolder bool) (*Folder, error) {
 	var folder Folder
 
-	err := db.Preload("ParentFolder").First(&folder, "id_folder = ?", id).Error
+	query := db
+	if preloadParentFolder {
+		query = query.Preload("ParentFolder")
+	}
+
+	err := query.First(&folder, "id_folder = ?", id).Error
 	if err != nil {
 		return nil, err
 	}

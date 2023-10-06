@@ -22,7 +22,7 @@ import (
 func (s *Server) GetSingleDeck(c *gin.Context) {
 	id := c.Param("id")
 
-	deck, err := models.FetchDeckById(s.db, id)
+	deck, err := models.FetchDeckById(s.db, id, true)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input or deck doesn't exist"})
 		return

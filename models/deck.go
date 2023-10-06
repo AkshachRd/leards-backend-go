@@ -30,10 +30,15 @@ func NewDeck(db *gorm.DB, name string, accessType Access, parentFolderId string)
 	return &deck, nil
 }
 
-func FetchDeckById(db *gorm.DB, id string) (*Deck, error) {
+func FetchDeckById(db *gorm.DB, id string, preloadCards bool) (*Deck, error) {
 	var deck Deck
 
-	err := db.First(&deck, "id_deck = ?", id).Error
+	query := db
+	if preloadCards {
+		query = query.Preload("Cards")
+	}
+
+	err := query.First(&deck, "id_deck = ?", id).Error
 	if err != nil {
 		return nil, err
 	}
