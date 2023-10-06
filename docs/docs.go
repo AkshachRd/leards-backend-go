@@ -233,6 +233,104 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/decks/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "fetches the deck from the database",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "decks"
+                ],
+                "summary": "Get single deck by id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Deck ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/httputils.DeckResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httputils.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httputils.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/folders/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "fetches the folder from the database",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "folders"
+                ],
+                "summary": "Get single folder by id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Folder ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/httputils.FolderResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httputils.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httputils.HTTPError"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -242,6 +340,34 @@ const docTemplate = `{
                 "message": {
                     "type": "string",
                     "example": "Successfully"
+                }
+            }
+        },
+        "httputils.Card": {
+            "type": "object",
+            "properties": {
+                "backSide": {
+                    "type": "string"
+                },
+                "cardId": {
+                    "type": "string"
+                },
+                "frontSide": {
+                    "type": "string"
+                }
+            }
+        },
+        "httputils.Content": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
                 }
             }
         },
@@ -267,6 +393,70 @@ const docTemplate = `{
                 }
             }
         },
+        "httputils.Deck": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/httputils.Card"
+                    }
+                },
+                "deckId": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "httputils.DeckResponse": {
+            "type": "object",
+            "properties": {
+                "deck": {
+                    "$ref": "#/definitions/httputils.Deck"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Successfully"
+                }
+            }
+        },
+        "httputils.Folder": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/httputils.Content"
+                    }
+                },
+                "folderId": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "path": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/httputils.Path"
+                    }
+                }
+            }
+        },
+        "httputils.FolderResponse": {
+            "type": "object",
+            "properties": {
+                "folder": {
+                    "$ref": "#/definitions/httputils.Folder"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Successfully"
+                }
+            }
+        },
         "httputils.HTTPError": {
             "type": "object",
             "properties": {
@@ -277,6 +467,17 @@ const docTemplate = `{
                 "message": {
                     "type": "string",
                     "example": "status bad request"
+                }
+            }
+        },
+        "httputils.Path": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
                 }
             }
         },

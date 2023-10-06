@@ -6,6 +6,24 @@ definitions:
         example: Successfully
         type: string
     type: object
+  httputils.Card:
+    properties:
+      backSide:
+        type: string
+      cardId:
+        type: string
+      frontSide:
+        type: string
+    type: object
+  httputils.Content:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      type:
+        type: string
+    type: object
   httputils.CreateUserRequest:
     properties:
       email:
@@ -22,6 +40,48 @@ definitions:
     - password
     - username
     type: object
+  httputils.Deck:
+    properties:
+      content:
+        items:
+          $ref: '#/definitions/httputils.Card'
+        type: array
+      deckId:
+        type: string
+      name:
+        type: string
+    type: object
+  httputils.DeckResponse:
+    properties:
+      deck:
+        $ref: '#/definitions/httputils.Deck'
+      message:
+        example: Successfully
+        type: string
+    type: object
+  httputils.Folder:
+    properties:
+      content:
+        items:
+          $ref: '#/definitions/httputils.Content'
+        type: array
+      folderId:
+        type: string
+      name:
+        type: string
+      path:
+        items:
+          $ref: '#/definitions/httputils.Path'
+        type: array
+    type: object
+  httputils.FolderResponse:
+    properties:
+      folder:
+        $ref: '#/definitions/httputils.Folder'
+      message:
+        example: Successfully
+        type: string
+    type: object
   httputils.HTTPError:
     properties:
       code:
@@ -29,6 +89,13 @@ definitions:
         type: integer
       message:
         example: status bad request
+        type: string
+    type: object
+  httputils.Path:
+    properties:
+      id:
+        type: string
+      name:
         type: string
     type: object
   httputils.TokenResponse:
@@ -204,6 +271,68 @@ paths:
       summary: Refresh user's token
       tags:
       - auth
+  /decks/{id}:
+    get:
+      consumes:
+      - application/json
+      description: fetches the deck from the database
+      parameters:
+      - description: Deck ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httputils.DeckResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputils.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputils.HTTPError'
+      security:
+      - Bearer: []
+      summary: Get single deck by id
+      tags:
+      - decks
+  /folders/{id}:
+    get:
+      consumes:
+      - application/json
+      description: fetches the folder from the database
+      parameters:
+      - description: Folder ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httputils.FolderResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputils.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputils.HTTPError'
+      security:
+      - Bearer: []
+      summary: Get single folder by id
+      tags:
+      - folders
 securityDefinitions:
   BasicAuth:
     type: basic

@@ -2,14 +2,13 @@ package dbSetup
 
 import (
 	"github.com/AkshachRd/leards-backend-go/models"
-	"gorm.io/driver/mysql"
+	"github.com/glebarez/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
 )
 
 func Setup() (*gorm.DB, error) {
-	dsn := ""
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{NamingStrategy: CustomNamingStrategy{
+	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{NamingStrategy: CustomNamingStrategy{
 		NamingStrategy: schema.NamingStrategy{SingularTable: true},
 	}})
 	if err != nil {
