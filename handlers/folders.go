@@ -29,6 +29,10 @@ func (s *Server) GetSingleFolder(c *gin.Context) {
 	}
 
 	var path []httputils.Path
+	path = append(
+		[]httputils.Path{{Name: folder.Name, Id: folder.ID}},
+		path...,
+	)
 	for parentFolder := folder.ParentFolder; parentFolder != nil; {
 		path = append(
 			[]httputils.Path{{Name: parentFolder.Name, Id: parentFolder.ID}},
@@ -61,6 +65,6 @@ func (s *Server) GetSingleFolder(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Folder successfully fetched",
-		"folder":  httputils.Folder{FolderId: folder.ID, Path: path, Content: content},
+		"folder":  httputils.Folder{FolderId: folder.ID, Name: folder.Name, Path: path, Content: content},
 	})
 }
