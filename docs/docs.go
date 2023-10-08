@@ -346,6 +346,13 @@ const docTemplate = `{
                 "summary": "Updates the deck",
                 "parameters": [
                     {
+                        "type": "string",
+                        "description": "Deck ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
                         "description": "Update deck data",
                         "name": "updateDeckData",
                         "in": "body",

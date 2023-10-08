@@ -80,6 +80,7 @@ func (s *Server) CreateDeck(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Security     Bearer
+// @Param		 id	  path		string	true	"Deck ID"
 // @Param		 updateDeckData body httputils.UpdateDeckRequest true "Update deck data"
 // @Success      200  {object}  httputils.BasicResponse
 // @Failure      400  {object}  httputils.HTTPError
