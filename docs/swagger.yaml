@@ -24,6 +24,18 @@ definitions:
       type:
         type: string
     type: object
+  httputils.CreateDeckRequest:
+    properties:
+      name:
+        example: My new deck
+        type: string
+      parentFolderId:
+        example: 72a30ffb-1896-48b1-b006-985fb055db0f
+        type: string
+    required:
+    - name
+    - parentFolderId
+    type: object
   httputils.CreateUserRequest:
     properties:
       email:
@@ -105,6 +117,17 @@ definitions:
         type: string
       token:
         example: <token>
+        type: string
+    type: object
+  httputils.UpdateDeckRequest:
+    properties:
+      content:
+        items:
+          $ref: '#/definitions/httputils.Card'
+        type: array
+      deckId:
+        type: string
+      name:
         type: string
     type: object
   httputils.UserResponse:
@@ -267,6 +290,38 @@ paths:
       summary: Refresh user's token
       tags:
       - auth
+  /decks:
+    post:
+      consumes:
+      - application/json
+      description: creates new deck in the database
+      parameters:
+      - description: Create deck data
+        in: body
+        name: createDeckData
+        required: true
+        schema:
+          $ref: '#/definitions/httputils.CreateDeckRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httputils.DeckResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputils.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputils.HTTPError'
+      security:
+      - Bearer: []
+      summary: Create new deck
+      tags:
+      - decks
   /decks/{id}:
     get:
       consumes:
@@ -295,7 +350,38 @@ paths:
             $ref: '#/definitions/httputils.HTTPError'
       security:
       - Bearer: []
-      summary: Get single deck by id
+      summary: Get a single deck by id
+      tags:
+      - decks
+    put:
+      consumes:
+      - application/json
+      description: updates the deck in the database
+      parameters:
+      - description: Update deck data
+        in: body
+        name: updateDeckData
+        required: true
+        schema:
+          $ref: '#/definitions/httputils.UpdateDeckRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httputils.BasicResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputils.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputils.HTTPError'
+      security:
+      - Bearer: []
+      summary: Updates the deck
       tags:
       - decks
   /folders/{id}:

@@ -1,0 +1,27 @@
+PUT /api/v1/decks/7f0383eb-9412-47bc-b7dc-4cbf81985195 HTTP/2.0
+Host: localhost:8080
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer Q3lRWjdxNkxYbERGZHdMRU00alpwNGUyYWhQUm1hUHk=
+
+{
+  "deckId": "7f0383eb-9412-47bc-b7dc-4cbf81985195",
+  "name": "newDeck1",
+  "content": [
+    {
+      "cardId": "c8f33900-c301-424e-8b1c-83f8936f91a3",
+      "frontSide": "Apple",
+      "backSide": "Яблоки"
+    },
+    {
+      "cardId": "",
+      "frontSide": "New card",
+      "backSide": "Новая карточка"
+    },
+    {
+      "cardId": "9dd55224-b509-4b3c-ab9f-b7213893dccd",
+      "frontSide": "Banana",
+      "backSide": "Бананоф"
+    }
+  ]
+}

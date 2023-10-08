@@ -228,6 +228,57 @@ const docTemplate = `{
                 }
             }
         },
+        "/decks": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "creates new deck in the database",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "decks"
+                ],
+                "summary": "Create new deck",
+                "parameters": [
+                    {
+                        "description": "Create deck data",
+                        "name": "createDeckData",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/httputils.CreateDeckRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/httputils.DeckResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httputils.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httputils.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
         "/decks/{id}": {
             "get": {
                 "security": [
@@ -245,7 +296,7 @@ const docTemplate = `{
                 "tags": [
                     "decks"
                 ],
-                "summary": "Get single deck by id",
+                "summary": "Get a single deck by id",
                 "parameters": [
                     {
                         "type": "string",
@@ -260,6 +311,55 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/httputils.DeckResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httputils.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httputils.HTTPError"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "updates the deck in the database",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "decks"
+                ],
+                "summary": "Updates the deck",
+                "parameters": [
+                    {
+                        "description": "Update deck data",
+                        "name": "updateDeckData",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/httputils.UpdateDeckRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/httputils.BasicResponse"
                         }
                     },
                     "400": {
@@ -362,6 +462,23 @@ const docTemplate = `{
                 },
                 "type": {
                     "type": "string"
+                }
+            }
+        },
+        "httputils.CreateDeckRequest": {
+            "type": "object",
+            "required": [
+                "name",
+                "parentFolderId"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "example": "My new deck"
+                },
+                "parentFolderId": {
+                    "type": "string",
+                    "example": "72a30ffb-1896-48b1-b006-985fb055db0f"
                 }
             }
         },
@@ -485,6 +602,23 @@ const docTemplate = `{
                 "token": {
                     "type": "string",
                     "example": "\u003ctoken\u003e"
+                }
+            }
+        },
+        "httputils.UpdateDeckRequest": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/httputils.Card"
+                    }
+                },
+                "deckId": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
                 }
             }
         },

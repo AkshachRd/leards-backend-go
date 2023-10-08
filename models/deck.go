@@ -14,28 +14,80 @@ type Deck struct {
 	StorageHasTags []StorageHasTag `gorm:"polymorphic:Storage;polymorphicValue:deck"`
 }
 
+func getPreloadArgs() []string {
+	return []string{"Cards", "AccessType"}
+}
+
 func NewDeck(db *gorm.DB, name string, accessType Access, parentFolderId string) (*Deck, error) {
 	var accType AccessType
 	err := db.First(&accType, "type = ?", accessType).Error
 	if err != nil {
-		return &Deck{}, nil
+		return &Deck{}, err
 	}
 
 	deck := Deck{Name: name, AccessTypeID: accType.ID, ParentFolderID: parentFolderId}
 	err = db.Create(&deck).Error
 	if err != nil {
-		return &Deck{}, nil
+		return &Deck{}, err
 	}
 
 	return &deck, nil
 }
 
-func FetchDeckById(db *gorm.DB, id string, preloadCards bool) (*Deck, error) {
+func UpdateDeck(db *gorm.DB, id string, name string, accessType Access, cards []Card) error {
+	deck, err := FetchDeckById(db, id, false, true)
+	if err != nil {
+		return err
+	}
+
+	if accessType != Access(deck.AccessType.Type) {
+		var accType AccessType
+		err = db.First(&accType, "type = ?", accessType).Error
+		if err != nil {
+			return err
+		}
+
+		deck.AccessTypeID = accType.ID
+	}
+
+	deck.Name = name
+
+	var oldCards []Card
+	var newCards []Card
+
+	for _, card := range cards {
+		if card.ID != "" {
+			oldCards = append(oldCards, card)
+		} else {
+			newCards = append(newCards, card)
+		}
+	}
+
+	err = UpdateCards(db, oldCards)
+	if err != nil {
+		return err
+	}
+	deck.Cards = append(deck.Cards, newCards...)
+
+	err = db.Save(deck).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// FetchDeckById
+//
+// Preload args: Cards, AccessType
+func FetchDeckById(db *gorm.DB, id string, preloadArgs ...bool) (*Deck, error) {
 	var deck Deck
 
 	query := db
-	if preloadCards {
-		query = query.Preload("Cards")
+	for i, arg := range preloadArgs {
+		if arg {
+			query = query.Preload(getPreloadArgs()[i])
+		}
 	}
 
 	err := query.First(&deck, "id_deck = ?", id).Error

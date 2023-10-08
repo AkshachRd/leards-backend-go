@@ -126,7 +126,9 @@ func SetupRouter() *gin.Engine {
 		}
 		decks := bearerAuthorizedV1.Group("/decks")
 		{
-			decks.GET(":id", server.GetSingleDeck)
+			decks.GET(":id", server.GetDeck)
+			decks.POST("", server.CreateDeck)
+			decks.PUT(":id", server.UpdateDeck)
 		}
 	}
 
