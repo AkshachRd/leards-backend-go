@@ -1,12 +1,12 @@
 basePath: /api/v1
 definitions:
-  httputils.BasicResponse:
+  BasicResponse:
     properties:
       message:
         example: Successfully
         type: string
     type: object
-  httputils.Card:
+  Card:
     properties:
       backSide:
         type: string
@@ -15,7 +15,7 @@ definitions:
       frontSide:
         type: string
     type: object
-  httputils.Content:
+  Content:
     properties:
       id:
         type: string
@@ -24,7 +24,7 @@ definitions:
       type:
         type: string
     type: object
-  httputils.CreateDeckRequest:
+  CreateDeckRequest:
     properties:
       name:
         example: My new deck
@@ -36,7 +36,7 @@ definitions:
     - name
     - parentFolderId
     type: object
-  httputils.CreateUserRequest:
+  CreateUserRequest:
     properties:
       email:
         example: bob@leards.space
@@ -52,30 +52,30 @@ definitions:
     - password
     - username
     type: object
-  httputils.Deck:
+  Deck:
     properties:
       content:
         items:
-          $ref: '#/definitions/httputils.Card'
+          $ref: '#/definitions/Card'
         type: array
       deckId:
         type: string
       name:
         type: string
     type: object
-  httputils.DeckResponse:
+  DeckResponse:
     properties:
       deck:
-        $ref: '#/definitions/httputils.Deck'
+        $ref: '#/definitions/Deck'
       message:
         example: Successfully
         type: string
     type: object
-  httputils.Folder:
+  Folder:
     properties:
       content:
         items:
-          $ref: '#/definitions/httputils.Content'
+          $ref: '#/definitions/Content'
         type: array
       folderId:
         type: string
@@ -83,18 +83,18 @@ definitions:
         type: string
       path:
         items:
-          $ref: '#/definitions/httputils.Path'
+          $ref: '#/definitions/Path'
         type: array
     type: object
-  httputils.FolderResponse:
+  FolderResponse:
     properties:
       folder:
-        $ref: '#/definitions/httputils.Folder'
+        $ref: '#/definitions/Folder'
       message:
         example: Successfully
         type: string
     type: object
-  httputils.HTTPError:
+  HTTPError:
     properties:
       code:
         example: 400
@@ -103,14 +103,14 @@ definitions:
         example: status bad request
         type: string
     type: object
-  httputils.Path:
+  Path:
     properties:
       id:
         type: string
       name:
         type: string
     type: object
-  httputils.TokenResponse:
+  TokenResponse:
     properties:
       message:
         example: Successfully
@@ -119,18 +119,18 @@ definitions:
         example: <token>
         type: string
     type: object
-  httputils.UpdateDeckRequest:
+  UpdateDeckRequest:
     properties:
       content:
         items:
-          $ref: '#/definitions/httputils.Card'
+          $ref: '#/definitions/Card'
         type: array
       deckId:
         type: string
       name:
         type: string
     type: object
-  httputils.UserResponse:
+  UserResponse:
     properties:
       message:
         example: Successfully
@@ -170,19 +170,19 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/httputils.UserResponse'
+            $ref: '#/definitions/UserResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/httputils.HTTPError'
+            $ref: '#/definitions/HTTPError'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/httputils.HTTPError'
+            $ref: '#/definitions/HTTPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/httputils.HTTPError'
+            $ref: '#/definitions/HTTPError'
       security:
       - BasicAuth: []
       summary: Login an existing user
@@ -198,26 +198,26 @@ paths:
         name: createUserData
         required: true
         schema:
-          $ref: '#/definitions/httputils.CreateUserRequest'
+          $ref: '#/definitions/CreateUserRequest'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/httputils.UserResponse'
+            $ref: '#/definitions/UserResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/httputils.HTTPError'
+            $ref: '#/definitions/HTTPError'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/httputils.HTTPError'
+            $ref: '#/definitions/HTTPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/httputils.HTTPError'
+            $ref: '#/definitions/HTTPError'
       summary: Register new user
       tags:
       - accounts
@@ -238,15 +238,15 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/httputils.BasicResponse'
+            $ref: '#/definitions/BasicResponse'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/httputils.HTTPError'
+            $ref: '#/definitions/HTTPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/httputils.HTTPError'
+            $ref: '#/definitions/HTTPError'
       security:
       - Bearer: []
       summary: Revokes user's token
@@ -268,23 +268,23 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/httputils.TokenResponse'
+            $ref: '#/definitions/TokenResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/httputils.HTTPError'
+            $ref: '#/definitions/HTTPError'
         "403":
           description: Forbidden
           schema:
-            $ref: '#/definitions/httputils.HTTPError'
+            $ref: '#/definitions/HTTPError'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/httputils.HTTPError'
+            $ref: '#/definitions/HTTPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/httputils.HTTPError'
+            $ref: '#/definitions/HTTPError'
       security:
       - Bearer: []
       summary: Refresh user's token
@@ -301,22 +301,22 @@ paths:
         name: createDeckData
         required: true
         schema:
-          $ref: '#/definitions/httputils.CreateDeckRequest'
+          $ref: '#/definitions/CreateDeckRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/httputils.DeckResponse'
+            $ref: '#/definitions/DeckResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/httputils.HTTPError'
+            $ref: '#/definitions/HTTPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/httputils.HTTPError'
+            $ref: '#/definitions/HTTPError'
       security:
       - Bearer: []
       summary: Create new deck
@@ -339,15 +339,15 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/httputils.DeckResponse'
+            $ref: '#/definitions/DeckResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/httputils.HTTPError'
+            $ref: '#/definitions/HTTPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/httputils.HTTPError'
+            $ref: '#/definitions/HTTPError'
       security:
       - Bearer: []
       summary: Get a single deck by id
@@ -368,22 +368,22 @@ paths:
         name: updateDeckData
         required: true
         schema:
-          $ref: '#/definitions/httputils.UpdateDeckRequest'
+          $ref: '#/definitions/UpdateDeckRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/httputils.BasicResponse'
+            $ref: '#/definitions/BasicResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/httputils.HTTPError'
+            $ref: '#/definitions/HTTPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/httputils.HTTPError'
+            $ref: '#/definitions/HTTPError'
       security:
       - Bearer: []
       summary: Updates the deck
@@ -406,15 +406,15 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/httputils.FolderResponse'
+            $ref: '#/definitions/FolderResponse'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/httputils.HTTPError'
+            $ref: '#/definitions/HTTPError'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/httputils.HTTPError'
+            $ref: '#/definitions/HTTPError'
       security:
       - Bearer: []
       summary: Get single folder by id

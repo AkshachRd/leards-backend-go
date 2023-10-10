@@ -46,25 +46,25 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/httputils.UserResponse"
+                            "$ref": "#/definitions/UserResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/httputils.HTTPError"
+                            "$ref": "#/definitions/HTTPError"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/httputils.HTTPError"
+                            "$ref": "#/definitions/HTTPError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/httputils.HTTPError"
+                            "$ref": "#/definitions/HTTPError"
                         }
                     }
                 }
@@ -88,7 +88,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/httputils.CreateUserRequest"
+                            "$ref": "#/definitions/CreateUserRequest"
                         }
                     }
                 ],
@@ -96,25 +96,25 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/httputils.UserResponse"
+                            "$ref": "#/definitions/UserResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/httputils.HTTPError"
+                            "$ref": "#/definitions/HTTPError"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/httputils.HTTPError"
+                            "$ref": "#/definitions/HTTPError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/httputils.HTTPError"
+                            "$ref": "#/definitions/HTTPError"
                         }
                     }
                 }
@@ -151,31 +151,31 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/httputils.TokenResponse"
+                            "$ref": "#/definitions/TokenResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/httputils.HTTPError"
+                            "$ref": "#/definitions/HTTPError"
                         }
                     },
                     "403": {
                         "description": "Forbidden",
                         "schema": {
-                            "$ref": "#/definitions/httputils.HTTPError"
+                            "$ref": "#/definitions/HTTPError"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/httputils.HTTPError"
+                            "$ref": "#/definitions/HTTPError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/httputils.HTTPError"
+                            "$ref": "#/definitions/HTTPError"
                         }
                     }
                 }
@@ -210,19 +210,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/httputils.BasicResponse"
+                            "$ref": "#/definitions/BasicResponse"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/httputils.HTTPError"
+                            "$ref": "#/definitions/HTTPError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/httputils.HTTPError"
+                            "$ref": "#/definitions/HTTPError"
                         }
                     }
                 }
@@ -253,7 +253,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/httputils.CreateDeckRequest"
+                            "$ref": "#/definitions/CreateDeckRequest"
                         }
                     }
                 ],
@@ -261,19 +261,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/httputils.DeckResponse"
+                            "$ref": "#/definitions/DeckResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/httputils.HTTPError"
+                            "$ref": "#/definitions/HTTPError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/httputils.HTTPError"
+                            "$ref": "#/definitions/HTTPError"
                         }
                     }
                 }
@@ -310,19 +310,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/httputils.DeckResponse"
+                            "$ref": "#/definitions/DeckResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/httputils.HTTPError"
+                            "$ref": "#/definitions/HTTPError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/httputils.HTTPError"
+                            "$ref": "#/definitions/HTTPError"
                         }
                     }
                 }
@@ -358,7 +358,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/httputils.UpdateDeckRequest"
+                            "$ref": "#/definitions/UpdateDeckRequest"
                         }
                     }
                 ],
@@ -366,19 +366,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/httputils.BasicResponse"
+                            "$ref": "#/definitions/BasicResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/httputils.HTTPError"
+                            "$ref": "#/definitions/HTTPError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/httputils.HTTPError"
+                            "$ref": "#/definitions/HTTPError"
                         }
                     }
                 }
@@ -415,19 +415,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/httputils.FolderResponse"
+                            "$ref": "#/definitions/FolderResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/httputils.HTTPError"
+                            "$ref": "#/definitions/HTTPError"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/httputils.HTTPError"
+                            "$ref": "#/definitions/HTTPError"
                         }
                     }
                 }
@@ -435,7 +435,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "httputils.BasicResponse": {
+        "BasicResponse": {
             "type": "object",
             "properties": {
                 "message": {
@@ -444,7 +444,7 @@ const docTemplate = `{
                 }
             }
         },
-        "httputils.Card": {
+        "Card": {
             "type": "object",
             "properties": {
                 "backSide": {
@@ -458,7 +458,7 @@ const docTemplate = `{
                 }
             }
         },
-        "httputils.Content": {
+        "Content": {
             "type": "object",
             "properties": {
                 "id": {
@@ -472,7 +472,7 @@ const docTemplate = `{
                 }
             }
         },
-        "httputils.CreateDeckRequest": {
+        "CreateDeckRequest": {
             "type": "object",
             "required": [
                 "name",
@@ -489,7 +489,7 @@ const docTemplate = `{
                 }
             }
         },
-        "httputils.CreateUserRequest": {
+        "CreateUserRequest": {
             "type": "object",
             "required": [
                 "email",
@@ -511,13 +511,13 @@ const docTemplate = `{
                 }
             }
         },
-        "httputils.Deck": {
+        "Deck": {
             "type": "object",
             "properties": {
                 "content": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/httputils.Card"
+                        "$ref": "#/definitions/Card"
                     }
                 },
                 "deckId": {
@@ -528,11 +528,11 @@ const docTemplate = `{
                 }
             }
         },
-        "httputils.DeckResponse": {
+        "DeckResponse": {
             "type": "object",
             "properties": {
                 "deck": {
-                    "$ref": "#/definitions/httputils.Deck"
+                    "$ref": "#/definitions/Deck"
                 },
                 "message": {
                     "type": "string",
@@ -540,13 +540,13 @@ const docTemplate = `{
                 }
             }
         },
-        "httputils.Folder": {
+        "Folder": {
             "type": "object",
             "properties": {
                 "content": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/httputils.Content"
+                        "$ref": "#/definitions/Content"
                     }
                 },
                 "folderId": {
@@ -558,16 +558,16 @@ const docTemplate = `{
                 "path": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/httputils.Path"
+                        "$ref": "#/definitions/Path"
                     }
                 }
             }
         },
-        "httputils.FolderResponse": {
+        "FolderResponse": {
             "type": "object",
             "properties": {
                 "folder": {
-                    "$ref": "#/definitions/httputils.Folder"
+                    "$ref": "#/definitions/Folder"
                 },
                 "message": {
                     "type": "string",
@@ -575,7 +575,7 @@ const docTemplate = `{
                 }
             }
         },
-        "httputils.HTTPError": {
+        "HTTPError": {
             "type": "object",
             "properties": {
                 "code": {
@@ -588,7 +588,7 @@ const docTemplate = `{
                 }
             }
         },
-        "httputils.Path": {
+        "Path": {
             "type": "object",
             "properties": {
                 "id": {
@@ -599,7 +599,7 @@ const docTemplate = `{
                 }
             }
         },
-        "httputils.TokenResponse": {
+        "TokenResponse": {
             "type": "object",
             "properties": {
                 "message": {
@@ -612,13 +612,13 @@ const docTemplate = `{
                 }
             }
         },
-        "httputils.UpdateDeckRequest": {
+        "UpdateDeckRequest": {
             "type": "object",
             "properties": {
                 "content": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/httputils.Card"
+                        "$ref": "#/definitions/Card"
                     }
                 },
                 "deckId": {
@@ -629,7 +629,7 @@ const docTemplate = `{
                 }
             }
         },
-        "httputils.UserResponse": {
+        "UserResponse": {
             "type": "object",
             "properties": {
                 "message": {

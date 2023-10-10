@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/base64"
+	_ "github.com/AkshachRd/leards-backend-go/httputils"
 	"github.com/AkshachRd/leards-backend-go/models"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"

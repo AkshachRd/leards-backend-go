@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	_ "github.com/AkshachRd/leards-backend-go/httputils"
 	"github.com/AkshachRd/leards-backend-go/models"
 	"github.com/gin-gonic/gin"
 	"net/http"
