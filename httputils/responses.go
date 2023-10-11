@@ -10,8 +10,8 @@ type TokenResponse struct {
 } // @name TokenResponse
 
 type UserResponse struct {
-	TokenResponse
-	UserId string `json:"userId" example:"53f4cf69-9da6-49e4-8651-450b74abdf9e"`
+	BasicResponse
+	User User `json:"user"`
 } // @name UserResponse
 
 type FolderResponse struct {

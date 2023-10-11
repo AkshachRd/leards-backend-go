@@ -40,10 +40,28 @@ func (s *Server) CreateUser(c *gin.Context) {
 		return
 	}
 
+	userSettings, err := models.FetchUserSettingsByUserId(s.db, user.ID)
+	if err != nil || !user.AuthToken.Valid {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid settings"})
+		return
+	}
+
+	var settings httputils.Settings
+	for _, userSetting := range *userSettings {
+		settings[userSetting.SettingName] = userSetting.SettingValue
+	}
+
 	c.JSON(http.StatusCreated, gin.H{
 		"message": "User successfully created",
-		"userId":  user.ID,
-		"token":   user.AuthToken.String,
+		"user": httputils.User{
+			UserId:    user.ID,
+			Name:      user.Name,
+			Email:     user.Email,
+			AuthToken: user.AuthToken.String,
+			// TODO: ProfileIcon
+			RootFolderId: user.RootFolderID,
+			Settings:     settings,
+		},
 	})
 }
 
@@ -86,9 +104,27 @@ func (s *Server) LoginUser(c *gin.Context) {
 		return
 	}
 
+	userSettings, err := models.FetchUserSettingsByUserId(s.db, user.ID)
+	if err != nil || !user.AuthToken.Valid {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid settings"})
+		return
+	}
+
+	var settings httputils.Settings
+	for _, userSetting := range *userSettings {
+		settings[userSetting.SettingName] = userSetting.SettingValue
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"message": "User successfully signed in",
-		"userId":  user.ID,
-		"token":   user.AuthToken.String,
+		"user": httputils.User{
+			UserId:    user.ID,
+			Name:      user.Name,
+			Email:     user.Email,
+			AuthToken: user.AuthToken.String,
+			// TODO: ProfileIcon
+			RootFolderId: user.RootFolderID,
+			Settings:     settings,
+		},
 	})
 }

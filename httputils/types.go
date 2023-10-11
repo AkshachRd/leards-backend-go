@@ -1,5 +1,7 @@
 package httputils
 
+import "github.com/AkshachRd/leards-backend-go/models"
+
 type Card struct {
 	CardId    string `json:"cardId"`
 	FrontSide string `json:"frontSide"`
@@ -29,3 +31,15 @@ type Folder struct {
 	Path     []Path    `json:"path"`
 	Content  []Content `json:"content"`
 } // @name Folder
+
+type Settings map[models.Setting]string // @name Settings
+
+type User struct {
+	UserId       string   `json:"userId"`
+	Name         string   `json:"name"`
+	Email        string   `json:"email"`
+	AuthToken    string   `json:"authToken"`
+	ProfileIcon  string   `json:"profileIcon,omitempty"`
+	RootFolderId string   `json:"rootFolderId"`
+	Settings     Settings `json:"settings"`
+} // @name User

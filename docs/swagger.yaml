@@ -110,6 +110,10 @@ definitions:
       name:
         type: string
     type: object
+  Settings:
+    additionalProperties:
+      type: string
+    type: object
   TokenResponse:
     properties:
       message:
@@ -130,17 +134,30 @@ definitions:
       name:
         type: string
     type: object
+  User:
+    properties:
+      authToken:
+        type: string
+      email:
+        type: string
+      name:
+        type: string
+      profileIcon:
+        type: string
+      rootFolderId:
+        type: string
+      settings:
+        $ref: '#/definitions/Settings'
+      userId:
+        type: string
+    type: object
   UserResponse:
     properties:
       message:
         example: Successfully
         type: string
-      token:
-        example: <token>
-        type: string
-      userId:
-        example: 53f4cf69-9da6-49e4-8651-450b74abdf9e
-        type: string
+      user:
+        $ref: '#/definitions/User'
     type: object
 externalDocs:
   description: OpenAPI

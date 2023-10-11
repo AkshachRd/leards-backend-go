@@ -599,6 +599,12 @@ const docTemplate = `{
                 }
             }
         },
+        "Settings": {
+            "type": "object",
+            "additionalProperties": {
+                "type": "string"
+            }
+        },
         "TokenResponse": {
             "type": "object",
             "properties": {
@@ -629,6 +635,32 @@ const docTemplate = `{
                 }
             }
         },
+        "User": {
+            "type": "object",
+            "properties": {
+                "authToken": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "profileIcon": {
+                    "type": "string"
+                },
+                "rootFolderId": {
+                    "type": "string"
+                },
+                "settings": {
+                    "$ref": "#/definitions/Settings"
+                },
+                "userId": {
+                    "type": "string"
+                }
+            }
+        },
         "UserResponse": {
             "type": "object",
             "properties": {
@@ -636,13 +668,8 @@ const docTemplate = `{
                     "type": "string",
                     "example": "Successfully"
                 },
-                "token": {
-                    "type": "string",
-                    "example": "\u003ctoken\u003e"
-                },
-                "userId": {
-                    "type": "string",
-                    "example": "53f4cf69-9da6-49e4-8651-450b74abdf9e"
+                "user": {
+                    "$ref": "#/definitions/User"
                 }
             }
         }
