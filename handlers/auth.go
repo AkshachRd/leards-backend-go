@@ -14,17 +14,17 @@ import (
 // @Accept       json
 // @Produce      json
 // @Security     Bearer
-// @Param		 id	  path		string	true	"User ID"
+// @Param		 user_id	  path		string	true	"User ID"
 // @Success      200  {object}  httputils.TokenResponse
 // @Failure      400  {object}  httputils.HTTPError
 // @Failure      403  {object}  httputils.HTTPError
 // @Failure      404  {object}  httputils.HTTPError
 // @Failure      500  {object}  httputils.HTTPError
-// @Router       /auth/{id} [get]
+// @Router       /auth/{user_id} [get]
 func (s *Server) RefreshToken(c *gin.Context) {
-	id := c.Param("id")
+	userId := c.Param("user_id")
 
-	user, err := models.FetchUserById(s.db, id)
+	user, err := models.FetchUserById(s.db, userId)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
 		return
@@ -50,15 +50,15 @@ func (s *Server) RefreshToken(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Security     Bearer
-// @Param		 id	  path		string	true	"User ID"
+// @Param		 user_id	  path		string	true	"User ID"
 // @Success      200  {object}  httputils.BasicResponse
 // @Failure      401  {object}  httputils.HTTPError
 // @Failure      500  {object}  httputils.HTTPError
-// @Router       /auth/{id} [delete]
+// @Router       /auth/{user_id} [delete]
 func (s *Server) RevokeToken(c *gin.Context) {
-	id := c.Param("id")
+	userId := c.Param("user_id")
 
-	user, err := models.FetchUserById(s.db, id)
+	user, err := models.FetchUserById(s.db, userId)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
 		return

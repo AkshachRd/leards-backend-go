@@ -5,8 +5,8 @@ import "gorm.io/gorm"
 type Setting string
 
 const (
-	Language Setting = "language"
-	Theme    Setting = "theme"
+	Locale Setting = "locale"
+	Theme  Setting = "theme"
 )
 
 type UserSetting struct {

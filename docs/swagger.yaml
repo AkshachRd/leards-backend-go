@@ -15,6 +15,16 @@ definitions:
       frontSide:
         type: string
     type: object
+  CardsResponse:
+    properties:
+      cards:
+        items:
+          $ref: '#/definitions/Card'
+        type: array
+      message:
+        example: Successfully
+        type: string
+    type: object
   Content:
     properties:
       id:
@@ -114,6 +124,15 @@ definitions:
     additionalProperties:
       type: string
     type: object
+  SyncCardsRequest:
+    properties:
+      cards:
+        items:
+          $ref: '#/definitions/Card'
+        type: array
+    required:
+    - cards
+    type: object
   TokenResponse:
     properties:
       message:
@@ -125,14 +144,15 @@ definitions:
     type: object
   UpdateDeckRequest:
     properties:
-      content:
-        items:
-          $ref: '#/definitions/Card'
-        type: array
-      deckId:
+      accessType:
+        example: public
         type: string
       name:
+        example: My new deck
         type: string
+    required:
+    - accessType
+    - name
     type: object
   User:
     properties:
@@ -238,7 +258,7 @@ paths:
       summary: Register new user
       tags:
       - accounts
-  /auth/{id}:
+  /auth/{user_id}:
     delete:
       consumes:
       - application/json
@@ -246,7 +266,7 @@ paths:
       parameters:
       - description: User ID
         in: path
-        name: id
+        name: user_id
         required: true
         type: string
       produces:
@@ -276,7 +296,7 @@ paths:
       parameters:
       - description: User ID
         in: path
-        name: id
+        name: user_id
         required: true
         type: string
       produces:
@@ -307,12 +327,48 @@ paths:
       summary: Refresh user's token
       tags:
       - auth
-  /decks:
+  /folders/{folder_id}:
+    get:
+      consumes:
+      - application/json
+      description: fetches the folder from the database
+      parameters:
+      - description: Folder ID
+        in: path
+        name: folder_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/FolderResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/HTTPError'
+      security:
+      - Bearer: []
+      summary: Get single folder by id
+      tags:
+      - folders
+  /folders/{folder_id}/decks:
     post:
       consumes:
       - application/json
       description: creates new deck in the database
       parameters:
+      - description: Folder ID
+        in: path
+        name: folder_id
+        required: true
+        type: string
       - description: Create deck data
         in: body
         name: createDeckData
@@ -339,15 +395,20 @@ paths:
       summary: Create new deck
       tags:
       - decks
-  /decks/{id}:
+  /folders/{folder_id}/decks/{deck_id}:
     get:
       consumes:
       - application/json
       description: fetches the deck from the database
       parameters:
+      - description: Folder ID
+        in: path
+        name: folder_id
+        required: true
+        type: string
       - description: Deck ID
         in: path
-        name: id
+        name: deck_id
         required: true
         type: string
       produces:
@@ -361,10 +422,6 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/HTTPError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/HTTPError'
       security:
       - Bearer: []
       summary: Get a single deck by id
@@ -375,9 +432,14 @@ paths:
       - application/json
       description: updates the deck in the database
       parameters:
+      - description: Folder ID
+        in: path
+        name: folder_id
+        required: true
+        type: string
       - description: Deck ID
         in: path
-        name: id
+        name: deck_id
         required: true
         type: string
       - description: Update deck data
@@ -406,15 +468,20 @@ paths:
       summary: Updates the deck
       tags:
       - decks
-  /folders/{id}:
+  /folders/{folder_id}/decks/{deck_id}/cards:
     get:
       consumes:
       - application/json
-      description: fetches the folder from the database
+      description: fetches cards of the deck from the database
       parameters:
       - description: Folder ID
         in: path
-        name: id
+        name: folder_id
+        required: true
+        type: string
+      - description: Deck ID
+        in: path
+        name: deck_id
         required: true
         type: string
       produces:
@@ -423,7 +490,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/FolderResponse'
+            $ref: '#/definitions/CardsResponse'
         "400":
           description: Bad Request
           schema:
@@ -434,9 +501,51 @@ paths:
             $ref: '#/definitions/HTTPError'
       security:
       - Bearer: []
-      summary: Get single folder by id
+      summary: Get all deck's cards
       tags:
-      - folders
+      - cards
+    put:
+      consumes:
+      - application/json
+      description: adds card without id, updates card with id, deletes card if it's
+        not presented inside the request
+      parameters:
+      - description: Folder ID
+        in: path
+        name: folder_id
+        required: true
+        type: string
+      - description: Deck ID
+        in: path
+        name: deck_id
+        required: true
+        type: string
+      - description: Sync cards data
+        in: body
+        name: syncCardsRequest
+        required: true
+        schema:
+          $ref: '#/definitions/SyncCardsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/BasicResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/HTTPError'
+      security:
+      - Bearer: []
+      summary: Synchronizes cards
+      tags:
+      - cards
 securityDefinitions:
   BasicAuth:
     type: basic

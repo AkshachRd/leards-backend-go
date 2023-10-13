@@ -4,7 +4,6 @@ import (
 	"github.com/AkshachRd/leards-backend-go/httputils"
 	"github.com/AkshachRd/leards-backend-go/models"
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"net/http"
 )
 
@@ -15,15 +14,15 @@ import (
 // @Accept       json
 // @Produce      json
 // @Security     Bearer
-// @Param		 id	  path		string	true	"Deck ID"
+// @Param		 folder_id	  path		string	true	"Folder ID"
+// @Param		 deck_id	  path		string	true	"Deck ID"
 // @Success      200  {object}  httputils.DeckResponse
 // @Failure      400  {object}  httputils.HTTPError
-// @Failure      500  {object}  httputils.HTTPError
-// @Router       /decks/{id} [get]
+// @Router       /folders/{folder_id}/decks/{deck_id} [get]
 func (s *Server) GetDeck(c *gin.Context) {
-	id := c.Param("id")
+	deckId := c.Param("deckId")
 
-	deck, err := models.FetchDeckById(s.db, id, true)
+	deck, err := models.FetchDeckById(s.db, deckId, true)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input or deck doesn't exist"})
 		return
@@ -48,11 +47,12 @@ func (s *Server) GetDeck(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Security     Bearer
+// @Param		 folder_id	  path		string	true	"Folder ID"
 // @Param		 createDeckData body httputils.CreateDeckRequest true "Create deck data"
 // @Success      200  {object}  httputils.DeckResponse
 // @Failure      400  {object}  httputils.HTTPError
 // @Failure      500  {object}  httputils.HTTPError
-// @Router       /decks [post]
+// @Router       /folders/{folder_id}/decks [post]
 func (s *Server) CreateDeck(c *gin.Context) {
 	var input httputils.CreateDeckRequest
 
@@ -80,12 +80,13 @@ func (s *Server) CreateDeck(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Security     Bearer
-// @Param		 id	  path		string	true	"Deck ID"
+// @Param		 folder_id	  path		string	true	"Folder ID"
+// @Param		 deck_id	  path		string	true	"Deck ID"
 // @Param		 updateDeckData body httputils.UpdateDeckRequest true "Update deck data"
 // @Success      200  {object}  httputils.BasicResponse
 // @Failure      400  {object}  httputils.HTTPError
 // @Failure      500  {object}  httputils.HTTPError
-// @Router       /decks/{id} [put]
+// @Router       /folders/{folder_id}/decks/{deck_id} [put]
 func (s *Server) UpdateDeck(c *gin.Context) {
 	var input httputils.UpdateDeckRequest
 
@@ -94,21 +95,9 @@ func (s *Server) UpdateDeck(c *gin.Context) {
 		return
 	}
 
-	var cards []models.Card
-	for _, notParsedCard := range input.Content {
-		parsedCard := models.Card{}
+	deckId := c.Param("deck_id")
 
-		if _, err := uuid.Parse(notParsedCard.CardId); err == nil {
-			parsedCard.ID = notParsedCard.CardId
-		}
-		parsedCard.FrontSide = notParsedCard.FrontSide
-		parsedCard.BackSide = notParsedCard.BackSide
-		parsedCard.DeckID = input.DeckId
-
-		cards = append(cards, parsedCard)
-	}
-
-	err := models.UpdateDeck(s.db, input.DeckId, input.Name, models.Private, cards)
+	err := models.UpdateDeck(s.db, deckId, input.Name, models.Access(input.AccessType))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot update deck"})
 		return

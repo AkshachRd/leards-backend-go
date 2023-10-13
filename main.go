@@ -117,19 +117,28 @@ func SetupRouter() *gin.Engine {
 		}
 		auth := bearerAuthorizedV1.Group("/auth")
 		{
-			auth.GET(":id", server.RefreshToken)
-			auth.DELETE(":id", server.RevokeToken)
+			auth.GET(":user_id", server.RefreshToken)
+			auth.DELETE(":user_id", server.RevokeToken)
 		}
-		folders := bearerAuthorizedV1.Group("/folders")
+		foldersWithId := bearerAuthorizedV1.Group("/folders/:folder_id")
 		{
-			folders.GET(":id", server.GetSingleFolder)
+			foldersWithId.GET("", server.GetSingleFolder)
+
+			decks := foldersWithId.Group("/decks")
+			decksWithId := decks.Group(":deck_id")
+			{
+				decksWithId.GET("", server.GetDeck)
+				decks.POST("", server.CreateDeck)
+				decksWithId.PUT("", server.UpdateDeck)
+
+				cards := decksWithId.Group("/cards")
+				{
+					cards.GET("", server.GetCards)
+					cards.PUT("", server.SyncCards)
+				}
+			}
 		}
-		decks := bearerAuthorizedV1.Group("/decks")
-		{
-			decks.GET(":id", server.GetDeck)
-			decks.POST("", server.CreateDeck)
-			decks.PUT(":id", server.UpdateDeck)
-		}
+
 	}
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

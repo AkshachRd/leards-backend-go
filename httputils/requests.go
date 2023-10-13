@@ -11,4 +11,11 @@ type CreateDeckRequest struct {
 	ParentFolderId string `json:"parentFolderId" binding:"required" example:"72a30ffb-1896-48b1-b006-985fb055db0f"`
 } // @name CreateDeckRequest
 
-type UpdateDeckRequest Deck // @name UpdateDeckRequest
+type UpdateDeckRequest struct {
+	Name       string `json:"name" binding:"required" example:"My new deck"`
+	AccessType string `json:"accessType" binding:"required" example:"public"`
+} // @name UpdateDeckRequest
+
+type SyncCardsRequest struct {
+	Cards []Card `json:"cards" binding:"required"`
+} // @name SyncCardsRequest

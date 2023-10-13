@@ -33,6 +33,42 @@ func UpdateCards(db *gorm.DB, cards []Card) error {
 	return tx.Commit().Error
 }
 
+func CreateCards(db *gorm.DB, cards []Card) error {
+	tx := db.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	for _, card := range cards {
+		if err := tx.Create(&card).Error; err != nil {
+			tx.Rollback()
+			return err
+		}
+	}
+
+	return tx.Commit().Error
+}
+
+func DeleteCards(db *gorm.DB, cards []Card) error {
+	tx := db.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	for _, card := range cards {
+		if err := tx.Delete(&card).Error; err != nil {
+			tx.Rollback()
+			return err
+		}
+	}
+
+	return tx.Commit().Error
+}
+
 func FetchCardsByDeckId(db *gorm.DB, deckId string) (*[]Card, error) {
 	var cards []Card
 

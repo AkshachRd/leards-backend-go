@@ -14,15 +14,15 @@ import (
 // @Accept       json
 // @Produce      json
 // @Security     Bearer
-// @Param		 id	  path		string	true	"Folder ID"
+// @Param		 folder_id	  path		string	true	"Folder ID"
 // @Success      200  {object}  httputils.FolderResponse
 // @Failure      400  {object}  httputils.HTTPError
 // @Failure      500  {object}  httputils.HTTPError
-// @Router       /folders/{id} [get]
+// @Router       /folders/{folder_id} [get]
 func (s *Server) GetSingleFolder(c *gin.Context) {
-	id := c.Param("id")
+	folderId := c.Param("folder_id")
 
-	folder, err := models.FetchFolderById(s.db, id, true)
+	folder, err := models.FetchFolderById(s.db, folderId, true)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input or folder doesn't exist"})
 		return

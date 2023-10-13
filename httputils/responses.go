@@ -21,5 +21,10 @@ type FolderResponse struct {
 
 type DeckResponse struct {
 	BasicResponse
-	Deck Deck
+	Deck Deck `json:"deck"`
 } // @name DeckResponse
+
+type CardsResponse struct {
+	BasicResponse
+	Cards []Card `json:"cards"`
+} // @name CardsResponse

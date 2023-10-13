@@ -120,7 +120,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/auth/{id}": {
+        "/auth/{user_id}": {
             "get": {
                 "security": [
                     {
@@ -142,7 +142,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "User ID",
-                        "name": "id",
+                        "name": "user_id",
                         "in": "path",
                         "required": true
                     }
@@ -201,7 +201,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "User ID",
-                        "name": "id",
+                        "name": "user_id",
                         "in": "path",
                         "required": true
                     }
@@ -228,7 +228,56 @@ const docTemplate = `{
                 }
             }
         },
-        "/decks": {
+        "/folders/{folder_id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "fetches the folder from the database",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "folders"
+                ],
+                "summary": "Get single folder by id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Folder ID",
+                        "name": "folder_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/FolderResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/folders/{folder_id}/decks": {
             "post": {
                 "security": [
                     {
@@ -247,6 +296,13 @@ const docTemplate = `{
                 ],
                 "summary": "Create new deck",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Folder ID",
+                        "name": "folder_id",
+                        "in": "path",
+                        "required": true
+                    },
                     {
                         "description": "Create deck data",
                         "name": "createDeckData",
@@ -279,7 +335,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/decks/{id}": {
+        "/folders/{folder_id}/decks/{deck_id}": {
             "get": {
                 "security": [
                     {
@@ -300,8 +356,15 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "description": "Folder ID",
+                        "name": "folder_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "description": "Deck ID",
-                        "name": "id",
+                        "name": "deck_id",
                         "in": "path",
                         "required": true
                     }
@@ -315,12 +378,6 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/HTTPError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
                         "schema": {
                             "$ref": "#/definitions/HTTPError"
                         }
@@ -347,8 +404,15 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "description": "Folder ID",
+                        "name": "folder_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "description": "Deck ID",
-                        "name": "id",
+                        "name": "deck_id",
                         "in": "path",
                         "required": true
                     },
@@ -384,14 +448,14 @@ const docTemplate = `{
                 }
             }
         },
-        "/folders/{id}": {
+        "/folders/{folder_id}/decks/{deck_id}/cards": {
             "get": {
                 "security": [
                     {
                         "Bearer": []
                     }
                 ],
-                "description": "fetches the folder from the database",
+                "description": "fetches cards of the deck from the database",
                 "consumes": [
                     "application/json"
                 ],
@@ -399,14 +463,21 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "folders"
+                    "cards"
                 ],
-                "summary": "Get single folder by id",
+                "summary": "Get all deck's cards",
                 "parameters": [
                     {
                         "type": "string",
                         "description": "Folder ID",
-                        "name": "id",
+                        "name": "folder_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Deck ID",
+                        "name": "deck_id",
                         "in": "path",
                         "required": true
                     }
@@ -415,7 +486,70 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/FolderResponse"
+                            "$ref": "#/definitions/CardsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/HTTPError"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "adds card without id, updates card with id, deletes card if it's not presented inside the request",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "cards"
+                ],
+                "summary": "Synchronizes cards",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Folder ID",
+                        "name": "folder_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Deck ID",
+                        "name": "deck_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Sync cards data",
+                        "name": "syncCardsRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/SyncCardsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/BasicResponse"
                         }
                     },
                     "400": {
@@ -455,6 +589,21 @@ const docTemplate = `{
                 },
                 "frontSide": {
                     "type": "string"
+                }
+            }
+        },
+        "CardsResponse": {
+            "type": "object",
+            "properties": {
+                "cards": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Card"
+                    }
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Successfully"
                 }
             }
         },
@@ -605,6 +754,20 @@ const docTemplate = `{
                 "type": "string"
             }
         },
+        "SyncCardsRequest": {
+            "type": "object",
+            "required": [
+                "cards"
+            ],
+            "properties": {
+                "cards": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Card"
+                    }
+                }
+            }
+        },
         "TokenResponse": {
             "type": "object",
             "properties": {
@@ -620,18 +783,18 @@ const docTemplate = `{
         },
         "UpdateDeckRequest": {
             "type": "object",
+            "required": [
+                "accessType",
+                "name"
+            ],
             "properties": {
-                "content": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/Card"
-                    }
-                },
-                "deckId": {
-                    "type": "string"
+                "accessType": {
+                    "type": "string",
+                    "example": "public"
                 },
                 "name": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "My new deck"
                 }
             }
         },
