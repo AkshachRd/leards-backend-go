@@ -332,6 +332,7 @@ paths:
       consumes:
       - application/json
       description: fetches the folder from the database
+      operationId: getFolderById
       parameters:
       - description: Folder ID
         in: path

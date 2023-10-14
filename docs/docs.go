@@ -246,6 +246,7 @@ const docTemplate = `{
                     "folders"
                 ],
                 "summary": "Get single folder by id",
+                "operationId": "getFolderById",
                 "parameters": [
                     {
                         "type": "string",

@@ -8,6 +8,7 @@ import (
 )
 
 // GetSingleFolder godoc
+// @Id           getFolderById
 // @Summary      Get single folder by id
 // @Description  fetches the folder from the database
 // @Tags         folders
