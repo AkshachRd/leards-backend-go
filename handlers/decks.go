@@ -20,7 +20,7 @@ import (
 // @Failure      400  {object}  httputils.HTTPError
 // @Router       /folders/{folder_id}/decks/{deck_id} [get]
 func (s *Server) GetDeck(c *gin.Context) {
-	deckId := c.Param("deckId")
+	deckId := c.Param("deck_id")
 
 	deck, err := models.FetchDeckById(s.db, deckId, true)
 	if err != nil {
