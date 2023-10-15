@@ -154,6 +154,18 @@ definitions:
     - accessType
     - name
     type: object
+  UpdateFolderRequest:
+    properties:
+      accessType:
+        example: public
+        type: string
+      name:
+        example: My new folder
+        type: string
+    required:
+    - accessType
+    - name
+    type: object
   User:
     properties:
       authToken:
@@ -350,13 +362,42 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/HTTPError'
-        "500":
-          description: Internal Server Error
+      security:
+      - Bearer: []
+      summary: Get single folder by id
+      tags:
+      - folders
+    put:
+      consumes:
+      - application/json
+      description: updates the folder in the database
+      operationId: updateFolderById
+      parameters:
+      - description: Folder ID
+        in: path
+        name: folder_id
+        required: true
+        type: string
+      - description: Update folder data
+        in: body
+        name: updateFolderData
+        required: true
+        schema:
+          $ref: '#/definitions/UpdateFolderRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/FolderResponse'
+        "400":
+          description: Bad Request
           schema:
             $ref: '#/definitions/HTTPError'
       security:
       - Bearer: []
-      summary: Get single folder by id
+      summary: Update single folder by id
       tags:
       - folders
   /folders/{folder_id}/decks:

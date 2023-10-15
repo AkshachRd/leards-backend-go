@@ -268,9 +268,54 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/HTTPError"
                         }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "updates the folder in the database",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "folders"
+                ],
+                "summary": "Update single folder by id",
+                "operationId": "updateFolderById",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Folder ID",
+                        "name": "folder_id",
+                        "in": "path",
+                        "required": true
                     },
-                    "500": {
-                        "description": "Internal Server Error",
+                    {
+                        "description": "Update folder data",
+                        "name": "updateFolderData",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/UpdateFolderRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/FolderResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "$ref": "#/definitions/HTTPError"
                         }
@@ -796,6 +841,23 @@ const docTemplate = `{
                 "name": {
                     "type": "string",
                     "example": "My new deck"
+                }
+            }
+        },
+        "UpdateFolderRequest": {
+            "type": "object",
+            "required": [
+                "accessType",
+                "name"
+            ],
+            "properties": {
+                "accessType": {
+                    "type": "string",
+                    "example": "public"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "My new folder"
                 }
             }
         },

@@ -1,4 +1,4 @@
-GET /api/v1/folders/8b9f58d3-a2b7-4562-b969-f9f33c447946/decks/7f0383eb-9412-47bc-b7dc-4cbf81985195 HTTP/2.0
+GET /api/v1/folders/8b9f58d3-a2b7-4562-b969-f9f33c447946/decks/7f0383eb-9412-47bc-b7dc-4cbf81985195/cards HTTP/2.0
 Host: localhost:8080
 Accept: application/json
 Content-Type: application/json

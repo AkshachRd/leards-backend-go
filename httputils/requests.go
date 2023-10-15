@@ -19,3 +19,8 @@ type UpdateDeckRequest struct {
 type SyncCardsRequest struct {
 	Cards []Card `json:"cards" binding:"required"`
 } // @name SyncCardsRequest
+
+type UpdateFolderRequest struct {
+	Name       string `json:"name" binding:"required" example:"My new folder"`
+	AccessType string `json:"accessType" binding:"required" example:"public"`
+} // @name UpdateFolderRequest

@@ -120,11 +120,12 @@ func SetupRouter() *gin.Engine {
 			auth.GET(":user_id", server.RefreshToken)
 			auth.DELETE(":user_id", server.RevokeToken)
 		}
-		foldersWithId := bearerAuthorizedV1.Group("/folders/:folder_id")
+		folders := bearerAuthorizedV1.Group("/folders/:folder_id")
 		{
-			foldersWithId.GET("", server.GetSingleFolder)
+			folders.GET("", server.GetFolder)
+			folders.PUT("", server.UpdateFolder)
 
-			decks := foldersWithId.Group("/decks")
+			decks := folders.Group("/decks")
 			decksWithId := decks.Group(":deck_id")
 			{
 				decksWithId.GET("", server.GetDeck)

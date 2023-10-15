@@ -14,7 +14,7 @@ type Deck struct {
 	StorageHasTags []StorageHasTag `gorm:"polymorphic:Storage;polymorphicValue:deck"`
 }
 
-func getPreloadArgs() []string {
+func getDeckPreloadArgs() []string {
 	return []string{"Cards", "AccessType"}
 }
 
@@ -69,7 +69,7 @@ func FetchDeckById(db *gorm.DB, id string, preloadArgs ...bool) (*Deck, error) {
 	query := db
 	for i, arg := range preloadArgs {
 		if arg {
-			query = query.Preload(getPreloadArgs()[i])
+			query = query.Preload(getDeckPreloadArgs()[i])
 		}
 	}
 

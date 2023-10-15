@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-// GetSingleFolder godoc
+// GetFolder godoc
 // @Id           getFolderById
 // @Summary      Get single folder by id
 // @Description  fetches the folder from the database
@@ -18,54 +18,55 @@ import (
 // @Param		 folder_id	  path		string	true	"Folder ID"
 // @Success      200  {object}  httputils.FolderResponse
 // @Failure      400  {object}  httputils.HTTPError
-// @Failure      500  {object}  httputils.HTTPError
 // @Router       /folders/{folder_id} [get]
-func (s *Server) GetSingleFolder(c *gin.Context) {
+func (s *Server) GetFolder(c *gin.Context) {
 	folderId := c.Param("folder_id")
-
-	folder, err := models.FetchFolderById(s.db, folderId, true)
+	folder, err := models.FetchFolderById(s.db, folderId, true, true, true)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input or folder doesn't exist"})
 		return
 	}
 
-	var path []httputils.Path
-	path = append(
-		[]httputils.Path{{Name: folder.Name, Id: folder.ID}},
-		path...,
-	)
-	for parentFolder := folder.ParentFolder; parentFolder != nil; {
-		path = append(
-			[]httputils.Path{{Name: parentFolder.Name, Id: parentFolder.ID}},
-			path...,
-		)
-		parentFolder = parentFolder.ParentFolder
-	}
-
-	var content []httputils.Content
-
-	contentDecks, err := models.FetchDecksByParentId(s.db, folder.ID)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Can't fetch decks from the database"})
-		return
-	}
-
-	for _, contentDeck := range *contentDecks {
-		content = append(content, httputils.Content{Id: contentDeck.ID, Name: contentDeck.Name, Type: "deck"})
-	}
-
-	contentFolders, err := models.FetchFoldersByParentFolderId(s.db, folder.ID)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Can't fetch folders from the database"})
-		return
-	}
-
-	for _, contentFolder := range *contentFolders {
-		content = append(content, httputils.Content{Id: contentFolder.ID, Name: contentFolder.Name, Type: "folder"})
-	}
+	responseFolder := httputils.ConvertFolder(folder)
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Folder successfully fetched",
-		"folder":  httputils.Folder{FolderId: folder.ID, Name: folder.Name, Path: path, Content: content},
+		"folder":  responseFolder,
+	})
+}
+
+// UpdateFolder godoc
+// @Id           updateFolderById
+// @Summary      Update single folder by id
+// @Description  updates the folder in the database
+// @Tags         folders
+// @Accept       json
+// @Produce      json
+// @Security     Bearer
+// @Param		 folder_id	  path		string	true	"Folder ID"
+// @Param		 updateFolderData body httputils.UpdateFolderRequest true "Update folder data"
+// @Success      200  {object}  httputils.FolderResponse
+// @Failure      400  {object}  httputils.HTTPError
+// @Router       /folders/{folder_id} [put]
+func (s *Server) UpdateFolder(c *gin.Context) {
+	var input httputils.UpdateFolderRequest
+
+	if err := c.ShouldBind(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
+		return
+	}
+
+	folderId := c.Param("folder_id")
+	folder, err := models.UpdateFolder(s.db, folderId, input.Name, models.Access(input.AccessType))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot update deck"})
+		return
+	}
+
+	responseFolder := httputils.ConvertFolder(folder)
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Folder successfully updated",
+		"folder":  responseFolder,
 	})
 }
