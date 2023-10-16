@@ -42,6 +42,7 @@ const docTemplate = `{
                     "accounts"
                 ],
                 "summary": "Login an existing user",
+                "operationId": "loginUser",
                 "responses": {
                     "201": {
                         "description": "Created",
@@ -81,6 +82,7 @@ const docTemplate = `{
                     "accounts"
                 ],
                 "summary": "Register new user",
+                "operationId": "registerNewUser",
                 "parameters": [
                     {
                         "description": "User register data",
@@ -138,6 +140,7 @@ const docTemplate = `{
                     "auth"
                 ],
                 "summary": "Refresh user's token",
+                "operationId": "refreshToken",
                 "parameters": [
                     {
                         "type": "string",
@@ -197,6 +200,7 @@ const docTemplate = `{
                     "auth"
                 ],
                 "summary": "Revokes user's token",
+                "operationId": "revokeToken",
                 "parameters": [
                     {
                         "type": "string",
@@ -321,6 +325,54 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "deletes the folder in the database",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "folders"
+                ],
+                "summary": "Delete single folder by id",
+                "operationId": "deleteFolderById",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Folder ID",
+                        "name": "folder_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/BasicResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/HTTPError"
+                        }
+                    }
+                }
             }
         },
         "/folders/{folder_id}/decks": {
@@ -341,6 +393,7 @@ const docTemplate = `{
                     "decks"
                 ],
                 "summary": "Create new deck",
+                "operationId": "createDeckById",
                 "parameters": [
                     {
                         "type": "string",
@@ -399,6 +452,7 @@ const docTemplate = `{
                     "decks"
                 ],
                 "summary": "Get a single deck by id",
+                "operationId": "getDeckById",
                 "parameters": [
                     {
                         "type": "string",
@@ -447,6 +501,7 @@ const docTemplate = `{
                     "decks"
                 ],
                 "summary": "Updates the deck",
+                "operationId": "updateDeckById",
                 "parameters": [
                     {
                         "type": "string",
@@ -512,6 +567,7 @@ const docTemplate = `{
                     "cards"
                 ],
                 "summary": "Get all deck's cards",
+                "operationId": "getCardsByDeckId",
                 "parameters": [
                     {
                         "type": "string",
@@ -566,6 +622,7 @@ const docTemplate = `{
                     "cards"
                 ],
                 "summary": "Synchronizes cards",
+                "operationId": "syncCardsByDeckId",
                 "parameters": [
                     {
                         "type": "string",

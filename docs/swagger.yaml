@@ -213,6 +213,7 @@ paths:
       consumes:
       - application/json
       description: returns user id of an existing user
+      operationId: loginUser
       produces:
       - application/json
       responses:
@@ -241,6 +242,7 @@ paths:
       consumes:
       - application/json
       description: creates new user and returns a token
+      operationId: registerNewUser
       parameters:
       - description: User register data
         in: body
@@ -275,6 +277,7 @@ paths:
       consumes:
       - application/json
       description: when user signs out token needs to be revoked
+      operationId: revokeToken
       parameters:
       - description: User ID
         in: path
@@ -305,6 +308,7 @@ paths:
       consumes:
       - application/json
       description: when token is expired you need to refresh it
+      operationId: refreshToken
       parameters:
       - description: User ID
         in: path
@@ -340,6 +344,37 @@ paths:
       tags:
       - auth
   /folders/{folder_id}:
+    delete:
+      consumes:
+      - application/json
+      description: deletes the folder in the database
+      operationId: deleteFolderById
+      parameters:
+      - description: Folder ID
+        in: path
+        name: folder_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/BasicResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/HTTPError'
+      security:
+      - Bearer: []
+      summary: Delete single folder by id
+      tags:
+      - folders
     get:
       consumes:
       - application/json
@@ -405,6 +440,7 @@ paths:
       consumes:
       - application/json
       description: creates new deck in the database
+      operationId: createDeckById
       parameters:
       - description: Folder ID
         in: path
@@ -442,6 +478,7 @@ paths:
       consumes:
       - application/json
       description: fetches the deck from the database
+      operationId: getDeckById
       parameters:
       - description: Folder ID
         in: path
@@ -473,6 +510,7 @@ paths:
       consumes:
       - application/json
       description: updates the deck in the database
+      operationId: updateDeckById
       parameters:
       - description: Folder ID
         in: path
@@ -515,6 +553,7 @@ paths:
       consumes:
       - application/json
       description: fetches cards of the deck from the database
+      operationId: getCardsByDeckId
       parameters:
       - description: Folder ID
         in: path
@@ -551,6 +590,7 @@ paths:
       - application/json
       description: adds card without id, updates card with id, deletes card if it's
         not presented inside the request
+      operationId: syncCardsByDeckId
       parameters:
       - description: Folder ID
         in: path
