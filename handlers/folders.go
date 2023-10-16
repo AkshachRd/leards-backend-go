@@ -57,7 +57,7 @@ func (s *Server) UpdateFolder(c *gin.Context) {
 	}
 
 	folderId := c.Param("folder_id")
-	folder, err := models.UpdateFolder(s.db, folderId, input.Name, models.Access(input.AccessType))
+	folder, err := models.UpdateFolderById(s.db, folderId, input.Name, models.Access(input.AccessType))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot update deck"})
 		return
@@ -68,5 +68,32 @@ func (s *Server) UpdateFolder(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Folder successfully updated",
 		"folder":  responseFolder,
+	})
+}
+
+// DeleteFolder godoc
+// @Id           deleteFolderById
+// @Summary      Delete single folder by id
+// @Description  deletes the folder in the database
+// @Tags         folders
+// @Accept       json
+// @Produce      json
+// @Security     Bearer
+// @Param		 folder_id	  path		string	true	"Folder ID"
+// @Success      200  {object}  httputils.BasicResponse
+// @Failure      400  {object}  httputils.HTTPError
+// @Failure      500  {object}  httputils.HTTPError
+// @Router       /folders/{folder_id} [delete]
+func (s *Server) DeleteFolder(c *gin.Context) {
+	folderId := c.Param("folder_id")
+
+	err := models.DeleteFolderById(s.db, folderId)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input, folder doesn't exist or cannot delete"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Folder successfully deleted",
 	})
 }

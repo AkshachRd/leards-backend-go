@@ -124,6 +124,7 @@ func SetupRouter() *gin.Engine {
 		{
 			folders.GET("", server.GetFolder)
 			folders.PUT("", server.UpdateFolder)
+			folders.DELETE("", server.DeleteFolder)
 
 			decks := folders.Group("/decks")
 			decksWithId := decks.Group(":deck_id")

@@ -6,10 +6,10 @@ type Deck struct {
 	Base
 	Name           string `gorm:"size:255; not null"`
 	ParentFolderID string `gorm:"size:36; not null"`
-	ParentFolder   Folder
-	AccessTypeID   uint8 `gorm:"not null"`
+	ParentFolder   Folder `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	AccessTypeID   uint8  `gorm:"not null"`
 	AccessType     AccessType
-	Cards          []Card
+	Cards          []Card          `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Permissions    []Permission    `gorm:"polymorphic:Storage;polymorphicValue:deck"`
 	StorageHasTags []StorageHasTag `gorm:"polymorphic:Storage;polymorphicValue:deck"`
 }
@@ -34,7 +34,7 @@ func NewDeck(db *gorm.DB, name string, accessType Access, parentFolderId string)
 	return &deck, nil
 }
 
-func UpdateDeck(db *gorm.DB, id string, name string, accessType Access) error {
+func UpdateDeckById(db *gorm.DB, id string, name string, accessType Access) error {
 	deck, err := FetchDeckById(db, id, false, true)
 	if err != nil {
 		return err
@@ -53,6 +53,27 @@ func UpdateDeck(db *gorm.DB, id string, name string, accessType Access) error {
 	deck.Name = name
 
 	err = db.Save(deck).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (d *Deck) Delete(db *gorm.DB) error {
+	cards := d.Cards
+	if cards == nil {
+		if err := db.Find(&cards, "deck_id = ?", d.ID).Error; err != nil {
+			return err
+		}
+	}
+
+	err := db.Delete(&cards).Error
+	if err != nil {
+		return err
+	}
+
+	err = db.Delete(d).Error
 	if err != nil {
 		return err
 	}

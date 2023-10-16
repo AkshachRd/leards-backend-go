@@ -1,0 +1,5 @@
+DELETE /api/v1/folders/c81ac185-27e9-4ae0-8ed0-9fd134531f44 HTTP/2.0
+Host: localhost:8080
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer YWxGOWZGZnVaMzFpUFg0ck5oaktsQnY5NHRYWGlUdWg=

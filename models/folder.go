@@ -1,14 +1,16 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+)
 
 type Folder struct {
 	Base
 	Name           string `gorm:"size:255; not null"`
 	AccessTypeID   uint8  `gorm:"not null"`
 	AccessType     AccessType
-	ParentFolderID *string `gorm:"size:36"`
-	ParentFolder   *Folder
+	ParentFolderID *string         `gorm:"size:36"`
+	ParentFolder   *Folder         `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Folders        []Folder        `gorm:"foreignkey:ParentFolderID"`
 	Decks          []Deck          `gorm:"foreignKey:ParentFolderID"`
 	Permissions    []Permission    `gorm:"polymorphic:Storage;polymorphicValue:folder"`
@@ -35,7 +37,7 @@ func NewFolder(db *gorm.DB, name string, accessType Access) (*Folder, error) {
 	return &folder, nil
 }
 
-func UpdateFolder(db *gorm.DB, id string, name string, accessType Access) (*Folder, error) {
+func UpdateFolderById(db *gorm.DB, id string, name string, accessType Access) (*Folder, error) {
 	folder, err := FetchFolderById(db, id, true, true, true, true)
 	if err != nil {
 		return &Folder{}, err
@@ -61,9 +63,68 @@ func UpdateFolder(db *gorm.DB, id string, name string, accessType Access) (*Fold
 	return folder, nil
 }
 
+func DeleteFolderById(db *gorm.DB, id string) error {
+	folder, err := FetchFolderById(db, id, false, true, true)
+	if err != nil {
+		return err
+	}
+
+	tx := db.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	if err = folder.Delete(db); err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return tx.Commit().Error
+
+}
+
+func (f *Folder) Delete(db *gorm.DB) error {
+	decks := f.Decks
+	if decks == nil {
+		if err := db.Find(&decks, "parent_folder_id = ?", f.ID).Error; err != nil {
+			return err
+		}
+	}
+
+	for _, deck := range decks {
+		err := deck.Delete(db)
+		if err != nil {
+			return err
+		}
+	}
+
+	subfolders := f.Folders
+	if subfolders == nil {
+		if err := db.Find(&subfolders, "parent_folder_id = ?", f.ID).Error; err != nil {
+			return err
+		}
+	}
+
+	for _, subfolder := range subfolders {
+		err := subfolder.Delete(db)
+		if err != nil {
+			return err
+		}
+	}
+
+	err := db.Delete(f).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // FetchFolderById
 //
-// Preload args: ParentFolder, AccessType
+// Preload args: "ParentFolder", "Folders", "Decks", "AccessType"
 func FetchFolderById(db *gorm.DB, id string, preloadArgs ...bool) (*Folder, error) {
 	var folder Folder
 

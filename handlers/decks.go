@@ -97,7 +97,7 @@ func (s *Server) UpdateDeck(c *gin.Context) {
 
 	deckId := c.Param("deck_id")
 
-	err := models.UpdateDeck(s.db, deckId, input.Name, models.Access(input.AccessType))
+	err := models.UpdateDeckById(s.db, deckId, input.Name, models.Access(input.AccessType))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot update deck"})
 		return

@@ -9,7 +9,7 @@ type Card struct {
 	FrontSide string `gorm:"type:text; not null"`
 	BackSide  string `gorm:"type:text; not null"`
 	DeckID    string `gorm:"size:36; not null"`
-	Deck      Deck
+	Deck      Deck   `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
 func UpdateCards(db *gorm.DB, cards []Card) error {
@@ -59,11 +59,9 @@ func DeleteCards(db *gorm.DB, cards []Card) error {
 		}
 	}()
 
-	for _, card := range cards {
-		if err := tx.Delete(&card).Error; err != nil {
-			tx.Rollback()
-			return err
-		}
+	if err := tx.Delete(&cards).Error; err != nil {
+		tx.Rollback()
+		return err
 	}
 
 	return tx.Commit().Error
