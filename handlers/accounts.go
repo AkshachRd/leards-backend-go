@@ -9,6 +9,7 @@ import (
 )
 
 // CreateUser godoc
+// @Id			 registerNewUser
 // @Summary      Register new user
 // @Description  creates new user and returns a token
 // @Tags         accounts
@@ -66,6 +67,7 @@ func (s *Server) CreateUser(c *gin.Context) {
 }
 
 // LoginUser godoc
+// @Id			 loginUser
 // @Summary      Login an existing user
 // @Description  returns user id of an existing user
 // @Tags         accounts

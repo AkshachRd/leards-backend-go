@@ -8,6 +8,7 @@ import (
 )
 
 // GetDeck godoc
+// @Id			 getDeckById
 // @Summary      Get a single deck by id
 // @Description  fetches the deck from the database
 // @Tags         decks
@@ -41,6 +42,7 @@ func (s *Server) GetDeck(c *gin.Context) {
 }
 
 // CreateDeck godoc
+// @Id			 createDeckById
 // @Summary      Create new deck
 // @Description  creates new deck in the database
 // @Tags         decks
@@ -74,6 +76,7 @@ func (s *Server) CreateDeck(c *gin.Context) {
 }
 
 // UpdateDeck godoc
+// @Id			 updateDeckById
 // @Summary      Updates the deck
 // @Description  updates the deck in the database
 // @Tags         decks

@@ -8,6 +8,7 @@ import (
 )
 
 // GetCards godoc
+// @Id			 getCardsByDeckId
 // @Summary      Get all deck's cards
 // @Description  fetches cards of the deck from the database
 // @Tags         cards
@@ -42,6 +43,7 @@ func (s *Server) GetCards(c *gin.Context) {
 }
 
 // SyncCards godoc
+// @Id			 syncCardsByDeckId
 // @Summary      Synchronizes cards
 // @Description  adds card without id, updates card with id, deletes card if it's not presented inside the request
 // @Tags         cards

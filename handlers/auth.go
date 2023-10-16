@@ -8,6 +8,7 @@ import (
 )
 
 // RefreshToken godoc
+// @Id			 refreshToken
 // @Summary      Refresh user's token
 // @Description  when token is expired you need to refresh it
 // @Tags         auth
@@ -44,6 +45,7 @@ func (s *Server) RefreshToken(c *gin.Context) {
 }
 
 // RevokeToken godoc
+// @Id			 revokeToken
 // @Summary      Revokes user's token
 // @Description  when user signs out token needs to be revoked
 // @Tags         auth
