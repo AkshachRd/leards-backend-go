@@ -226,6 +226,58 @@
                 }
             }
         },
+        "/folders": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "creates a new folder in the database",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "folders"
+                ],
+                "summary": "Create a new folder",
+                "operationId": "createFolderById",
+                "parameters": [
+                    {
+                        "description": "Create folder data",
+                        "name": "createFolderData",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/CreateDeckRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/FolderResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/HTTPError"
+                        }
+                    }
+                }
+            }
+        },
         "/folders/{folder_id}": {
             "get": {
                 "security": [
@@ -764,13 +816,12 @@
         "CreateDeckRequest": {
             "type": "object",
             "required": [
-                "name",
-                "parentFolderId"
+                "name"
             ],
             "properties": {
                 "name": {
                     "type": "string",
-                    "example": "My new deck"
+                    "example": "My new folder"
                 },
                 "parentFolderId": {
                     "type": "string",

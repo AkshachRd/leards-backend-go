@@ -7,6 +7,39 @@ import (
 	"net/http"
 )
 
+// CreateFolder godoc
+// @Id			 createFolderById
+// @Summary      Create a new folder
+// @Description  creates a new folder in the database
+// @Tags         folders
+// @Accept       json
+// @Produce      json
+// @Security     Bearer
+// @Param		 createFolderData body httputils.CreateFolderRequest true "Create folder data"
+// @Success      200  {object}  httputils.FolderResponse
+// @Failure      400  {object}  httputils.HTTPError
+// @Failure      500  {object}  httputils.HTTPError
+// @Router       /folders [post]
+func (s *Server) CreateFolder(c *gin.Context) {
+	var input httputils.CreateFolderRequest
+
+	if err := c.ShouldBind(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
+		return
+	}
+
+	folder, err := models.NewFolder(s.db, input.Name, models.Private, &input.ParentFolderId)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot create a new folder"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Folder successfully created",
+		"folder":  *httputils.ConvertFolder(folder),
+	})
+}
+
 // GetFolder godoc
 // @Id           getFolderById
 // @Summary      Get the folder by id

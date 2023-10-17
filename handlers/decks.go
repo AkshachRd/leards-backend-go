@@ -59,7 +59,7 @@ func (s *Server) CreateDeck(c *gin.Context) {
 
 	deck, err := models.NewDeck(s.db, input.Name, models.Private, input.ParentFolderId)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot create new deck"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot create a new deck"})
 		return
 	}
 

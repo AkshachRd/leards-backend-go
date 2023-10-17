@@ -41,12 +41,12 @@ func NewUser(db *gorm.DB, name string, email string, password string) (*User, er
 		return &User{}, err
 	}
 
-	folder, err := NewFolder(db, "rootFolder", Private)
+	rootFolder, err := NewFolder(db, "rootFolder", Private, nil)
 	if err != nil {
 		return &User{}, err
 	}
 
-	user := User{Name: name, Email: email, PasswordHashed: passwordHashed, RootFolderID: folder.ID}
+	user := User{Name: name, Email: email, PasswordHashed: passwordHashed, RootFolderID: rootFolder.ID}
 
 	err = db.Create(&user).Error
 	if err != nil {

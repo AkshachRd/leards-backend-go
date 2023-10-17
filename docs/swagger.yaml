@@ -37,14 +37,13 @@ definitions:
   CreateDeckRequest:
     properties:
       name:
-        example: My new deck
+        example: My new folder
         type: string
       parentFolderId:
         example: 72a30ffb-1896-48b1-b006-985fb055db0f
         type: string
     required:
     - name
-    - parentFolderId
     type: object
   CreateUserRequest:
     properties:
@@ -343,6 +342,39 @@ paths:
       summary: Refresh user's token
       tags:
       - auth
+  /folders:
+    post:
+      consumes:
+      - application/json
+      description: creates a new folder in the database
+      operationId: createFolderById
+      parameters:
+      - description: Create folder data
+        in: body
+        name: createFolderData
+        required: true
+        schema:
+          $ref: '#/definitions/CreateDeckRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/FolderResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/HTTPError'
+      security:
+      - Bearer: []
+      summary: Create a new folder
+      tags:
+      - folders
   /folders/{folder_id}:
     delete:
       consumes:

@@ -1,6 +1,7 @@
 package models
 
 import (
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -21,7 +22,7 @@ func getFolderPreloadArgs() []string {
 	return []string{"ParentFolder", "Folders", "Decks", "AccessType"}
 }
 
-func NewFolder(db *gorm.DB, name string, accessType Access) (*Folder, error) {
+func NewFolder(db *gorm.DB, name string, accessType Access, parentFolderId *string) (*Folder, error) {
 	var accType AccessType
 	err := db.First(&accType, "type = ?", accessType).Error
 	if err != nil {
@@ -29,7 +30,18 @@ func NewFolder(db *gorm.DB, name string, accessType Access) (*Folder, error) {
 	}
 
 	folder := Folder{Name: name, AccessTypeID: accType.ID}
+	if parentFolderId != nil {
+		if _, err = uuid.Parse(*parentFolderId); err == nil {
+			folder.ParentFolderID = parentFolderId
+		}
+	}
+
 	err = db.Create(&folder).Error
+	if err != nil {
+		return &Folder{}, nil
+	}
+
+	err = db.Preload("ParentFolder").First(&folder).Error
 	if err != nil {
 		return &Folder{}, nil
 	}

@@ -48,18 +48,7 @@ func MockData(db *gorm.DB) error {
 		return err
 	}
 
-	folder, err := models.NewFolder(db, "folder1", models.Private)
-	if err != nil {
-		return err
-	}
-
-	folder.ParentFolderID = &user.RootFolderID
-	err = db.Save(&folder).Error
-	if err != nil {
-		return err
-	}
-
-	deck, err := models.NewDeck(db, "deck1", models.Private, folder.ID)
+	deck, err := models.NewDeck(db, "deck1", models.Private, user.RootFolderID)
 	if err != nil {
 		return err
 	}
@@ -120,13 +109,15 @@ func SetupRouter() *gin.Engine {
 			auth.GET(":user_id", server.RefreshToken)
 			auth.DELETE(":user_id", server.RevokeToken)
 		}
-		folders := bearerAuthorizedV1.Group("/folders/:folder_id")
+		folders := bearerAuthorizedV1.Group("/folders")
+		foldersWithId := folders.Group(":folder_id")
 		{
-			folders.GET("", server.GetFolder)
-			folders.PUT("", server.UpdateFolder)
-			folders.DELETE("", server.DeleteFolder)
+			foldersWithId.GET("", server.GetFolder)
+			folders.POST("", server.CreateFolder)
+			foldersWithId.PUT("", server.UpdateFolder)
+			foldersWithId.DELETE("", server.DeleteFolder)
 
-			decks := folders.Group("/decks")
+			decks := foldersWithId.Group("/decks")
 			decksWithId := decks.Group(":deck_id")
 			{
 				decksWithId.GET("", server.GetDeck)
