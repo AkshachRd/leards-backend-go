@@ -25,3 +25,12 @@ func ConvertFolder(folder *models.Folder) *Folder {
 
 	return &Folder{FolderId: folder.ID, Name: folder.Name, Path: path, Content: content}
 }
+
+func ConvertDeck(deck *models.Deck) *Deck {
+	var content []Card
+	for _, card := range deck.Cards {
+		content = append(content, Card{CardId: card.ID, FrontSide: card.FrontSide, BackSide: card.BackSide})
+	}
+
+	return &Deck{DeckId: deck.ID, Name: deck.Name, Content: content}
+}

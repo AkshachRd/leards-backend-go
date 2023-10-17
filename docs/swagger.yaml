@@ -476,6 +476,11 @@ paths:
       description: deletes the deck in the database
       operationId: deleteDeckById
       parameters:
+      - description: Folder ID
+        in: path
+        name: folder_id
+        required: true
+        type: string
       - description: Deck ID
         in: path
         name: deck_id
@@ -557,7 +562,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/BasicResponse'
+            $ref: '#/definitions/DeckResponse'
         "400":
           description: Bad Request
           schema:

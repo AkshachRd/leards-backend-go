@@ -29,15 +29,9 @@ func (s *Server) GetDeck(c *gin.Context) {
 		return
 	}
 
-	var content []httputils.Card
-
-	for _, card := range deck.Cards {
-		content = append(content, httputils.Card{CardId: card.ID, FrontSide: card.FrontSide, BackSide: card.BackSide})
-	}
-
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Deck successfully fetched",
-		"deck":    httputils.Deck{DeckId: deck.ID, Name: deck.Name, Content: content},
+		"deck":    *httputils.ConvertDeck(deck),
 	})
 }
 
@@ -71,7 +65,7 @@ func (s *Server) CreateDeck(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Deck successfully created",
-		"deck":    httputils.Deck{DeckId: deck.ID, Name: deck.Name, Content: make([]httputils.Card, 0)},
+		"deck":    *httputils.ConvertDeck(deck),
 	})
 }
 
@@ -86,7 +80,7 @@ func (s *Server) CreateDeck(c *gin.Context) {
 // @Param		 folder_id	  path		string	true	"Folder ID"
 // @Param		 deck_id	  path		string	true	"Deck ID"
 // @Param		 updateDeckData body httputils.UpdateDeckRequest true "Update deck data"
-// @Success      200  {object}  httputils.BasicResponse
+// @Success      200  {object}  httputils.DeckResponse
 // @Failure      400  {object}  httputils.HTTPError
 // @Failure      500  {object}  httputils.HTTPError
 // @Router       /folders/{folder_id}/decks/{deck_id} [put]
@@ -99,8 +93,7 @@ func (s *Server) UpdateDeck(c *gin.Context) {
 	}
 
 	deckId := c.Param("deck_id")
-
-	err := models.UpdateDeckById(s.db, deckId, input.Name, models.Access(input.AccessType))
+	deck, err := models.UpdateDeckById(s.db, deckId, input.Name, models.Access(input.AccessType))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot update deck"})
 		return
@@ -108,6 +101,7 @@ func (s *Server) UpdateDeck(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Deck successfully updated",
+		"deck":    *httputils.ConvertDeck(deck),
 	})
 }
 
@@ -119,6 +113,7 @@ func (s *Server) UpdateDeck(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Security     Bearer
+// @Param		 folder_id	  path		string	true	"Folder ID"
 // @Param		 deck_id	  path		string	true	"Deck ID"
 // @Success      200  {object}  httputils.BasicResponse
 // @Failure      400  {object}  httputils.HTTPError

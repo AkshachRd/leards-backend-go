@@ -525,7 +525,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/BasicResponse"
+                            "$ref": "#/definitions/DeckResponse"
                         }
                     },
                     "400": {
@@ -561,6 +561,13 @@ const docTemplate = `{
                 "summary": "Delete the deck by id",
                 "operationId": "deleteDeckById",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Folder ID",
+                        "name": "folder_id",
+                        "in": "path",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "Deck ID",

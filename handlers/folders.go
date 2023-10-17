@@ -27,11 +27,9 @@ func (s *Server) GetFolder(c *gin.Context) {
 		return
 	}
 
-	responseFolder := httputils.ConvertFolder(folder)
-
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Folder successfully fetched",
-		"folder":  responseFolder,
+		"folder":  *httputils.ConvertFolder(folder),
 	})
 }
 
@@ -63,11 +61,9 @@ func (s *Server) UpdateFolder(c *gin.Context) {
 		return
 	}
 
-	responseFolder := httputils.ConvertFolder(folder)
-
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Folder successfully updated",
-		"folder":  responseFolder,
+		"folder":  *httputils.ConvertFolder(folder),
 	})
 }
 
