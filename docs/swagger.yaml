@@ -347,7 +347,7 @@ paths:
       consumes:
       - application/json
       description: creates a new folder in the database
-      operationId: createFolderById
+      operationId: createNewFolder
       parameters:
       - description: Create folder data
         in: body
@@ -468,7 +468,7 @@ paths:
       consumes:
       - application/json
       description: creates a new deck in the database
-      operationId: createDeckById
+      operationId: createNewDeck
       parameters:
       - description: Folder ID
         in: path

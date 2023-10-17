@@ -36,7 +36,7 @@ func (s *Server) GetDeck(c *gin.Context) {
 }
 
 // CreateDeck godoc
-// @Id			 createDeckById
+// @Id			 createNewDeck
 // @Summary      Create a new deck
 // @Description  creates a new deck in the database
 // @Tags         decks

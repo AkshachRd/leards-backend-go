@@ -250,7 +250,7 @@ const docTemplate = `{
                     "folders"
                 ],
                 "summary": "Create a new folder",
-                "operationId": "createFolderById",
+                "operationId": "createNewFolder",
                 "parameters": [
                     {
                         "description": "Create folder data",
@@ -439,7 +439,7 @@ const docTemplate = `{
                     "decks"
                 ],
                 "summary": "Create a new deck",
-                "operationId": "createDeckById",
+                "operationId": "createNewDeck",
                 "parameters": [
                     {
                         "type": "string",

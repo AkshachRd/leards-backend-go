@@ -8,7 +8,7 @@ import (
 )
 
 // CreateFolder godoc
-// @Id			 createFolderById
+// @Id			 createNewFolder
 // @Summary      Create a new folder
 // @Description  creates a new folder in the database
 // @Tags         folders
