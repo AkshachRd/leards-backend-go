@@ -89,12 +89,14 @@ func (d *Deck) Delete(db *gorm.DB) error {
 		}
 	}
 
-	err := db.Delete(&cards).Error
-	if err != nil {
-		return err
+	if len(cards) != 0 {
+		err := db.Delete(&cards).Error
+		if err != nil {
+			return err
+		}
 	}
 
-	err = db.Delete(d).Error
+	err := db.Delete(d).Error
 	if err != nil {
 		return err
 	}

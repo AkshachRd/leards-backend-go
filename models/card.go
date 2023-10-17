@@ -13,6 +13,10 @@ type Card struct {
 }
 
 func UpdateCards(db *gorm.DB, cards []Card) error {
+	if len(cards) == 0 {
+		return nil
+	}
+
 	tx := db.Begin()
 	defer func() {
 		if r := recover(); r != nil {
@@ -34,6 +38,10 @@ func UpdateCards(db *gorm.DB, cards []Card) error {
 }
 
 func CreateCards(db *gorm.DB, cards []Card) error {
+	if len(cards) == 0 {
+		return nil
+	}
+
 	tx := db.Begin()
 	defer func() {
 		if r := recover(); r != nil {
@@ -52,6 +60,10 @@ func CreateCards(db *gorm.DB, cards []Card) error {
 }
 
 func DeleteCards(db *gorm.DB, cards []Card) error {
+	if len(cards) == 0 {
+		return nil
+	}
+
 	tx := db.Begin()
 	defer func() {
 		if r := recover(); r != nil {
