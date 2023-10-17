@@ -31,7 +31,7 @@ const docTemplate = `{
                         "BasicAuth": []
                     }
                 ],
-                "description": "returns user id of an existing user",
+                "description": "returns the user",
                 "consumes": [
                     "application/json"
                 ],
@@ -41,7 +41,7 @@ const docTemplate = `{
                 "tags": [
                     "accounts"
                 ],
-                "summary": "Login an existing user",
+                "summary": "Login the  user",
                 "operationId": "loginUser",
                 "responses": {
                     "201": {
@@ -71,7 +71,7 @@ const docTemplate = `{
                 }
             },
             "post": {
-                "description": "creates new user and returns a token",
+                "description": "creates a new user and returns a token",
                 "consumes": [
                     "application/json"
                 ],
@@ -81,7 +81,7 @@ const docTemplate = `{
                 "tags": [
                     "accounts"
                 ],
-                "summary": "Register new user",
+                "summary": "Register a new user",
                 "operationId": "registerNewUser",
                 "parameters": [
                     {
@@ -249,7 +249,7 @@ const docTemplate = `{
                 "tags": [
                     "folders"
                 ],
-                "summary": "Get single folder by id",
+                "summary": "Get the folder by id",
                 "operationId": "getFolderById",
                 "parameters": [
                     {
@@ -291,7 +291,7 @@ const docTemplate = `{
                 "tags": [
                     "folders"
                 ],
-                "summary": "Update single folder by id",
+                "summary": "Update the folder by id",
                 "operationId": "updateFolderById",
                 "parameters": [
                     {
@@ -342,7 +342,7 @@ const docTemplate = `{
                 "tags": [
                     "folders"
                 ],
-                "summary": "Delete single folder by id",
+                "summary": "Delete the folder by id",
                 "operationId": "deleteFolderById",
                 "parameters": [
                     {
@@ -365,12 +365,6 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/HTTPError"
                         }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/HTTPError"
-                        }
                     }
                 }
             }
@@ -382,7 +376,7 @@ const docTemplate = `{
                         "Bearer": []
                     }
                 ],
-                "description": "creates new deck in the database",
+                "description": "creates a new deck in the database",
                 "consumes": [
                     "application/json"
                 ],
@@ -392,7 +386,7 @@ const docTemplate = `{
                 "tags": [
                     "decks"
                 ],
-                "summary": "Create new deck",
+                "summary": "Create a new deck",
                 "operationId": "createDeckById",
                 "parameters": [
                     {
@@ -451,7 +445,7 @@ const docTemplate = `{
                 "tags": [
                     "decks"
                 ],
-                "summary": "Get a single deck by id",
+                "summary": "Get the deck by id",
                 "operationId": "getDeckById",
                 "parameters": [
                     {
@@ -500,7 +494,7 @@ const docTemplate = `{
                 "tags": [
                     "decks"
                 ],
-                "summary": "Updates the deck",
+                "summary": "Updates the deck by id",
                 "operationId": "updateDeckById",
                 "parameters": [
                     {
@@ -542,6 +536,48 @@ const docTemplate = `{
                     },
                     "500": {
                         "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/HTTPError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "deletes the deck in the database",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "decks"
+                ],
+                "summary": "Delete the deck by id",
+                "operationId": "deleteDeckById",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Deck ID",
+                        "name": "deck_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/BasicResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "$ref": "#/definitions/HTTPError"
                         }

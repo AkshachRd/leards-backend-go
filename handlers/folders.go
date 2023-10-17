@@ -9,7 +9,7 @@ import (
 
 // GetFolder godoc
 // @Id           getFolderById
-// @Summary      Get single folder by id
+// @Summary      Get the folder by id
 // @Description  fetches the folder from the database
 // @Tags         folders
 // @Accept       json
@@ -37,7 +37,7 @@ func (s *Server) GetFolder(c *gin.Context) {
 
 // UpdateFolder godoc
 // @Id           updateFolderById
-// @Summary      Update single folder by id
+// @Summary      Update the folder by id
 // @Description  updates the folder in the database
 // @Tags         folders
 // @Accept       json
@@ -73,7 +73,7 @@ func (s *Server) UpdateFolder(c *gin.Context) {
 
 // DeleteFolder godoc
 // @Id           deleteFolderById
-// @Summary      Delete single folder by id
+// @Summary      Delete the folder by id
 // @Description  deletes the folder in the database
 // @Tags         folders
 // @Accept       json
@@ -82,7 +82,6 @@ func (s *Server) UpdateFolder(c *gin.Context) {
 // @Param		 folder_id	  path		string	true	"Folder ID"
 // @Success      200  {object}  httputils.BasicResponse
 // @Failure      400  {object}  httputils.HTTPError
-// @Failure      500  {object}  httputils.HTTPError
 // @Router       /folders/{folder_id} [delete]
 func (s *Server) DeleteFolder(c *gin.Context) {
 	folderId := c.Param("folder_id")

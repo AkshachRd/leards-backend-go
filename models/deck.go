@@ -60,6 +60,27 @@ func UpdateDeckById(db *gorm.DB, id string, name string, accessType Access) erro
 	return nil
 }
 
+func DeleteDeckById(db *gorm.DB, id string) error {
+	deck, err := FetchDeckById(db, id, true)
+	if err != nil {
+		return err
+	}
+
+	tx := db.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	if err = deck.Delete(db); err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return tx.Commit().Error
+}
+
 func (d *Deck) Delete(db *gorm.DB) error {
 	cards := d.Cards
 	if cards == nil {

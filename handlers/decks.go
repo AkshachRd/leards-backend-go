@@ -9,7 +9,7 @@ import (
 
 // GetDeck godoc
 // @Id			 getDeckById
-// @Summary      Get a single deck by id
+// @Summary      Get the deck by id
 // @Description  fetches the deck from the database
 // @Tags         decks
 // @Accept       json
@@ -43,8 +43,8 @@ func (s *Server) GetDeck(c *gin.Context) {
 
 // CreateDeck godoc
 // @Id			 createDeckById
-// @Summary      Create new deck
-// @Description  creates new deck in the database
+// @Summary      Create a new deck
+// @Description  creates a new deck in the database
 // @Tags         decks
 // @Accept       json
 // @Produce      json
@@ -77,7 +77,7 @@ func (s *Server) CreateDeck(c *gin.Context) {
 
 // UpdateDeck godoc
 // @Id			 updateDeckById
-// @Summary      Updates the deck
+// @Summary      Updates the deck by id
 // @Description  updates the deck in the database
 // @Tags         decks
 // @Accept       json
@@ -108,5 +108,31 @@ func (s *Server) UpdateDeck(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Deck successfully updated",
+	})
+}
+
+// DeleteDeck godoc
+// @Id           deleteDeckById
+// @Summary      Delete the deck by id
+// @Description  deletes the deck in the database
+// @Tags         decks
+// @Accept       json
+// @Produce      json
+// @Security     Bearer
+// @Param		 deck_id	  path		string	true	"Deck ID"
+// @Success      200  {object}  httputils.BasicResponse
+// @Failure      400  {object}  httputils.HTTPError
+// @Router       /folders/{folder_id}/decks/{deck_id} [delete]
+func (s *Server) DeleteDeck(c *gin.Context) {
+	deckId := c.Param("deck_id")
+
+	err := models.DeleteDeckById(s.db, deckId)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input, deck doesn't exist or cannot delete"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Deck successfully deleted",
 	})
 }

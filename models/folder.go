@@ -82,7 +82,6 @@ func DeleteFolderById(db *gorm.DB, id string) error {
 	}
 
 	return tx.Commit().Error
-
 }
 
 func (f *Folder) Delete(db *gorm.DB) error {

@@ -212,7 +212,7 @@ paths:
     get:
       consumes:
       - application/json
-      description: returns user id of an existing user
+      description: returns the user
       operationId: loginUser
       produces:
       - application/json
@@ -235,13 +235,13 @@ paths:
             $ref: '#/definitions/HTTPError'
       security:
       - BasicAuth: []
-      summary: Login an existing user
+      summary: Login the  user
       tags:
       - accounts
     post:
       consumes:
       - application/json
-      description: creates new user and returns a token
+      description: creates a new user and returns a token
       operationId: registerNewUser
       parameters:
       - description: User register data
@@ -269,7 +269,7 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/HTTPError'
-      summary: Register new user
+      summary: Register a new user
       tags:
       - accounts
   /auth/{user_id}:
@@ -366,13 +366,9 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/HTTPError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/HTTPError'
       security:
       - Bearer: []
-      summary: Delete single folder by id
+      summary: Delete the folder by id
       tags:
       - folders
     get:
@@ -399,7 +395,7 @@ paths:
             $ref: '#/definitions/HTTPError'
       security:
       - Bearer: []
-      summary: Get single folder by id
+      summary: Get the folder by id
       tags:
       - folders
     put:
@@ -432,14 +428,14 @@ paths:
             $ref: '#/definitions/HTTPError'
       security:
       - Bearer: []
-      summary: Update single folder by id
+      summary: Update the folder by id
       tags:
       - folders
   /folders/{folder_id}/decks:
     post:
       consumes:
       - application/json
-      description: creates new deck in the database
+      description: creates a new deck in the database
       operationId: createDeckById
       parameters:
       - description: Folder ID
@@ -470,10 +466,37 @@ paths:
             $ref: '#/definitions/HTTPError'
       security:
       - Bearer: []
-      summary: Create new deck
+      summary: Create a new deck
       tags:
       - decks
   /folders/{folder_id}/decks/{deck_id}:
+    delete:
+      consumes:
+      - application/json
+      description: deletes the deck in the database
+      operationId: deleteDeckById
+      parameters:
+      - description: Deck ID
+        in: path
+        name: deck_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/BasicResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/HTTPError'
+      security:
+      - Bearer: []
+      summary: Delete the deck by id
+      tags:
+      - decks
     get:
       consumes:
       - application/json
@@ -503,7 +526,7 @@ paths:
             $ref: '#/definitions/HTTPError'
       security:
       - Bearer: []
-      summary: Get a single deck by id
+      summary: Get the deck by id
       tags:
       - decks
     put:
@@ -545,7 +568,7 @@ paths:
             $ref: '#/definitions/HTTPError'
       security:
       - Bearer: []
-      summary: Updates the deck
+      summary: Updates the deck by id
       tags:
       - decks
   /folders/{folder_id}/decks/{deck_id}/cards:

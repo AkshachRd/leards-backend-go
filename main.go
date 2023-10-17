@@ -132,6 +132,7 @@ func SetupRouter() *gin.Engine {
 				decksWithId.GET("", server.GetDeck)
 				decks.POST("", server.CreateDeck)
 				decksWithId.PUT("", server.UpdateDeck)
+				decksWithId.DELETE("", server.DeleteDeck)
 
 				cards := decksWithId.Group("/cards")
 				{
