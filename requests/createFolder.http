@@ -2,9 +2,10 @@ POST /api/v1/folders HTTP/2.0
 Host: localhost:8080
 Accept: application/json
 Content-Type: application/json
-Authorization: Bearer MUs0ZEI2TkVYbVlIZktfTVBSSTBlclE0ejR6VUpiSVo=
+Authorization: Bearer Ul8tcEJMelhZZDkxenhXNDlsYWpfM2oyUmNRTzV6LUQ=
+
 
 {
-  "name": "Test folder1",
-  "parentFolderId": "ed95210e-bbf0-4183-9e53-ce3c311083cc"
+  "name": "Test folder4",
+  "parentFolderId": "521d2338-f882-485e-89fa-a0c3a8e5baab"
 }

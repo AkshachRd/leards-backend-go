@@ -18,8 +18,23 @@ type Folder struct {
 	StorageHasTags []StorageHasTag `gorm:"polymorphic:Storage;polymorphicValue:folder"`
 }
 
-func getFolderPreloadArgs() []string {
-	return []string{"ParentFolder", "Folders", "Decks", "AccessType"}
+func getFolderPreloadArgs(query string) []interface{} {
+	args := make([]interface{}, 0)
+	switch query {
+	case "ParentFolder.ParentFolder":
+		var preload func(d *gorm.DB) *gorm.DB
+		preload = func(d *gorm.DB) *gorm.DB {
+			return d.Preload("ParentFolder", preload)
+		}
+		args = append(args, preload)
+	}
+	return args
+}
+
+const ParentFolderRecursive = 4
+
+func getFolderPreloadQuery(index int) string {
+	return []string{"ParentFolder", "Folders", "Decks", "AccessType", "ParentFolder.ParentFolder"}[index]
 }
 
 func NewFolder(db *gorm.DB, name string, accessType Access, parentFolderId *string) (*Folder, error) {
@@ -41,16 +56,11 @@ func NewFolder(db *gorm.DB, name string, accessType Access, parentFolderId *stri
 		return &Folder{}, nil
 	}
 
-	err = db.Preload("ParentFolder").First(&folder).Error
-	if err != nil {
-		return &Folder{}, nil
-	}
-
 	return &folder, nil
 }
 
 func UpdateFolderById(db *gorm.DB, id string, name string, accessType Access) (*Folder, error) {
-	folder, err := FetchFolderById(db, id, true, true, true, true)
+	folder, err := FetchFolderById(db, id, true, true, true, true, true)
 	if err != nil {
 		return &Folder{}, err
 	}
@@ -135,14 +145,15 @@ func (f *Folder) Delete(db *gorm.DB) error {
 
 // FetchFolderById
 //
-// Preload args: "ParentFolder", "Folders", "Decks", "AccessType"
+// Preload args: "ParentFolder", "Folders", "Decks", "AccessType", "ParentFolderRecursive"
 func FetchFolderById(db *gorm.DB, id string, preloadArgs ...bool) (*Folder, error) {
 	var folder Folder
 
 	query := db
 	for i, arg := range preloadArgs {
 		if arg {
-			query = query.Preload(getFolderPreloadArgs()[i])
+			queryString := getFolderPreloadQuery(i)
+			query = query.Preload(queryString, getFolderPreloadArgs(queryString)...)
 		}
 	}
 
