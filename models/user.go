@@ -25,6 +25,10 @@ type User struct {
 	Settings            []UserSetting
 }
 
+func getUserPreloadQuery(index int) string {
+	return []string{"RootFolder", "Settings"}[index]
+}
+
 func hashPassword(password string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
 	return string(bytes), err
@@ -53,6 +57,11 @@ func NewUser(db *gorm.DB, name string, email string, password string) (*User, er
 		return &User{}, err
 	}
 
+	_, err = NewUserSettings(db, user.ID)
+	if err != nil {
+		return &User{}, err
+	}
+
 	return &user, nil
 }
 
@@ -67,10 +76,20 @@ func (u *User) SetPassword(db *gorm.DB, password string) error {
 	return err
 }
 
-func FetchUserByEmail(db *gorm.DB, email string) (*User, error) {
+// FetchUserByEmail
+//
+// Preload args: "RootFolder", "Settings"
+func FetchUserByEmail(db *gorm.DB, email string, preloadArgs ...bool) (*User, error) {
 	var user User
 
-	err := db.First(&user, "email = ?", email).Error
+	query := db
+	for i, arg := range preloadArgs {
+		if arg {
+			query = query.Preload(getUserPreloadQuery(i))
+		}
+	}
+
+	err := query.First(&user, "email = ?", email).Error
 	if err != nil {
 		return nil, err
 	}

@@ -29,3 +29,7 @@ type UpdateFolderRequest struct {
 	Name       string `json:"name" binding:"required" example:"My new folder"`
 	AccessType string `json:"accessType" binding:"required" example:"public"`
 } // @name UpdateFolderRequest
+
+type UpdateUserSettingsRequest struct {
+	Settings Settings `json:"settings" binding:"required"`
+} // @name UpdateUserSettingsRequest

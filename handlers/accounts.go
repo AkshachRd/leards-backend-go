@@ -41,17 +41,6 @@ func (s *Server) CreateUser(c *gin.Context) {
 		return
 	}
 
-	userSettings, err := models.FetchUserSettingsByUserId(s.db, user.ID)
-	if err != nil || !user.AuthToken.Valid {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid settings"})
-		return
-	}
-
-	var settings httputils.Settings
-	for _, userSetting := range *userSettings {
-		settings[userSetting.SettingName] = userSetting.SettingValue
-	}
-
 	c.JSON(http.StatusCreated, gin.H{
 		"message": "User successfully created",
 		"user": httputils.User{
@@ -61,7 +50,7 @@ func (s *Server) CreateUser(c *gin.Context) {
 			AuthToken: user.AuthToken.String,
 			// TODO: ProfileIcon
 			RootFolderId: user.RootFolderID,
-			Settings:     settings,
+			Settings:     *httputils.ConvertUserSettings(&user.Settings),
 		},
 	})
 }
@@ -94,27 +83,19 @@ func (s *Server) LoginUser(c *gin.Context) {
 		return
 	}
 
-	user, err := models.FetchUserByEmail(s.db, fmt.Sprintf("%v", email))
+	user, err := models.FetchUserByEmail(s.db, fmt.Sprintf("%v", email), false, true)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid login or user do not exist"})
 		return
 	}
 
+	userSettings := user.Settings
+	user.Settings = nil
+
 	err = user.GenerateAuthToken(s.db)
 	if err != nil || !user.AuthToken.Valid {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid new token"})
 		return
-	}
-
-	userSettings, err := models.FetchUserSettingsByUserId(s.db, user.ID)
-	if err != nil || !user.AuthToken.Valid {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid settings"})
-		return
-	}
-
-	var settings httputils.Settings
-	for _, userSetting := range *userSettings {
-		settings[userSetting.SettingName] = userSetting.SettingValue
 	}
 
 	c.JSON(http.StatusOK, gin.H{
@@ -126,7 +107,7 @@ func (s *Server) LoginUser(c *gin.Context) {
 			AuthToken: user.AuthToken.String,
 			// TODO: ProfileIcon
 			RootFolderId: user.RootFolderID,
-			Settings:     settings,
+			Settings:     *httputils.ConvertUserSettings(&userSettings),
 		},
 	})
 }

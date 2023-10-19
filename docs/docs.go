@@ -122,6 +122,101 @@ const docTemplate = `{
                 }
             }
         },
+        "/accounts/{user_id}/settings": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "fetches the user settings from the database",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "userSettings"
+                ],
+                "summary": "Get the user settings",
+                "operationId": "getUserSettings",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/UserSettingsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/HTTPError"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "updates the user settings in the database",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "userSettings"
+                ],
+                "summary": "Update the user settings",
+                "operationId": "updateUserSettings",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Update user settings data",
+                        "name": "updateUserSettingsData",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/UpdateUserSettingsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/UserSettingsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/HTTPError"
+                        }
+                    }
+                }
+            }
+        },
         "/auth/{user_id}": {
             "get": {
                 "security": [
@@ -1012,6 +1107,17 @@ const docTemplate = `{
                 }
             }
         },
+        "UpdateUserSettingsRequest": {
+            "type": "object",
+            "required": [
+                "settings"
+            ],
+            "properties": {
+                "settings": {
+                    "$ref": "#/definitions/Settings"
+                }
+            }
+        },
         "User": {
             "type": "object",
             "properties": {
@@ -1047,6 +1153,18 @@ const docTemplate = `{
                 },
                 "user": {
                     "$ref": "#/definitions/User"
+                }
+            }
+        },
+        "UserSettingsResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "Successfully"
+                },
+                "settings": {
+                    "$ref": "#/definitions/Settings"
                 }
             }
         }

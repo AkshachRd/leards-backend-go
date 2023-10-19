@@ -165,6 +165,13 @@ definitions:
     - accessType
     - name
     type: object
+  UpdateUserSettingsRequest:
+    properties:
+      settings:
+        $ref: '#/definitions/Settings'
+    required:
+    - settings
+    type: object
   User:
     properties:
       authToken:
@@ -189,6 +196,14 @@ definitions:
         type: string
       user:
         $ref: '#/definitions/User'
+    type: object
+  UserSettingsResponse:
+    properties:
+      message:
+        example: Successfully
+        type: string
+      settings:
+        $ref: '#/definitions/Settings'
     type: object
 externalDocs:
   description: OpenAPI
@@ -271,6 +286,67 @@ paths:
       summary: Register a new user
       tags:
       - accounts
+  /accounts/{user_id}/settings:
+    get:
+      consumes:
+      - application/json
+      description: fetches the user settings from the database
+      operationId: getUserSettings
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/UserSettingsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/HTTPError'
+      security:
+      - Bearer: []
+      summary: Get the user settings
+      tags:
+      - userSettings
+    put:
+      consumes:
+      - application/json
+      description: updates the user settings in the database
+      operationId: updateUserSettings
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      - description: Update user settings data
+        in: body
+        name: updateUserSettingsData
+        required: true
+        schema:
+          $ref: '#/definitions/UpdateUserSettingsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/UserSettingsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/HTTPError'
+      security:
+      - Bearer: []
+      summary: Update the user settings
+      tags:
+      - userSettings
   /auth/{user_id}:
     delete:
       consumes:

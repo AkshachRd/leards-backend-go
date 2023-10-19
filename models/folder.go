@@ -31,8 +31,6 @@ func getFolderPreloadArgs(query string) []interface{} {
 	return args
 }
 
-const ParentFolderRecursive = 4
-
 func getFolderPreloadQuery(index int) string {
 	return []string{"ParentFolder", "Folders", "Decks", "AccessType", "ParentFolder.ParentFolder"}[index]
 }
@@ -98,7 +96,7 @@ func DeleteFolderById(db *gorm.DB, id string) error {
 		}
 	}()
 
-	if err = folder.Delete(db); err != nil {
+	if err = folder.Delete(tx); err != nil {
 		tx.Rollback()
 		return err
 	}

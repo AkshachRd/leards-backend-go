@@ -1,0 +1,5 @@
+GET /api/v1/accounts/4b8543c9-f493-48ff-8d8a-55f72e1a77ae/settings HTTP/2.0
+Host: localhost:8080
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer RHFmcUFFTldfSlhkZkRRSWdWeHNFdk9tNTNIYjJ5QWQ=

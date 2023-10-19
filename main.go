@@ -99,10 +99,17 @@ func SetupRouter() *gin.Engine {
 	bearerAuthorizedV1 := v1.Group("", server.AuthService(handlers.BearerAuth))
 	{
 		accounts := v1.Group("/accounts")
-		accountsAuthorized := basicAuthorizedV1.Group("/accounts")
+		accountsBasicAuthorized := basicAuthorizedV1.Group("/accounts")
+		accountsBearerAuthorized := bearerAuthorizedV1.Group("/accounts")
 		{
 			accounts.POST("", server.CreateUser)
-			accountsAuthorized.GET("", server.LoginUser)
+			accountsBasicAuthorized.GET("", server.LoginUser)
+
+			userSettings := accountsBearerAuthorized.Group(":user_id/settings")
+			{
+				userSettings.GET("", server.GetUserSettings)
+				userSettings.PUT("", server.UpdateUserSettings)
+			}
 		}
 		auth := bearerAuthorizedV1.Group("/auth")
 		{

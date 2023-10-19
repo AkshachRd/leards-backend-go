@@ -28,3 +28,8 @@ type CardsResponse struct {
 	BasicResponse
 	Cards []Card `json:"cards"`
 } // @name CardsResponse
+
+type UserSettingsResponse struct {
+	BasicResponse
+	Settings Settings `json:"settings"`
+} // @name UserSettingsResponse

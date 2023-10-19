@@ -34,3 +34,13 @@ func ConvertDeck(deck *models.Deck) *Deck {
 
 	return &Deck{DeckId: deck.ID, Name: deck.Name, Content: content}
 }
+
+func ConvertUserSettings(userSettings *[]models.UserSetting) *Settings {
+	settings := make(Settings)
+
+	for _, userSetting := range *userSettings {
+		settings[userSetting.SettingName] = userSetting.SettingValue
+	}
+
+	return &settings
+}
