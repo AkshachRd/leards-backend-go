@@ -35,7 +35,7 @@ func NewDeck(db *gorm.DB, name string, accessType Access, parentFolderId string)
 }
 
 func UpdateDeckById(db *gorm.DB, id string, name string, accessType Access) (*Deck, error) {
-	deck, err := FetchDeckById(db, id, true, true)
+	deck, err := FetchDeckById(db, id, false, true)
 	if err != nil {
 		return &Deck{}, err
 	}
@@ -53,6 +53,11 @@ func UpdateDeckById(db *gorm.DB, id string, name string, accessType Access) (*De
 	deck.Name = name
 
 	err = db.Save(deck).Error
+	if err != nil {
+		return &Deck{}, err
+	}
+
+	deck, err = FetchDeckById(db, id, true, true)
 	if err != nil {
 		return &Deck{}, err
 	}

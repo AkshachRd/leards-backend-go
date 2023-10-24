@@ -58,7 +58,7 @@ func NewFolder(db *gorm.DB, name string, accessType Access, parentFolderId *stri
 }
 
 func UpdateFolderById(db *gorm.DB, id string, name string, accessType Access) (*Folder, error) {
-	folder, err := FetchFolderById(db, id, true, true, true, true, true)
+	folder, err := FetchFolderById(db, id, false, false, false, true, false)
 	if err != nil {
 		return &Folder{}, err
 	}
@@ -76,6 +76,11 @@ func UpdateFolderById(db *gorm.DB, id string, name string, accessType Access) (*
 	folder.Name = name
 
 	err = db.Save(folder).Error
+	if err != nil {
+		return &Folder{}, err
+	}
+
+	folder, err = FetchFolderById(db, id, false, true, true, true, true)
 	if err != nil {
 		return &Folder{}, err
 	}
