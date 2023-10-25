@@ -40,7 +40,7 @@ func UpdateDeckById(db *gorm.DB, id string, name string, accessType Access) (*De
 		return &Deck{}, err
 	}
 
-	if accessType != Access(deck.AccessType.Type) {
+	if accessType != "" && accessType != Access(deck.AccessType.Type) {
 		var accType AccessType
 		err = db.First(&accType, "type = ?", accessType).Error
 		if err != nil {

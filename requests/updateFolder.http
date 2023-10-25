@@ -1,0 +1,10 @@
+PUT /api/v1/folders/44877f91-116c-47a3-8adf-2f4c2d48892e HTTP/2.0
+Host: localhost:8080
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer WkJPUDVxdktnQ3o2YmFmZGF4WFFHUDZ1dk9aeDVLSlY=
+
+
+{
+  "name": "Test folder 4"
+}

@@ -96,7 +96,7 @@ func (s *Server) UpdateFolder(c *gin.Context) {
 	folderId := c.Param("folder_id")
 	folder, err := models.UpdateFolderById(s.db, folderId, input.Name, models.Access(input.AccessType))
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot update deck"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot update folder"})
 		return
 	}
 

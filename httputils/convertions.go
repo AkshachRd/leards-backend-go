@@ -16,11 +16,11 @@ func ConvertFolder(folder *models.Folder) *Folder {
 	}
 
 	var content []Content
-	for _, contentDeck := range folder.Decks {
-		content = append(content, Content{Id: contentDeck.ID, Name: contentDeck.Name, Type: "deck"})
-	}
 	for _, contentFolder := range folder.Folders {
 		content = append(content, Content{Id: contentFolder.ID, Name: contentFolder.Name, Type: "folder"})
+	}
+	for _, contentDeck := range folder.Decks {
+		content = append(content, Content{Id: contentDeck.ID, Name: contentDeck.Name, Type: "deck"})
 	}
 
 	return &Folder{FolderId: folder.ID, Name: folder.Name, Path: path, Content: content}

@@ -18,7 +18,7 @@ type CreateFolderRequest struct {
 
 type UpdateDeckRequest struct {
 	Name       string `json:"name" binding:"required" example:"My new deck"`
-	AccessType string `json:"accessType" binding:"required" example:"public"`
+	AccessType string `json:"accessType,omitempty" example:"public"`
 } // @name UpdateDeckRequest
 
 type SyncCardsRequest struct {
@@ -27,7 +27,7 @@ type SyncCardsRequest struct {
 
 type UpdateFolderRequest struct {
 	Name       string `json:"name" binding:"required" example:"My new folder"`
-	AccessType string `json:"accessType" binding:"required" example:"public"`
+	AccessType string `json:"accessType,omitempty" example:"public"`
 } // @name UpdateFolderRequest
 
 type UpdateUserSettingsRequest struct {

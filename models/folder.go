@@ -63,7 +63,7 @@ func UpdateFolderById(db *gorm.DB, id string, name string, accessType Access) (*
 		return &Folder{}, err
 	}
 
-	if accessType != Access(folder.AccessType.Type) {
+	if accessType != "" && accessType != Access(folder.AccessType.Type) {
 		var accType AccessType
 		err = db.First(&accType, "type = ?", accessType).Error
 		if err != nil {
