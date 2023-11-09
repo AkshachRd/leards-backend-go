@@ -25,6 +25,10 @@ type User struct {
 	Settings            []UserSetting
 }
 
+func (u *User) Update(db *gorm.DB, column string, value interface{}) error {
+	return db.Model(u).Update(column, value).Error
+}
+
 func getUserPreloadQuery(index int) string {
 	return []string{"RootFolder", "Settings"}[index]
 }

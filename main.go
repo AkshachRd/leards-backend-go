@@ -104,6 +104,8 @@ func SetupRouter() *gin.Engine {
 		{
 			accounts.POST("", server.CreateUser)
 			accountsBasicAuthorized.GET("", server.LoginUser)
+			accounts.GET(":user_id/avatar", server.GetAvatar)
+			accounts.PUT(":user_id/avatar", server.UploadAvatar)
 
 			userSettings := accountsBearerAuthorized.Group(":user_id/settings")
 			{

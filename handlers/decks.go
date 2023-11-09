@@ -23,7 +23,7 @@ import (
 func (s *Server) GetDeck(c *gin.Context) {
 	deckId := c.Param("deck_id")
 
-	deck, err := models.FetchDeckById(s.db, deckId, true)
+	deck, err := models.FetchDeckById(s.DB, deckId, true)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input or deck doesn't exist"})
 		return
@@ -57,7 +57,7 @@ func (s *Server) CreateDeck(c *gin.Context) {
 		return
 	}
 
-	deck, err := models.NewDeck(s.db, input.Name, models.Private, input.ParentFolderId)
+	deck, err := models.NewDeck(s.DB, input.Name, models.Private, input.ParentFolderId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot create a new deck"})
 		return
@@ -93,7 +93,7 @@ func (s *Server) UpdateDeck(c *gin.Context) {
 	}
 
 	deckId := c.Param("deck_id")
-	deck, err := models.UpdateDeckById(s.db, deckId, input.Name, models.Access(input.AccessType))
+	deck, err := models.UpdateDeckById(s.DB, deckId, input.Name, models.Access(input.AccessType))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot update deck"})
 		return
@@ -121,7 +121,7 @@ func (s *Server) UpdateDeck(c *gin.Context) {
 func (s *Server) DeleteDeck(c *gin.Context) {
 	deckId := c.Param("deck_id")
 
-	err := models.DeleteDeckById(s.db, deckId)
+	err := models.DeleteDeckById(s.DB, deckId)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input, deck doesn't exist or cannot delete"})
 		return

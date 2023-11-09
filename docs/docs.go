@@ -41,7 +41,7 @@ const docTemplate = `{
                 "tags": [
                     "accounts"
                 ],
-                "summary": "Login the  user",
+                "summary": "Login the user",
                 "operationId": "loginUser",
                 "responses": {
                     "201": {
@@ -109,6 +109,109 @@ const docTemplate = `{
                     },
                     "404": {
                         "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/accounts/{user_id}/avatar": {
+            "get": {
+                "description": "returns the user's avatar",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "image/png",
+                    "images/jpg",
+                    "image/jpeg",
+                    "image/gif"
+                ],
+                "tags": [
+                    "accounts"
+                ],
+                "summary": "get avatar by user id",
+                "operationId": "getAvatarByUserId",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "file"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/HTTPError"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "updates the user's avatar",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "accounts"
+                ],
+                "summary": "upload avatar by user id",
+                "operationId": "uploadAvatarByUserId",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "file",
+                        "description": "Avatar image file (JPG, JPEG, PNG, or GIF)",
+                        "name": "avatar",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/BasicResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "$ref": "#/definitions/HTTPError"
                         }
@@ -1076,7 +1179,6 @@ const docTemplate = `{
         "UpdateDeckRequest": {
             "type": "object",
             "required": [
-                "accessType",
                 "name"
             ],
             "properties": {
@@ -1093,7 +1195,6 @@ const docTemplate = `{
         "UpdateFolderRequest": {
             "type": "object",
             "required": [
-                "accessType",
                 "name"
             ],
             "properties": {

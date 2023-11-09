@@ -150,7 +150,6 @@ definitions:
         example: My new deck
         type: string
     required:
-    - accessType
     - name
     type: object
   UpdateFolderRequest:
@@ -162,7 +161,6 @@ definitions:
         example: My new folder
         type: string
     required:
-    - accessType
     - name
     type: object
   UpdateUserSettingsRequest:
@@ -249,7 +247,7 @@ paths:
             $ref: '#/definitions/HTTPError'
       security:
       - BasicAuth: []
-      summary: Login the  user
+      summary: Login the user
       tags:
       - accounts
     post:
@@ -284,6 +282,75 @@ paths:
           schema:
             $ref: '#/definitions/HTTPError'
       summary: Register a new user
+      tags:
+      - accounts
+  /accounts/{user_id}/avatar:
+    get:
+      consumes:
+      - application/json
+      description: returns the user's avatar
+      operationId: getAvatarByUserId
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - image/png
+      - images/jpg
+      - image/jpeg
+      - image/gif
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: file
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/HTTPError'
+      summary: get avatar by user id
+      tags:
+      - accounts
+    put:
+      consumes:
+      - multipart/form-data
+      description: updates the user's avatar
+      operationId: uploadAvatarByUserId
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      - description: Avatar image file (JPG, JPEG, PNG, or GIF)
+        in: formData
+        name: avatar
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/BasicResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/HTTPError'
+      security:
+      - BearerAuth: []
+      summary: upload avatar by user id
       tags:
       - accounts
   /accounts/{user_id}/settings:

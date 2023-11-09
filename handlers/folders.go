@@ -28,13 +28,13 @@ func (s *Server) CreateFolder(c *gin.Context) {
 		return
 	}
 
-	folder, err := models.NewFolder(s.db, input.Name, models.Private, &input.ParentFolderId)
+	folder, err := models.NewFolder(s.DB, input.Name, models.Private, &input.ParentFolderId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot create a new folder"})
 		return
 	}
 
-	folder, err = models.FetchFolderById(s.db, folder.ID, false, true, true, false, true)
+	folder, err = models.FetchFolderById(s.DB, folder.ID, false, true, true, false, true)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot fetch the created folder"})
 		return
@@ -60,7 +60,7 @@ func (s *Server) CreateFolder(c *gin.Context) {
 // @Router       /folders/{folder_id} [get]
 func (s *Server) GetFolder(c *gin.Context) {
 	folderId := c.Param("folder_id")
-	folder, err := models.FetchFolderById(s.db, folderId, true, true, true, false, true)
+	folder, err := models.FetchFolderById(s.DB, folderId, true, true, true, false, true)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input or folder doesn't exist"})
 		return
@@ -94,7 +94,7 @@ func (s *Server) UpdateFolder(c *gin.Context) {
 	}
 
 	folderId := c.Param("folder_id")
-	folder, err := models.UpdateFolderById(s.db, folderId, input.Name, models.Access(input.AccessType))
+	folder, err := models.UpdateFolderById(s.DB, folderId, input.Name, models.Access(input.AccessType))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot update folder"})
 		return
@@ -121,7 +121,7 @@ func (s *Server) UpdateFolder(c *gin.Context) {
 func (s *Server) DeleteFolder(c *gin.Context) {
 	folderId := c.Param("folder_id")
 
-	err := models.DeleteFolderById(s.db, folderId)
+	err := models.DeleteFolderById(s.DB, folderId)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input, folder doesn't exist or cannot delete"})
 		return

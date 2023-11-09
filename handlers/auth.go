@@ -25,13 +25,13 @@ import (
 func (s *Server) RefreshToken(c *gin.Context) {
 	userId := c.Param("user_id")
 
-	user, err := models.FetchUserById(s.db, userId)
+	user, err := models.FetchUserById(s.DB, userId)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
 		return
 	}
 
-	err = user.GenerateAuthToken(s.db)
+	err = user.GenerateAuthToken(s.DB)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Token generation error"})
 		return
@@ -60,13 +60,13 @@ func (s *Server) RefreshToken(c *gin.Context) {
 func (s *Server) RevokeToken(c *gin.Context) {
 	userId := c.Param("user_id")
 
-	user, err := models.FetchUserById(s.db, userId)
+	user, err := models.FetchUserById(s.DB, userId)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
 		return
 	}
 
-	err = user.RevokeAuthToken(s.db)
+	err = user.RevokeAuthToken(s.DB)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

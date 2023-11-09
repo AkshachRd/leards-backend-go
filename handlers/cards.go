@@ -24,7 +24,7 @@ import (
 func (s *Server) GetCards(c *gin.Context) {
 	deckId := c.Param("deck_id")
 
-	cards, err := models.FetchCardsByDeckId(s.db, deckId)
+	cards, err := models.FetchCardsByDeckId(s.DB, deckId)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input or deck doesn't exist"})
 		return
@@ -67,7 +67,7 @@ func (s *Server) SyncCards(c *gin.Context) {
 
 	deckId := c.Param("deck_id")
 
-	cards, err := models.FetchCardsByDeckId(s.db, deckId)
+	cards, err := models.FetchCardsByDeckId(s.DB, deckId)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input or deck doesn't exist"})
 		return
@@ -100,19 +100,19 @@ func (s *Server) SyncCards(c *gin.Context) {
 		deleteCards = append(deleteCards, deleteCard)
 	}
 
-	err = models.CreateCards(s.db, createCards)
+	err = models.CreateCards(s.DB, createCards)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot create cards"})
 		return
 	}
 
-	err = models.UpdateCards(s.db, updateCards)
+	err = models.UpdateCards(s.DB, updateCards)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot update cards"})
 		return
 	}
 
-	err = models.DeleteCards(s.db, deleteCards)
+	err = models.DeleteCards(s.DB, deleteCards)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot delete cards"})
 		return

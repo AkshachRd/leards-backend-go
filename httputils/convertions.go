@@ -44,3 +44,20 @@ func ConvertUserSettings(userSettings *[]models.UserSetting) *Settings {
 
 	return &settings
 }
+
+func ConvertUser(user *models.User, host string) *User {
+	convertedUser := User{
+		UserId:       user.ID,
+		Name:         user.Name,
+		Email:        user.Email,
+		AuthToken:    user.AuthToken.String,
+		RootFolderId: user.RootFolderID,
+		Settings:     *ConvertUserSettings(&user.Settings),
+	}
+
+	if user.ProfileIconPath.Valid {
+		convertedUser.ProfileIcon = host + "/api/v1/accounts/" + user.ID + "/avatar"
+	}
+
+	return &convertedUser
+}

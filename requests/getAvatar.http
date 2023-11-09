@@ -1,0 +1,5 @@
+GET /api/v1/accounts/2fb5c546-9ab2-4468-83f1-ffcf421648a6/avatar HTTP/2.0
+Host: localhost:8080
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer N2FXTnhUNGtZM0RjVERfOU9rQjhRNG8zbVQxOGxDeG8=

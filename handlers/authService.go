@@ -41,7 +41,7 @@ func (s *Server) AuthService(authType AuthType) gin.HandlerFunc {
 			}
 
 			email, password := parsedPayload[0], parsedPayload[1]
-			if !basicAuth(s.db, email, password) {
+			if !basicAuth(s.DB, email, password) {
 				respondWithError(http.StatusUnauthorized, "Unauthorized", c)
 				return
 			}
@@ -50,7 +50,7 @@ func (s *Server) AuthService(authType AuthType) gin.HandlerFunc {
 			c.Set("password", password)
 		case BearerAuth:
 			token := string(payload)
-			if !tokenAuth(s.db, token) {
+			if !tokenAuth(s.DB, token) {
 				respondWithError(http.StatusUnauthorized, "Unauthorized", c)
 				return
 			}
