@@ -163,6 +163,15 @@ definitions:
     required:
     - name
     type: object
+  UpdateUserRequest:
+    properties:
+      email:
+        example: rostislav.glizerin@ispring.com
+        type: string
+      name:
+        example: Ivan
+        type: string
+    type: object
   UpdateUserSettingsRequest:
     properties:
       settings:
@@ -282,6 +291,44 @@ paths:
           schema:
             $ref: '#/definitions/HTTPError'
       summary: Register a new user
+      tags:
+      - accounts
+  /accounts/{user_id}:
+    put:
+      consumes:
+      - application/json
+      description: updates the user in the database
+      operationId: UpdateUser
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      - description: Update user data
+        in: body
+        name: updateUserData
+        required: true
+        schema:
+          $ref: '#/definitions/UpdateUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/UserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/HTTPError'
+      security:
+      - BearerAuth: []
+      summary: Updates the user by id
       tags:
       - accounts
   /accounts/{user_id}/avatar:

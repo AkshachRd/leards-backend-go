@@ -111,6 +111,50 @@ func (s *Server) LoginUser(c *gin.Context) {
 	})
 }
 
+// UpdateUser godoc
+// @Id			 UpdateUser
+// @Summary      Updates the user by id
+// @Description  updates the user in the database
+// @Tags         accounts
+// @Accept       json
+// @Produce      json
+// @Security     BearerAuth
+// @Param		 user_id	  path		string	true	"User ID"
+// @Param		 updateUserData body httputils.UpdateUserRequest true "Update user data"
+// @Success      200  {object}  httputils.UserResponse
+// @Failure      400  {object}  httputils.HTTPError
+// @Failure      500  {object}  httputils.HTTPError
+// @Router       /accounts/{user_id} [put]
+func (s *Server) UpdateUser(c *gin.Context) {
+	userId := c.Param("user_id")
+
+	var input httputils.UpdateUserRequest
+
+	if err := c.ShouldBind(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
+		return
+	}
+
+	user, err := models.UpdateUserById(s.DB, userId, input.Name, input.Email)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot update user"})
+		return
+	}
+
+	userSettings, err := models.FetchUserSettingsByUserId(s.DB, user.ID)
+	if err != nil || !user.AuthToken.Valid {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Can't fetch user settings"})
+		return
+	}
+
+	user.Settings = *userSettings
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "User successfully updated",
+		"user":    *httputils.ConvertUser(user, c.Request.Host),
+	})
+}
+
 // GetAvatar godoc
 // @Id			 getAvatarByUserId
 // @Summary      get avatar by user id

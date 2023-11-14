@@ -176,3 +176,28 @@ func FetchUserByToken(db *gorm.DB, authToken string) (*User, error) {
 func (u *User) IsTokenValid() bool {
 	return u.AuthTokenExpiration.Valid && u.AuthTokenExpiration.Time.After(time.Now().UTC())
 }
+
+func UpdateUserById(db *gorm.DB, id string, name string, email string) (*User, error) {
+	user, err := FetchUserById(db, id)
+	if err != nil {
+		return &User{}, err
+	}
+
+	if name != "" && user.Name != name {
+		err = user.Update(db, "name", name)
+		if err != nil {
+			return &User{}, err
+		}
+		user.Name = name
+	}
+
+	if email != "" && user.Email != email {
+		err = user.Update(db, "email", email)
+		if err != nil {
+			return &User{}, err
+		}
+		user.Email = email
+	}
+
+	return user, nil
+}

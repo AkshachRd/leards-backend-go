@@ -21,6 +21,11 @@ type UpdateDeckRequest struct {
 	AccessType string `json:"accessType,omitempty" example:"public"`
 } // @name UpdateDeckRequest
 
+type UpdateUserRequest struct {
+	Name  string `json:"name,omitempty" example:"Ivan"`
+	Email string `json:"email,omitempty" example:"rostislav.glizerin@ispring.com"`
+} // @name UpdateUserRequest
+
 type SyncCardsRequest struct {
 	Cards []Card `json:"cards" binding:"required"`
 } // @name SyncCardsRequest
