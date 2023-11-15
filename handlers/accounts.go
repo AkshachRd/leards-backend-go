@@ -135,7 +135,7 @@ func (s *Server) UpdateUser(c *gin.Context) {
 		return
 	}
 
-	user, err := models.UpdateUserById(s.DB, userId, input.Name, input.Email)
+	user, err := models.UpdateUserById(s.DB, userId, input.Name, input.Email, input.Password)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot update user"})
 		return

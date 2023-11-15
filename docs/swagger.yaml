@@ -171,6 +171,9 @@ definitions:
       name:
         example: Ivan
         type: string
+      password:
+        example: qwerty123
+        type: string
     type: object
   UpdateUserSettingsRequest:
     properties:

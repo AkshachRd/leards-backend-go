@@ -22,8 +22,9 @@ type UpdateDeckRequest struct {
 } // @name UpdateDeckRequest
 
 type UpdateUserRequest struct {
-	Name  string `json:"name,omitempty" example:"Ivan"`
-	Email string `json:"email,omitempty" example:"rostislav.glizerin@ispring.com"`
+	Name     string `json:"name,omitempty" example:"Ivan"`
+	Email    string `json:"email,omitempty" example:"rostislav.glizerin@ispring.com"`
+	Password string `json:"password,omitempty" example:"qwerty123"`
 } // @name UpdateUserRequest
 
 type SyncCardsRequest struct {

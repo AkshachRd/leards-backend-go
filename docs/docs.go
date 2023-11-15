@@ -1277,6 +1277,10 @@ const docTemplate = `{
                 "name": {
                     "type": "string",
                     "example": "Ivan"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "qwerty123"
                 }
             }
         },

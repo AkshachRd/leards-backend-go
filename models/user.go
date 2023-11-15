@@ -81,9 +81,14 @@ func (u *User) SetPassword(db *gorm.DB, password string) error {
 		return err
 	}
 
+	err = u.Update(db, "password_hashed", passwordHashed)
+	if err != nil {
+		return err
+	}
+
 	u.PasswordHashed = passwordHashed
-	err = db.Save(u).Error
-	return err
+
+	return nil
 }
 
 // FetchUserByEmail
@@ -177,7 +182,7 @@ func (u *User) IsTokenValid() bool {
 	return u.AuthTokenExpiration.Valid && u.AuthTokenExpiration.Time.After(time.Now().UTC())
 }
 
-func UpdateUserById(db *gorm.DB, id string, name string, email string) (*User, error) {
+func UpdateUserById(db *gorm.DB, id string, name string, email string, password string) (*User, error) {
 	user, err := FetchUserById(db, id)
 	if err != nil {
 		return &User{}, err
@@ -197,6 +202,14 @@ func UpdateUserById(db *gorm.DB, id string, name string, email string) (*User, e
 			return &User{}, err
 		}
 		user.Email = email
+	}
+
+	if password != "" && !user.IsPasswordCorrect(password) {
+		// TODO: Инкапсулировать обновление каждого поля как у пароля
+		err = user.SetPassword(db, password)
+		if err != nil {
+			return &User{}, err
+		}
 	}
 
 	return user, nil
