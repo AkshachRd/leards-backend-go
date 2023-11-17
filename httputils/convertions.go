@@ -4,6 +4,16 @@ import (
 	"github.com/AkshachRd/leards-backend-go/models"
 )
 
+func ConvertDecksToContent(decks *[]models.Deck) *[]Content {
+	var content []Content
+
+	for _, deck := range *decks {
+		content = append(content, Content{Id: deck.ID, Name: deck.Name, Type: "deck"})
+	}
+
+	return &content
+}
+
 func ConvertFolder(folder *models.Folder) *Folder {
 	var path []Path
 	path = append(path, Path{Name: folder.Name, Id: folder.ID})
@@ -19,9 +29,7 @@ func ConvertFolder(folder *models.Folder) *Folder {
 	for _, contentFolder := range folder.Folders {
 		content = append(content, Content{Id: contentFolder.ID, Name: contentFolder.Name, Type: "folder"})
 	}
-	for _, contentDeck := range folder.Decks {
-		content = append(content, Content{Id: contentDeck.ID, Name: contentDeck.Name, Type: "deck"})
-	}
+	content = append(content, *ConvertDecksToContent(&folder.Decks)...)
 
 	return &Folder{FolderId: folder.ID, Name: folder.Name, Path: path, Content: content}
 }

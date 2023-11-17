@@ -80,6 +80,16 @@ definitions:
         example: Successfully
         type: string
     type: object
+  FavoriteStoragesResponse:
+    properties:
+      content:
+        items:
+          $ref: '#/definitions/Content'
+        type: array
+      message:
+        example: Successfully
+        type: string
+    type: object
   Folder:
     properties:
       content:
@@ -551,8 +561,8 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
           schema:
             $ref: '#/definitions/FolderResponse'
         "400":
@@ -881,6 +891,90 @@ paths:
       summary: Synchronizes cards
       tags:
       - cards
+  /library/{user_id}:
+    get:
+      consumes:
+      - application/json
+      description: returns the user's favorite storages
+      operationId: getFavoriteStorages
+      parameters:
+      - description: Page
+        in: query
+        minimum: 1
+        name: page
+        type: integer
+      - description: Page size
+        in: query
+        maximum: 100
+        minimum: 10
+        name: page_size
+        type: integer
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/FavoriteStoragesResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/HTTPError'
+      security:
+      - BearerAuth: []
+      summary: get favorite storages by user id
+      tags:
+      - library
+  /library/{user_id}/{storage_type}:
+    post:
+      consumes:
+      - application/json
+      description: creates a new favorite storage in the database
+      operationId: addStorageToFavorite
+      parameters:
+      - description: User ID
+        in: path
+        maxLength: 36
+        minLength: 36
+        name: user_id
+        required: true
+        type: string
+      - description: Storage type
+        enum:
+        - deck
+        - folder
+        in: path
+        name: storage_type
+        required: true
+        type: string
+      - description: Storage ID
+        in: path
+        maxLength: 36
+        minLength: 36
+        name: storage_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/BasicResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/HTTPError'
+      security:
+      - BearerAuth: []
+      summary: add favorite storage by user id, storage id and storage type
+      tags:
+      - library
 securityDefinitions:
   BasicAuth:
     type: basic

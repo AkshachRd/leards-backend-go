@@ -16,7 +16,7 @@ import (
 // @Produce      json
 // @Security     Bearer
 // @Param		 createFolderData body httputils.CreateFolderRequest true "Create folder data"
-// @Success      200  {object}  httputils.FolderResponse
+// @Success      201  {object}  httputils.FolderResponse
 // @Failure      400  {object}  httputils.HTTPError
 // @Failure      500  {object}  httputils.HTTPError
 // @Router       /folders [post]
@@ -40,7 +40,7 @@ func CreateFolder(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
+	c.JSON(http.StatusCreated, gin.H{
 		"message": "Folder successfully created",
 		"folder":  *httputils.ConvertFolder(folder),
 	})

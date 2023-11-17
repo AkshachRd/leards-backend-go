@@ -6,14 +6,15 @@ import (
 
 type Deck struct {
 	Model
-	Name           string `gorm:"size:255; not null"`
-	ParentFolderID string `gorm:"size:36; not null"`
-	ParentFolder   Folder `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	AccessTypeID   uint8  `gorm:"not null"`
-	AccessType     AccessType
-	Cards          []Card          `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	Permissions    []Permission    `gorm:"polymorphic:Storage;polymorphicValue:deck"`
-	StorageHasTags []StorageHasTag `gorm:"polymorphic:Storage;polymorphicValue:deck"`
+	Name             string `gorm:"size:255; not null"`
+	ParentFolderID   string `gorm:"size:36; not null"`
+	ParentFolder     Folder `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	AccessTypeID     uint8  `gorm:"not null"`
+	AccessType       AccessType
+	Cards            []Card            `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Permissions      []Permission      `gorm:"polymorphic:Storage;polymorphicValue:deck"`
+	FavoriteStorages []FavoriteStorage `gorm:"polymorphic:Storage;polymorphicValue:deck"`
+	StorageHasTags   []StorageHasTag   `gorm:"polymorphic:Storage;polymorphicValue:deck"`
 }
 
 func getDeckPreloadQuery(index int) string {
@@ -136,6 +137,23 @@ func FetchDecksByParentId(parentFolderId string) (*[]Deck, error) {
 	var decks []Deck
 
 	err := db.Find(&decks, "parent_folder_id = ?", parentFolderId).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return &decks, nil
+}
+
+func FetchPublicDecksWithPagination(page int, pageSize int) (*[]Deck, error) {
+	var decks []Deck
+
+	var accType AccessType
+	err := db.First(&accType, "type = ?", Public).Error
+	if err != nil {
+		return &decks, err
+	}
+
+	err = db.Scopes(Paginate(page, pageSize)).Find(&decks, "access_type_id = ?", Public).Error
 	if err != nil {
 		return nil, err
 	}

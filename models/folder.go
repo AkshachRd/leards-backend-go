@@ -7,15 +7,16 @@ import (
 
 type Folder struct {
 	Model
-	Name           string `gorm:"size:255; not null"`
-	AccessTypeID   uint8  `gorm:"not null"`
-	AccessType     AccessType
-	ParentFolderID *string         `gorm:"size:36"`
-	ParentFolder   *Folder         `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	Folders        []Folder        `gorm:"foreignkey:ParentFolderID"`
-	Decks          []Deck          `gorm:"foreignKey:ParentFolderID"`
-	Permissions    []Permission    `gorm:"polymorphic:Storage;polymorphicValue:folder"`
-	StorageHasTags []StorageHasTag `gorm:"polymorphic:Storage;polymorphicValue:folder"`
+	Name             string `gorm:"size:255; not null"`
+	AccessTypeID     uint8  `gorm:"not null"`
+	AccessType       AccessType
+	ParentFolderID   *string           `gorm:"size:36"`
+	ParentFolder     *Folder           `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	Folders          []Folder          `gorm:"foreignkey:ParentFolderID"`
+	Decks            []Deck            `gorm:"foreignKey:ParentFolderID"`
+	Permissions      []Permission      `gorm:"polymorphic:Storage;polymorphicValue:folder"`
+	FavoriteStorages []FavoriteStorage `gorm:"polymorphic:Storage;polymorphicValue:deck"`
+	StorageHasTags   []StorageHasTag   `gorm:"polymorphic:Storage;polymorphicValue:folder"`
 }
 
 func getFolderPreloadArgs(query string) []interface{} {

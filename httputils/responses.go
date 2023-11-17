@@ -33,3 +33,8 @@ type UserSettingsResponse struct {
 	BasicResponse
 	Settings Settings `json:"settings"`
 } // @name UserSettingsResponse
+
+type FavoriteStoragesResponse struct {
+	BasicResponse
+	Content []Content `json:"content"`
+} // @name FavoriteStoragesResponse

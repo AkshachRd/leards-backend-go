@@ -520,8 +520,8 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/FolderResponse"
                         }
@@ -1021,6 +1021,131 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/library/{user_id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "returns the user's favorite storages",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "library"
+                ],
+                "summary": "get favorite storages by user id",
+                "operationId": "getFavoriteStorages",
+                "parameters": [
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "description": "Page",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "maximum": 100,
+                        "minimum": 10,
+                        "type": "integer",
+                        "description": "Page size",
+                        "name": "page_size",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/FavoriteStoragesResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/library/{user_id}/{storage_type}": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "creates a new favorite storage in the database",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "library"
+                ],
+                "summary": "add favorite storage by user id, storage id and storage type",
+                "operationId": "addStorageToFavorite",
+                "parameters": [
+                    {
+                        "maxLength": 36,
+                        "minLength": 36,
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "enum": [
+                            "deck",
+                            "folder"
+                        ],
+                        "type": "string",
+                        "description": "Storage type",
+                        "name": "storage_type",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "maxLength": 36,
+                        "minLength": 36,
+                        "type": "string",
+                        "description": "Storage ID",
+                        "name": "storage_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/BasicResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/HTTPError"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -1136,6 +1261,21 @@ const docTemplate = `{
             "properties": {
                 "deck": {
                     "$ref": "#/definitions/Deck"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Successfully"
+                }
+            }
+        },
+        "FavoriteStoragesResponse": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Content"
+                    }
                 },
                 "message": {
                     "type": "string",

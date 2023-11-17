@@ -69,7 +69,11 @@ func SetupRouters() *gin.Engine {
 				}
 			}
 		}
-
+		library := bearerAuthorizedV1.Group("/library")
+		{
+			library.GET(":user_id", v1.GetFavoriteStorages)
+			library.POST(":user_id/:storage_type/:storage_id", v1.AddStorageToFavorite)
+		}
 	}
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
