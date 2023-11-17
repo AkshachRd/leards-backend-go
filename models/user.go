@@ -13,7 +13,7 @@ const TokenLength = 32
 const TokenExpiration = time.Hour
 
 type User struct {
-	Base
+	Model
 	Name                string         `gorm:"size:255; not null"`
 	Email               string         `gorm:"size:255; not null; unique"`
 	PasswordHashed      string         `gorm:"size:255; not null"`
@@ -27,6 +27,16 @@ type User struct {
 
 func (u *User) Update(db *gorm.DB, column string, value interface{}) error {
 	return db.Model(u).Update(column, value).Error
+}
+
+func (u *User) SetProfileIconPath(profileIconPath string) error {
+	err := u.Update(db, "profile_icon_path", profileIconPath)
+	if err != nil {
+		return err
+	}
+
+	u.ProfileIconPath = sql.NullString{String: profileIconPath, Valid: true}
+	return nil
 }
 
 func getUserPreloadQuery(index int) string {
@@ -43,7 +53,7 @@ func checkPasswordHash(password, hash string) bool {
 	return err == nil
 }
 
-func NewUser(db *gorm.DB, name string, email string, password string) (*User, error) {
+func NewUser(name string, email string, password string) (*User, error) {
 	passwordHashed, err := hashPassword(password)
 	if err != nil {
 		return &User{}, err
@@ -56,7 +66,7 @@ func NewUser(db *gorm.DB, name string, email string, password string) (*User, er
 		return &User{}, err
 	}
 
-	rootFolder, err := NewFolder(db, "rootFolder", Private, nil)
+	rootFolder, err := NewFolder("rootFolder", Private, nil)
 	if err != nil {
 		return &User{}, err
 	}
@@ -94,7 +104,7 @@ func (u *User) SetPassword(db *gorm.DB, password string) error {
 // FetchUserByEmail
 //
 // Preload args: "RootFolder", "Settings"
-func FetchUserByEmail(db *gorm.DB, email string, preloadArgs ...bool) (*User, error) {
+func FetchUserByEmail(email string, preloadArgs ...bool) (*User, error) {
 	var user User
 
 	query := db
@@ -112,7 +122,7 @@ func FetchUserByEmail(db *gorm.DB, email string, preloadArgs ...bool) (*User, er
 	return &user, nil
 }
 
-func FetchUserById(db *gorm.DB, id string) (*User, error) {
+func FetchUserById(id string) (*User, error) {
 	var user User
 
 	err := db.First(&user, "id_user = ?", id).Error
@@ -147,7 +157,7 @@ func generateRandomToken(length int) (string, error) {
 	return token, nil
 }
 
-func (u *User) GenerateAuthToken(db *gorm.DB) error {
+func (u *User) GenerateAuthToken() error {
 	randomToken, err := generateRandomToken(TokenLength)
 	if err != nil {
 		return err
@@ -160,14 +170,14 @@ func (u *User) GenerateAuthToken(db *gorm.DB) error {
 	return err
 }
 
-func (u *User) RevokeAuthToken(db *gorm.DB) error {
+func (u *User) RevokeAuthToken() error {
 	u.AuthTokenExpiration = sql.NullTime{Time: time.Now().UTC(), Valid: true}
 
 	err := db.Save(u).Error
 	return err
 }
 
-func FetchUserByToken(db *gorm.DB, authToken string) (*User, error) {
+func FetchUserByToken(authToken string) (*User, error) {
 	var user User
 
 	err := db.First(&user, "auth_token = ?", authToken).Error
@@ -182,8 +192,8 @@ func (u *User) IsTokenValid() bool {
 	return u.AuthTokenExpiration.Valid && u.AuthTokenExpiration.Time.After(time.Now().UTC())
 }
 
-func UpdateUserById(db *gorm.DB, id string, name string, email string, password string) (*User, error) {
-	user, err := FetchUserById(db, id)
+func UpdateUserById(id string, name string, email string, password string) (*User, error) {
+	user, err := FetchUserById(id)
 	if err != nil {
 		return &User{}, err
 	}

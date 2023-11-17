@@ -1,4 +1,4 @@
-package handlers
+package v1
 
 import (
 	_ "github.com/AkshachRd/leards-backend-go/httputils"
@@ -22,16 +22,16 @@ import (
 // @Failure      404  {object}  httputils.HTTPError
 // @Failure      500  {object}  httputils.HTTPError
 // @Router       /auth/{user_id} [get]
-func (s *Server) RefreshToken(c *gin.Context) {
+func RefreshToken(c *gin.Context) {
 	userId := c.Param("user_id")
 
-	user, err := models.FetchUserById(s.DB, userId)
+	user, err := models.FetchUserById(userId)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
 		return
 	}
 
-	err = user.GenerateAuthToken(s.DB)
+	err = user.GenerateAuthToken()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Token generation error"})
 		return
@@ -57,16 +57,16 @@ func (s *Server) RefreshToken(c *gin.Context) {
 // @Failure      401  {object}  httputils.HTTPError
 // @Failure      500  {object}  httputils.HTTPError
 // @Router       /auth/{user_id} [delete]
-func (s *Server) RevokeToken(c *gin.Context) {
+func RevokeToken(c *gin.Context) {
 	userId := c.Param("user_id")
 
-	user, err := models.FetchUserById(s.DB, userId)
+	user, err := models.FetchUserById(userId)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
 		return
 	}
 
-	err = user.RevokeAuthToken(s.DB)
+	err = user.RevokeAuthToken()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

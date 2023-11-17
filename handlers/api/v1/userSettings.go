@@ -1,4 +1,4 @@
-package handlers
+package v1
 
 import (
 	"github.com/AkshachRd/leards-backend-go/httputils"
@@ -19,9 +19,9 @@ import (
 // @Success      200  {object}  httputils.UserSettingsResponse
 // @Failure      400  {object}  httputils.HTTPError
 // @Router       /accounts/{user_id}/settings [get]
-func (s *Server) GetUserSettings(c *gin.Context) {
+func GetUserSettings(c *gin.Context) {
 	userId := c.Param("user_id")
-	userSettings, err := models.FetchUserSettingsByUserId(s.DB, userId)
+	userSettings, err := models.FetchUserSettingsByUserId(userId)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input or user doesn't exist"})
 		return
@@ -46,7 +46,7 @@ func (s *Server) GetUserSettings(c *gin.Context) {
 // @Success      200  {object}  httputils.UserSettingsResponse
 // @Failure      400  {object}  httputils.HTTPError
 // @Router       /accounts/{user_id}/settings [put]
-func (s *Server) UpdateUserSettings(c *gin.Context) {
+func UpdateUserSettings(c *gin.Context) {
 	var input httputils.UpdateUserSettingsRequest
 
 	if err := c.ShouldBind(&input); err != nil {
@@ -55,7 +55,7 @@ func (s *Server) UpdateUserSettings(c *gin.Context) {
 	}
 
 	userId := c.Param("user_id")
-	userSettings, err := models.UpdateUserSettings(s.DB, userId, input.Settings)
+	userSettings, err := models.UpdateUserSettings(userId, input.Settings)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot update user settings"})
 		return

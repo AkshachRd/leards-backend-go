@@ -1,7 +1,5 @@
 package models
 
-import "gorm.io/gorm"
-
 type Access string
 
 const (
@@ -14,7 +12,7 @@ type AccessType struct {
 	Type string `gorm:"size:255; not null; unique;"`
 }
 
-func FillAccessTypes(db *gorm.DB) error {
+func FillAccessTypes() error {
 	acc := AccessType{Type: string(Public)}
 	err := db.Create(&acc).Error
 	if err != nil {

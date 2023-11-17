@@ -6,7 +6,7 @@ import (
 )
 
 type Folder struct {
-	Base
+	Model
 	Name           string `gorm:"size:255; not null"`
 	AccessTypeID   uint8  `gorm:"not null"`
 	AccessType     AccessType
@@ -35,7 +35,7 @@ func getFolderPreloadQuery(index int) string {
 	return []string{"ParentFolder", "Folders", "Decks", "AccessType", "ParentFolder.ParentFolder"}[index]
 }
 
-func NewFolder(db *gorm.DB, name string, accessType Access, parentFolderId *string) (*Folder, error) {
+func NewFolder(name string, accessType Access, parentFolderId *string) (*Folder, error) {
 	var accType AccessType
 	err := db.First(&accType, "type = ?", accessType).Error
 	if err != nil {
@@ -57,8 +57,8 @@ func NewFolder(db *gorm.DB, name string, accessType Access, parentFolderId *stri
 	return &folder, nil
 }
 
-func UpdateFolderById(db *gorm.DB, id string, name string, accessType Access) (*Folder, error) {
-	folder, err := FetchFolderById(db, id, false, false, false, true, false)
+func UpdateFolderById(id string, name string, accessType Access) (*Folder, error) {
+	folder, err := FetchFolderById(id, false, false, false, true, false)
 	if err != nil {
 		return &Folder{}, err
 	}
@@ -80,7 +80,7 @@ func UpdateFolderById(db *gorm.DB, id string, name string, accessType Access) (*
 		return &Folder{}, err
 	}
 
-	folder, err = FetchFolderById(db, id, false, true, true, true, true)
+	folder, err = FetchFolderById(id, false, true, true, true, true)
 	if err != nil {
 		return &Folder{}, err
 	}
@@ -88,8 +88,8 @@ func UpdateFolderById(db *gorm.DB, id string, name string, accessType Access) (*
 	return folder, nil
 }
 
-func DeleteFolderById(db *gorm.DB, id string) error {
-	folder, err := FetchFolderById(db, id, false, true, true)
+func DeleteFolderById(id string) error {
+	folder, err := FetchFolderById(id, false, true, true)
 	if err != nil {
 		return err
 	}
@@ -149,7 +149,7 @@ func (f *Folder) Delete(db *gorm.DB) error {
 // FetchFolderById
 //
 // Preload args: "ParentFolder", "Folders", "Decks", "AccessType", "ParentFolderRecursive"
-func FetchFolderById(db *gorm.DB, id string, preloadArgs ...bool) (*Folder, error) {
+func FetchFolderById(id string, preloadArgs ...bool) (*Folder, error) {
 	var folder Folder
 
 	query := db
@@ -168,7 +168,7 @@ func FetchFolderById(db *gorm.DB, id string, preloadArgs ...bool) (*Folder, erro
 	return &folder, nil
 }
 
-func FetchFoldersByParentFolderId(db *gorm.DB, parentFolderId string) (*[]Folder, error) {
+func FetchFoldersByParentFolderId(parentFolderId string) (*[]Folder, error) {
 	var folders []Folder
 
 	err := db.Find(&folders, "parent_folder_id = ?", parentFolderId).Error

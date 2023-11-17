@@ -1,9 +1,10 @@
-package handlers
+package v1
 
 import (
 	"fmt"
 	"github.com/AkshachRd/leards-backend-go/httputils"
 	"github.com/AkshachRd/leards-backend-go/models"
+	"github.com/AkshachRd/leards-backend-go/settings"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"os"
@@ -23,7 +24,7 @@ import (
 // @Failure      404  {object}  httputils.HTTPError
 // @Failure      500  {object}  httputils.HTTPError
 // @Router       /accounts [post]
-func (s *Server) CreateUser(c *gin.Context) {
+func CreateUser(c *gin.Context) {
 	var input httputils.CreateUserRequest
 
 	if err := c.ShouldBind(&input); err != nil {
@@ -31,19 +32,19 @@ func (s *Server) CreateUser(c *gin.Context) {
 		return
 	}
 
-	user, err := models.NewUser(s.DB, input.Username, input.Email, input.Password)
+	user, err := models.NewUser(input.Username, input.Email, input.Password)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input or username/email already exists"})
 		return
 	}
 
-	err = user.GenerateAuthToken(s.DB)
+	err = user.GenerateAuthToken()
 	if err != nil || !user.AuthToken.Valid {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid new token"})
 		return
 	}
 
-	userSettings, err := models.FetchUserSettingsByUserId(s.DB, user.ID)
+	userSettings, err := models.FetchUserSettingsByUserId(user.ID)
 	if err != nil || !user.AuthToken.Valid {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Can't fetch user settings"})
 		return
@@ -70,7 +71,7 @@ func (s *Server) CreateUser(c *gin.Context) {
 // @Failure      401  {object}  httputils.HTTPError
 // @Failure      500  {object}  httputils.HTTPError
 // @Router       /accounts [get]
-func (s *Server) LoginUser(c *gin.Context) {
+func LoginUser(c *gin.Context) {
 	email, ok := c.Get("email")
 	if !ok {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "User is not authorized"})
@@ -85,19 +86,19 @@ func (s *Server) LoginUser(c *gin.Context) {
 		return
 	}
 
-	user, err := models.FetchUserByEmail(s.DB, fmt.Sprintf("%v", email))
+	user, err := models.FetchUserByEmail(fmt.Sprintf("%v", email))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid login or user do not exist"})
 		return
 	}
 
-	err = user.GenerateAuthToken(s.DB)
+	err = user.GenerateAuthToken()
 	if err != nil || !user.AuthToken.Valid {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid new token"})
 		return
 	}
 
-	userSettings, err := models.FetchUserSettingsByUserId(s.DB, user.ID)
+	userSettings, err := models.FetchUserSettingsByUserId(user.ID)
 	if err != nil || !user.AuthToken.Valid {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Can't fetch user settings"})
 		return
@@ -125,7 +126,7 @@ func (s *Server) LoginUser(c *gin.Context) {
 // @Failure      400  {object}  httputils.HTTPError
 // @Failure      500  {object}  httputils.HTTPError
 // @Router       /accounts/{user_id} [put]
-func (s *Server) UpdateUser(c *gin.Context) {
+func UpdateUser(c *gin.Context) {
 	userId := c.Param("user_id")
 
 	var input httputils.UpdateUserRequest
@@ -135,13 +136,13 @@ func (s *Server) UpdateUser(c *gin.Context) {
 		return
 	}
 
-	user, err := models.UpdateUserById(s.DB, userId, input.Name, input.Email, input.Password)
+	user, err := models.UpdateUserById(userId, input.Name, input.Email, input.Password)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot update user"})
 		return
 	}
 
-	userSettings, err := models.FetchUserSettingsByUserId(s.DB, user.ID)
+	userSettings, err := models.FetchUserSettingsByUserId(user.ID)
 	if err != nil || !user.AuthToken.Valid {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Can't fetch user settings"})
 		return
@@ -170,10 +171,10 @@ func (s *Server) UpdateUser(c *gin.Context) {
 // @Failure      400  {object}  httputils.HTTPError
 // @Failure      404  {object}  httputils.HTTPError
 // @Router       /accounts/{user_id}/avatar [get]
-func (s *Server) GetAvatar(c *gin.Context) {
+func GetAvatar(c *gin.Context) {
 	userId := c.Param("user_id")
 
-	user, err := models.FetchUserById(s.DB, userId)
+	user, err := models.FetchUserById(userId)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "User not found"})
 		return
@@ -184,7 +185,7 @@ func (s *Server) GetAvatar(c *gin.Context) {
 		return
 	}
 
-	avatarPath := s.EnvVars.AvatarBasePath + "/" + user.ProfileIconPath.String
+	avatarPath := settings.AppSettings.EnvVars.AvatarBasePath + "/" + user.ProfileIconPath.String
 	c.Header("Content-Disposition", fmt.Sprintf("attachment; filename=%s", user.ProfileIconPath.String))
 	c.File(avatarPath)
 }
@@ -203,10 +204,10 @@ func (s *Server) GetAvatar(c *gin.Context) {
 // @Failure      400  {object}  httputils.HTTPError
 // @Failure      500  {object}  httputils.HTTPError
 // @Router       /accounts/{user_id}/avatar [put]
-func (s *Server) UploadAvatar(c *gin.Context) {
+func UploadAvatar(c *gin.Context) {
 	userId := c.Param("user_id")
 
-	user, err := models.FetchUserById(s.DB, userId)
+	user, err := models.FetchUserById(userId)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "User not found"})
 		return
@@ -230,7 +231,7 @@ func (s *Server) UploadAvatar(c *gin.Context) {
 	}
 
 	avatarFilename := fmt.Sprintf("avatar_%s%s", user.ID, ext)
-	avatarSavePath := s.EnvVars.AvatarBasePath + "/" + avatarFilename
+	avatarSavePath := settings.AppSettings.EnvVars.AvatarBasePath + "/" + avatarFilename
 
 	if err = c.SaveUploadedFile(file, avatarSavePath); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
@@ -238,13 +239,13 @@ func (s *Server) UploadAvatar(c *gin.Context) {
 	}
 
 	if user.ProfileIconPath.Valid {
-		if err = os.Remove(s.EnvVars.AvatarBasePath + "/" + user.ProfileIconPath.String); err != nil {
+		if err = os.Remove(settings.AppSettings.EnvVars.AvatarBasePath + "/" + user.ProfileIconPath.String); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete previous avatar"})
 			return
 		}
 	}
 
-	if err = user.Update(s.DB, "ProfileIconPath", avatarFilename); err != nil {
+	if err = user.SetProfileIconPath(avatarFilename); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update avatar in DB"})
 		return
 	}

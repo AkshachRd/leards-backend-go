@@ -1,6 +1,8 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+)
 
 type Setting string
 
@@ -10,7 +12,7 @@ const (
 )
 
 type UserSetting struct {
-	Base
+	Model
 	UserID       string `gorm:"size:36"`
 	User         User
 	SettingName  Setting `gorm:"size:255"`
@@ -49,8 +51,8 @@ func NewUserSettings(db *gorm.DB, userId string) (*[]UserSetting, error) {
 	return &userSettings, nil
 }
 
-func UpdateUserSettings(db *gorm.DB, userId string, settings map[Setting]string) (*[]UserSetting, error) {
-	userSettings, err := FetchUserSettingsByUserId(db, userId)
+func UpdateUserSettings(userId string, settings map[Setting]string) (*[]UserSetting, error) {
+	userSettings, err := FetchUserSettingsByUserId(userId)
 	if err != nil {
 		return nil, err
 	}
@@ -88,7 +90,7 @@ func (us *UserSetting) Update(db *gorm.DB, settingValue string) error {
 	return nil
 }
 
-func FetchUserSettingsByUserId(db *gorm.DB, userId string) (*[]UserSetting, error) {
+func FetchUserSettingsByUserId(userId string) (*[]UserSetting, error) {
 	var userSettings []UserSetting
 
 	err := db.Find(&userSettings, "user_id = ?", userId).Error

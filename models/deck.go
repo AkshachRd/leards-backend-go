@@ -1,9 +1,11 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+)
 
 type Deck struct {
-	Base
+	Model
 	Name           string `gorm:"size:255; not null"`
 	ParentFolderID string `gorm:"size:36; not null"`
 	ParentFolder   Folder `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
@@ -18,7 +20,7 @@ func getDeckPreloadQuery(index int) string {
 	return []string{"Cards", "AccessType"}[index]
 }
 
-func NewDeck(db *gorm.DB, name string, accessType Access, parentFolderId string) (*Deck, error) {
+func NewDeck(name string, accessType Access, parentFolderId string) (*Deck, error) {
 	var accType AccessType
 	err := db.First(&accType, "type = ?", accessType).Error
 	if err != nil {
@@ -34,8 +36,8 @@ func NewDeck(db *gorm.DB, name string, accessType Access, parentFolderId string)
 	return &deck, nil
 }
 
-func UpdateDeckById(db *gorm.DB, id string, name string, accessType Access) (*Deck, error) {
-	deck, err := FetchDeckById(db, id, false, true)
+func UpdateDeckById(id string, name string, accessType Access) (*Deck, error) {
+	deck, err := FetchDeckById(id, false, true)
 	if err != nil {
 		return &Deck{}, err
 	}
@@ -57,7 +59,7 @@ func UpdateDeckById(db *gorm.DB, id string, name string, accessType Access) (*De
 		return &Deck{}, err
 	}
 
-	deck, err = FetchDeckById(db, id, true, true)
+	deck, err = FetchDeckById(id, true, true)
 	if err != nil {
 		return &Deck{}, err
 	}
@@ -65,8 +67,8 @@ func UpdateDeckById(db *gorm.DB, id string, name string, accessType Access) (*De
 	return deck, nil
 }
 
-func DeleteDeckById(db *gorm.DB, id string) error {
-	deck, err := FetchDeckById(db, id, true)
+func DeleteDeckById(id string) error {
+	deck, err := FetchDeckById(id, true)
 	if err != nil {
 		return err
 	}
@@ -112,7 +114,7 @@ func (d *Deck) Delete(db *gorm.DB) error {
 // FetchDeckById
 //
 // Preload args: Cards, AccessType
-func FetchDeckById(db *gorm.DB, id string, preloadArgs ...bool) (*Deck, error) {
+func FetchDeckById(id string, preloadArgs ...bool) (*Deck, error) {
 	var deck Deck
 
 	query := db
@@ -130,7 +132,7 @@ func FetchDeckById(db *gorm.DB, id string, preloadArgs ...bool) (*Deck, error) {
 	return &deck, nil
 }
 
-func FetchDecksByParentId(db *gorm.DB, parentFolderId string) (*[]Deck, error) {
+func FetchDecksByParentId(parentFolderId string) (*[]Deck, error) {
 	var decks []Deck
 
 	err := db.Find(&decks, "parent_folder_id = ?", parentFolderId).Error

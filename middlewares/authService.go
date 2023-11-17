@@ -1,11 +1,10 @@
-package handlers
+package middlewares
 
 import (
 	"encoding/base64"
 	_ "github.com/AkshachRd/leards-backend-go/httputils"
 	"github.com/AkshachRd/leards-backend-go/models"
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 	"net/http"
 	"strings"
 )
@@ -17,7 +16,7 @@ const (
 	BearerAuth
 )
 
-func (s *Server) AuthService(authType AuthType) gin.HandlerFunc {
+func AuthService(authType AuthType) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authHeaderContent := strings.SplitN(c.Request.Header.Get("Authorization"), " ", 2)
 
@@ -41,7 +40,7 @@ func (s *Server) AuthService(authType AuthType) gin.HandlerFunc {
 			}
 
 			email, password := parsedPayload[0], parsedPayload[1]
-			if !basicAuth(s.DB, email, password) {
+			if !basicAuth(email, password) {
 				respondWithError(http.StatusUnauthorized, "Unauthorized", c)
 				return
 			}
@@ -50,7 +49,7 @@ func (s *Server) AuthService(authType AuthType) gin.HandlerFunc {
 			c.Set("password", password)
 		case BearerAuth:
 			token := string(payload)
-			if !tokenAuth(s.DB, token) {
+			if !tokenAuth(token) {
 				respondWithError(http.StatusUnauthorized, "Unauthorized", c)
 				return
 			}
@@ -65,8 +64,8 @@ func (s *Server) AuthService(authType AuthType) gin.HandlerFunc {
 	}
 }
 
-func basicAuth(db *gorm.DB, email, password string) bool {
-	user, err := models.FetchUserByEmail(db, email)
+func basicAuth(email, password string) bool {
+	user, err := models.FetchUserByEmail(email)
 	if err != nil {
 		return false
 	}
@@ -74,8 +73,8 @@ func basicAuth(db *gorm.DB, email, password string) bool {
 	return user.IsPasswordCorrect(password)
 }
 
-func tokenAuth(db *gorm.DB, token string) bool {
-	user, err := models.FetchUserByToken(db, token)
+func tokenAuth(token string) bool {
+	user, err := models.FetchUserByToken(token)
 	if err != nil {
 		return false
 	}

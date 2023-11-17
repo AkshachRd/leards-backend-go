@@ -1,7 +1,7 @@
 package models
 
 type Permission struct {
-	Base
+	Model
 	StorageID        string `gorm:"size:36; not null"`
 	StorageType      string `gorm:"size:255; not null"`
 	UserID           string `gorm:"size:36; not null"`

@@ -1,8 +1,7 @@
-package handlers
+package settings
 
 import (
 	"github.com/joho/godotenv"
-	"gorm.io/gorm"
 	"log"
 	"os"
 )
@@ -30,11 +29,12 @@ func NewEnvVars() *EnvVars {
 	return &envVars
 }
 
-type Server struct {
-	DB      *gorm.DB
+type Settings struct {
 	EnvVars *EnvVars
 }
 
-func NewServer(db *gorm.DB) *Server {
-	return &Server{DB: db, EnvVars: NewEnvVars()}
+var AppSettings = &Settings{}
+
+func Setup() {
+	AppSettings.EnvVars = NewEnvVars()
 }

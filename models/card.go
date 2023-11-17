@@ -1,18 +1,14 @@
 package models
 
-import (
-	"gorm.io/gorm"
-)
-
 type Card struct {
-	Base
+	Model
 	FrontSide string `gorm:"type:text; not null"`
 	BackSide  string `gorm:"type:text; not null"`
 	DeckID    string `gorm:"size:36; not null"`
 	Deck      Deck   `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
-func UpdateCards(db *gorm.DB, cards []Card) error {
+func UpdateCards(cards []Card) error {
 	if len(cards) == 0 {
 		return nil
 	}
@@ -37,7 +33,7 @@ func UpdateCards(db *gorm.DB, cards []Card) error {
 	return tx.Commit().Error
 }
 
-func CreateCards(db *gorm.DB, cards []Card) error {
+func CreateCards(cards []Card) error {
 	if len(cards) == 0 {
 		return nil
 	}
@@ -59,7 +55,7 @@ func CreateCards(db *gorm.DB, cards []Card) error {
 	return tx.Commit().Error
 }
 
-func DeleteCards(db *gorm.DB, cards []Card) error {
+func DeleteCards(cards []Card) error {
 	if len(cards) == 0 {
 		return nil
 	}
@@ -79,7 +75,7 @@ func DeleteCards(db *gorm.DB, cards []Card) error {
 	return tx.Commit().Error
 }
 
-func FetchCardsByDeckId(db *gorm.DB, deckId string) (*[]Card, error) {
+func FetchCardsByDeckId(deckId string) (*[]Card, error) {
 	var cards []Card
 
 	err := db.Find(&cards, "deck_id = ?", deckId).Error

@@ -1,4 +1,4 @@
-package handlers
+package v1
 
 import (
 	"github.com/AkshachRd/leards-backend-go/httputils"
@@ -20,7 +20,7 @@ import (
 // @Failure      400  {object}  httputils.HTTPError
 // @Failure      500  {object}  httputils.HTTPError
 // @Router       /folders [post]
-func (s *Server) CreateFolder(c *gin.Context) {
+func CreateFolder(c *gin.Context) {
 	var input httputils.CreateFolderRequest
 
 	if err := c.ShouldBind(&input); err != nil {
@@ -28,13 +28,13 @@ func (s *Server) CreateFolder(c *gin.Context) {
 		return
 	}
 
-	folder, err := models.NewFolder(s.DB, input.Name, models.Private, &input.ParentFolderId)
+	folder, err := models.NewFolder(input.Name, models.Private, &input.ParentFolderId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot create a new folder"})
 		return
 	}
 
-	folder, err = models.FetchFolderById(s.DB, folder.ID, false, true, true, false, true)
+	folder, err = models.FetchFolderById(folder.ID, false, true, true, false, true)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot fetch the created folder"})
 		return
@@ -58,9 +58,9 @@ func (s *Server) CreateFolder(c *gin.Context) {
 // @Success      200  {object}  httputils.FolderResponse
 // @Failure      400  {object}  httputils.HTTPError
 // @Router       /folders/{folder_id} [get]
-func (s *Server) GetFolder(c *gin.Context) {
+func GetFolder(c *gin.Context) {
 	folderId := c.Param("folder_id")
-	folder, err := models.FetchFolderById(s.DB, folderId, true, true, true, false, true)
+	folder, err := models.FetchFolderById(folderId, true, true, true, false, true)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input or folder doesn't exist"})
 		return
@@ -85,7 +85,7 @@ func (s *Server) GetFolder(c *gin.Context) {
 // @Success      200  {object}  httputils.FolderResponse
 // @Failure      400  {object}  httputils.HTTPError
 // @Router       /folders/{folder_id} [put]
-func (s *Server) UpdateFolder(c *gin.Context) {
+func UpdateFolder(c *gin.Context) {
 	var input httputils.UpdateFolderRequest
 
 	if err := c.ShouldBind(&input); err != nil {
@@ -94,7 +94,7 @@ func (s *Server) UpdateFolder(c *gin.Context) {
 	}
 
 	folderId := c.Param("folder_id")
-	folder, err := models.UpdateFolderById(s.DB, folderId, input.Name, models.Access(input.AccessType))
+	folder, err := models.UpdateFolderById(folderId, input.Name, models.Access(input.AccessType))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot update folder"})
 		return
@@ -118,10 +118,10 @@ func (s *Server) UpdateFolder(c *gin.Context) {
 // @Success      200  {object}  httputils.BasicResponse
 // @Failure      400  {object}  httputils.HTTPError
 // @Router       /folders/{folder_id} [delete]
-func (s *Server) DeleteFolder(c *gin.Context) {
+func DeleteFolder(c *gin.Context) {
 	folderId := c.Param("folder_id")
 
-	err := models.DeleteFolderById(s.DB, folderId)
+	err := models.DeleteFolderById(folderId)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input, folder doesn't exist or cannot delete"})
 		return

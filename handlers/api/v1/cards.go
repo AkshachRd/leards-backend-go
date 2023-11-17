@@ -1,4 +1,4 @@
-package handlers
+package v1
 
 import (
 	"github.com/AkshachRd/leards-backend-go/httputils"
@@ -21,10 +21,10 @@ import (
 // @Failure      400  {object}  httputils.HTTPError
 // @Failure      500  {object}  httputils.HTTPError
 // @Router       /folders/{folder_id}/decks/{deck_id}/cards [get]
-func (s *Server) GetCards(c *gin.Context) {
+func GetCards(c *gin.Context) {
 	deckId := c.Param("deck_id")
 
-	cards, err := models.FetchCardsByDeckId(s.DB, deckId)
+	cards, err := models.FetchCardsByDeckId(deckId)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input or deck doesn't exist"})
 		return
@@ -57,7 +57,7 @@ func (s *Server) GetCards(c *gin.Context) {
 // @Failure      400  {object}  httputils.HTTPError
 // @Failure      500  {object}  httputils.HTTPError
 // @Router       /folders/{folder_id}/decks/{deck_id}/cards [put]
-func (s *Server) SyncCards(c *gin.Context) {
+func SyncCards(c *gin.Context) {
 	var input httputils.SyncCardsRequest
 
 	if err := c.ShouldBind(&input); err != nil {
@@ -67,7 +67,7 @@ func (s *Server) SyncCards(c *gin.Context) {
 
 	deckId := c.Param("deck_id")
 
-	cards, err := models.FetchCardsByDeckId(s.DB, deckId)
+	cards, err := models.FetchCardsByDeckId(deckId)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input or deck doesn't exist"})
 		return
@@ -100,19 +100,19 @@ func (s *Server) SyncCards(c *gin.Context) {
 		deleteCards = append(deleteCards, deleteCard)
 	}
 
-	err = models.CreateCards(s.DB, createCards)
+	err = models.CreateCards(createCards)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot create cards"})
 		return
 	}
 
-	err = models.UpdateCards(s.DB, updateCards)
+	err = models.UpdateCards(updateCards)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot update cards"})
 		return
 	}
 
-	err = models.DeleteCards(s.DB, deleteCards)
+	err = models.DeleteCards(deleteCards)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot delete cards"})
 		return

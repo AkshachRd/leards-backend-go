@@ -1,4 +1,4 @@
-package handlers
+package v1
 
 import (
 	"github.com/AkshachRd/leards-backend-go/httputils"
@@ -20,10 +20,10 @@ import (
 // @Success      200  {object}  httputils.DeckResponse
 // @Failure      400  {object}  httputils.HTTPError
 // @Router       /folders/{folder_id}/decks/{deck_id} [get]
-func (s *Server) GetDeck(c *gin.Context) {
+func GetDeck(c *gin.Context) {
 	deckId := c.Param("deck_id")
 
-	deck, err := models.FetchDeckById(s.DB, deckId, true)
+	deck, err := models.FetchDeckById(deckId, true)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input or deck doesn't exist"})
 		return
@@ -49,7 +49,7 @@ func (s *Server) GetDeck(c *gin.Context) {
 // @Failure      400  {object}  httputils.HTTPError
 // @Failure      500  {object}  httputils.HTTPError
 // @Router       /folders/{folder_id}/decks [post]
-func (s *Server) CreateDeck(c *gin.Context) {
+func CreateDeck(c *gin.Context) {
 	var input httputils.CreateDeckRequest
 
 	if err := c.ShouldBind(&input); err != nil {
@@ -57,7 +57,7 @@ func (s *Server) CreateDeck(c *gin.Context) {
 		return
 	}
 
-	deck, err := models.NewDeck(s.DB, input.Name, models.Private, input.ParentFolderId)
+	deck, err := models.NewDeck(input.Name, models.Private, input.ParentFolderId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot create a new deck"})
 		return
@@ -84,7 +84,7 @@ func (s *Server) CreateDeck(c *gin.Context) {
 // @Failure      400  {object}  httputils.HTTPError
 // @Failure      500  {object}  httputils.HTTPError
 // @Router       /folders/{folder_id}/decks/{deck_id} [put]
-func (s *Server) UpdateDeck(c *gin.Context) {
+func UpdateDeck(c *gin.Context) {
 	var input httputils.UpdateDeckRequest
 
 	if err := c.ShouldBind(&input); err != nil {
@@ -93,7 +93,7 @@ func (s *Server) UpdateDeck(c *gin.Context) {
 	}
 
 	deckId := c.Param("deck_id")
-	deck, err := models.UpdateDeckById(s.DB, deckId, input.Name, models.Access(input.AccessType))
+	deck, err := models.UpdateDeckById(deckId, input.Name, models.Access(input.AccessType))
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot update deck"})
 		return
@@ -118,10 +118,10 @@ func (s *Server) UpdateDeck(c *gin.Context) {
 // @Success      200  {object}  httputils.BasicResponse
 // @Failure      400  {object}  httputils.HTTPError
 // @Router       /folders/{folder_id}/decks/{deck_id} [delete]
-func (s *Server) DeleteDeck(c *gin.Context) {
+func DeleteDeck(c *gin.Context) {
 	deckId := c.Param("deck_id")
 
-	err := models.DeleteDeckById(s.DB, deckId)
+	err := models.DeleteDeckById(deckId)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input, deck doesn't exist or cannot delete"})
 		return
