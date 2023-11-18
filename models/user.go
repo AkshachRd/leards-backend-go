@@ -53,31 +53,15 @@ func checkPasswordHash(password, hash string) bool {
 	return err == nil
 }
 
-func NewUser(name string, email string, password string) (*User, error) {
+func NewUser(name string, email string, password string, rootFolderId string) (*User, error) {
 	passwordHashed, err := hashPassword(password)
 	if err != nil {
 		return &User{}, err
 	}
 
-	user := User{Name: name, Email: email, PasswordHashed: passwordHashed}
+	user := User{Name: name, Email: email, PasswordHashed: passwordHashed, RootFolderID: rootFolderId}
 
 	err = db.Create(&user).Error
-	if err != nil {
-		return &User{}, err
-	}
-
-	rootFolder, err := NewFolder("rootFolder", Private, nil)
-	if err != nil {
-		return &User{}, err
-	}
-
-	user.RootFolderID = rootFolder.ID
-	err = db.Save(&user).Error
-	if err != nil {
-		return &User{}, err
-	}
-
-	_, err = NewUserSettings(db, user.ID)
 	if err != nil {
 		return &User{}, err
 	}
@@ -85,7 +69,18 @@ func NewUser(name string, email string, password string) (*User, error) {
 	return &user, nil
 }
 
-func (u *User) SetPassword(db *gorm.DB, password string) error {
+func (u *User) SetRootFolderId(rootFolderId string) error {
+	err := u.Update(db, "root_folder_id", rootFolderId)
+	if err != nil {
+		return err
+	}
+
+	u.RootFolderID = rootFolderId
+
+	return nil
+}
+
+func (u *User) SetPassword(password string) error {
 	passwordHashed, err := hashPassword(password)
 	if err != nil {
 		return err
@@ -216,7 +211,7 @@ func UpdateUserById(id string, name string, email string, password string) (*Use
 
 	if password != "" && !user.IsPasswordCorrect(password) {
 		// TODO: Инкапсулировать обновление каждого поля как у пароля
-		err = user.SetPassword(db, password)
+		err = user.SetPassword(password)
 		if err != nil {
 			return &User{}, err
 		}

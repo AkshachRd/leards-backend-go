@@ -32,9 +32,27 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 
-	user, err := models.NewUser(input.Username, input.Email, input.Password)
+	rootFolder, err := models.NewFolder("rootFolder", models.AccessTypePrivate, nil)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot create a new root folder"})
+		return
+	}
+
+	user, err := models.NewUser(input.Username, input.Email, input.Password, rootFolder.ID)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input or username/email already exists"})
+		return
+	}
+
+	_, err = models.NewUserSettings(user.ID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot create new user setting for the user"})
+		return
+	}
+
+	_, err = models.NewPermission(rootFolder.ID, "folder", user.ID, models.PermissionTypeOwner)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot create a permission for the folder"})
 		return
 	}
 

@@ -36,7 +36,7 @@ func NewUserSetting(db *gorm.DB, userId string, settingName Setting, settingValu
 	return &userSetting, nil
 }
 
-func NewUserSettings(db *gorm.DB, userId string) (*[]UserSetting, error) {
+func NewUserSettings(userId string) (*[]UserSetting, error) {
 	var userSettings []UserSetting
 
 	for settingName, settingValue := range getUserSettingsMap() {

@@ -16,6 +16,11 @@ import (
 
 var db *gorm.DB
 
+const (
+	AccessTypePrivate = iota
+	AccessTypePublic
+)
+
 type Model struct {
 	ID        string `gorm:"primary_key; unique; type:char(36)"`
 	CreatedAt time.Time
@@ -50,12 +55,10 @@ func Setup() {
 	}
 
 	err = db.AutoMigrate(
-		&AccessType{},
 		&Card{},
 		&Deck{},
 		&Folder{},
 		&Permission{},
-		&PermissionType{},
 		&Repetition{},
 		&RepetitionState{},
 		&StorageHasTag{},
@@ -94,16 +97,13 @@ func (c CustomNamingStrategy) ColumnName(table, column string) string {
 	return strings.ToLower(snake)
 }
 
-func FillEnums() {
-	FillAccessTypes()
-}
-
 func MockData() error {
-	FillEnums()
+	rootFolder, err := NewFolder("rootFolder", AccessTypePrivate, nil)
+	user, err := NewUser("Owner", "owner", "12345Q", rootFolder.ID)
+	_, err = NewUserSettings(user.ID)
+	_, err = NewPermission(rootFolder.ID, "folder", user.ID, PermissionTypeOwner)
 
-	user, err := NewUser("Owner", "owner", "12345Q")
-
-	deck, err := NewDeck("deck1", Private, user.RootFolderID)
+	deck, err := NewDeck("deck1", AccessTypePrivate, user.RootFolderID)
 
 	deck.Cards = []Card{
 		{DeckID: deck.ID, FrontSide: "Apple", BackSide: "Яблокоф"},

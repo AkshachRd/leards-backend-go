@@ -7,15 +7,14 @@ import (
 
 type Folder struct {
 	Model
-	Name             string `gorm:"size:255; not null"`
-	AccessTypeID     uint8  `gorm:"not null"`
-	AccessType       AccessType
+	Name             string            `gorm:"size:255; not null"`
+	AccessType       uint8             `gorm:"not null"`
 	ParentFolderID   *string           `gorm:"size:36"`
 	ParentFolder     *Folder           `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Folders          []Folder          `gorm:"foreignkey:ParentFolderID"`
 	Decks            []Deck            `gorm:"foreignKey:ParentFolderID"`
 	Permissions      []Permission      `gorm:"polymorphic:Storage;polymorphicValue:folder"`
-	FavoriteStorages []FavoriteStorage `gorm:"polymorphic:Storage;polymorphicValue:deck"`
+	FavoriteStorages []FavoriteStorage `gorm:"polymorphic:Storage;polymorphicValue:folder"`
 	StorageHasTags   []StorageHasTag   `gorm:"polymorphic:Storage;polymorphicValue:folder"`
 }
 
@@ -36,21 +35,15 @@ func getFolderPreloadQuery(index int) string {
 	return []string{"ParentFolder", "Folders", "Decks", "AccessType", "ParentFolder.ParentFolder"}[index]
 }
 
-func NewFolder(name string, accessType Access, parentFolderId *string) (*Folder, error) {
-	var accType AccessType
-	err := db.First(&accType, "type = ?", accessType).Error
-	if err != nil {
-		return &Folder{}, nil
-	}
-
-	folder := Folder{Name: name, AccessTypeID: accType.ID}
+func NewFolder(name string, accessType uint8, parentFolderId *string) (*Folder, error) {
+	folder := Folder{Name: name, AccessType: accessType}
 	if parentFolderId != nil {
-		if _, err = uuid.Parse(*parentFolderId); err == nil {
+		if _, err := uuid.Parse(*parentFolderId); err == nil {
 			folder.ParentFolderID = parentFolderId
 		}
 	}
 
-	err = db.Create(&folder).Error
+	err := db.Create(&folder).Error
 	if err != nil {
 		return &Folder{}, nil
 	}
@@ -58,20 +51,10 @@ func NewFolder(name string, accessType Access, parentFolderId *string) (*Folder,
 	return &folder, nil
 }
 
-func UpdateFolderById(id string, name string, accessType Access) (*Folder, error) {
+func UpdateFolderById(id string, name string) (*Folder, error) {
 	folder, err := FetchFolderById(id, false, false, false, true, false)
 	if err != nil {
 		return &Folder{}, err
-	}
-
-	if accessType != "" && accessType != Access(folder.AccessType.Type) {
-		var accType AccessType
-		err = db.First(&accType, "type = ?", accessType).Error
-		if err != nil {
-			return &Folder{}, err
-		}
-
-		folder.AccessTypeID = accType.ID
 	}
 
 	folder.Name = name

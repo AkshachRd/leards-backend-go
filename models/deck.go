@@ -6,11 +6,10 @@ import (
 
 type Deck struct {
 	Model
-	Name             string `gorm:"size:255; not null"`
-	ParentFolderID   string `gorm:"size:36; not null"`
-	ParentFolder     Folder `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	AccessTypeID     uint8  `gorm:"not null"`
-	AccessType       AccessType
+	Name             string            `gorm:"size:255; not null"`
+	ParentFolderID   string            `gorm:"size:36; not null"`
+	ParentFolder     Folder            `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
+	AccessType       uint8             `gorm:"not null"`
 	Cards            []Card            `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Permissions      []Permission      `gorm:"polymorphic:Storage;polymorphicValue:deck"`
 	FavoriteStorages []FavoriteStorage `gorm:"polymorphic:Storage;polymorphicValue:deck"`
@@ -21,15 +20,9 @@ func getDeckPreloadQuery(index int) string {
 	return []string{"Cards", "AccessType"}[index]
 }
 
-func NewDeck(name string, accessType Access, parentFolderId string) (*Deck, error) {
-	var accType AccessType
-	err := db.First(&accType, "type = ?", accessType).Error
-	if err != nil {
-		return &Deck{}, err
-	}
-
-	deck := Deck{Name: name, AccessTypeID: accType.ID, ParentFolderID: parentFolderId}
-	err = db.Create(&deck).Error
+func NewDeck(name string, accessType uint8, parentFolderId string) (*Deck, error) {
+	deck := Deck{Name: name, AccessType: accessType, ParentFolderID: parentFolderId}
+	err := db.Create(&deck).Error
 	if err != nil {
 		return &Deck{}, err
 	}
@@ -37,20 +30,10 @@ func NewDeck(name string, accessType Access, parentFolderId string) (*Deck, erro
 	return &deck, nil
 }
 
-func UpdateDeckById(id string, name string, accessType Access) (*Deck, error) {
+func UpdateDeckById(id string, name string) (*Deck, error) {
 	deck, err := FetchDeckById(id, false, true)
 	if err != nil {
 		return &Deck{}, err
-	}
-
-	if accessType != "" && accessType != Access(deck.AccessType.Type) {
-		var accType AccessType
-		err = db.First(&accType, "type = ?", accessType).Error
-		if err != nil {
-			return &Deck{}, err
-		}
-
-		deck.AccessTypeID = accType.ID
 	}
 
 	deck.Name = name
@@ -147,13 +130,7 @@ func FetchDecksByParentId(parentFolderId string) (*[]Deck, error) {
 func FetchPublicDecksWithPagination(page int, pageSize int) (*[]Deck, error) {
 	var decks []Deck
 
-	var accType AccessType
-	err := db.First(&accType, "type = ?", Public).Error
-	if err != nil {
-		return &decks, err
-	}
-
-	err = db.Scopes(Paginate(page, pageSize)).Find(&decks, "access_type_id = ?", Public).Error
+	err := db.Scopes(Paginate(page, pageSize)).Find(&decks, "access_type = ?", AccessTypePublic).Error
 	if err != nil {
 		return nil, err
 	}
