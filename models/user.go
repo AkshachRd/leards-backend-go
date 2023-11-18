@@ -53,7 +53,7 @@ func checkPasswordHash(password, hash string) bool {
 	return err == nil
 }
 
-func NewUser(name string, email string, password string, rootFolderId string) (*User, error) {
+func NewUser(db *gorm.DB, name string, email string, password string, rootFolderId string) (*User, error) {
 	passwordHashed, err := hashPassword(password)
 	if err != nil {
 		return &User{}, err
@@ -67,6 +67,46 @@ func NewUser(name string, email string, password string, rootFolderId string) (*
 	}
 
 	return &user, nil
+}
+
+func CreateUser(name string, email string, password string) (*User, error) {
+	tx := db.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	rootFolder, err := NewFolder(tx, "rootFolder", AccessTypePrivate, nil)
+	if err != nil {
+		tx.Rollback()
+		return &User{}, nil
+	}
+
+	user, err := NewUser(tx, name, email, password, rootFolder.ID)
+	if err != nil {
+		tx.Rollback()
+		return &User{}, nil
+	}
+
+	_, err = NewUserSettings(tx, user.ID)
+	if err != nil {
+		tx.Rollback()
+		return &User{}, nil
+	}
+
+	_, err = NewPermission(tx, rootFolder.ID, "folder", user.ID, PermissionTypeOwner)
+	if err != nil {
+		tx.Rollback()
+		return &User{}, nil
+	}
+
+	err = tx.Commit().Error
+	if err != nil {
+		return &User{}, nil
+	}
+
+	return user, nil
 }
 
 func (u *User) SetRootFolderId(rootFolderId string) error {

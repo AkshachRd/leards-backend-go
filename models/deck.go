@@ -20,7 +20,7 @@ func getDeckPreloadQuery(index int) string {
 	return []string{"Cards", "AccessType"}[index]
 }
 
-func NewDeck(name string, accessType uint8, parentFolderId string) (*Deck, error) {
+func NewDeck(db *gorm.DB, name string, accessType uint8, parentFolderId string) (*Deck, error) {
 	deck := Deck{Name: name, AccessType: accessType, ParentFolderID: parentFolderId}
 	err := db.Create(&deck).Error
 	if err != nil {
@@ -28,6 +28,33 @@ func NewDeck(name string, accessType uint8, parentFolderId string) (*Deck, error
 	}
 
 	return &deck, nil
+}
+
+func CreateDeck(name string, accessType uint8, parentFolderId string, userId string) (*Deck, error) {
+	tx := db.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	deck, err := NewDeck(tx, name, accessType, parentFolderId)
+	if err != nil {
+		tx.Rollback()
+		return &Deck{}, err
+	}
+
+	_, err = NewPermission(tx, deck.ID, "deck", userId, PermissionTypeOwner)
+	if err != nil {
+		tx.Rollback()
+		return &Deck{}, nil
+	}
+
+	if err = tx.Commit().Error; err != nil {
+		return &Deck{}, nil
+	}
+
+	return deck, nil
 }
 
 func UpdateDeckById(id string, name string) (*Deck, error) {

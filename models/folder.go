@@ -35,7 +35,7 @@ func getFolderPreloadQuery(index int) string {
 	return []string{"ParentFolder", "Folders", "Decks", "AccessType", "ParentFolder.ParentFolder"}[index]
 }
 
-func NewFolder(name string, accessType uint8, parentFolderId *string) (*Folder, error) {
+func NewFolder(db *gorm.DB, name string, accessType uint8, parentFolderId *string) (*Folder, error) {
 	folder := Folder{Name: name, AccessType: accessType}
 	if parentFolderId != nil {
 		if _, err := uuid.Parse(*parentFolderId); err == nil {
@@ -49,6 +49,33 @@ func NewFolder(name string, accessType uint8, parentFolderId *string) (*Folder, 
 	}
 
 	return &folder, nil
+}
+
+func CreateFolder(name string, accessType uint8, parentFolderId *string, userId string) (*Folder, error) {
+	tx := db.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	folder, err := NewFolder(tx, name, accessType, parentFolderId)
+	if err != nil {
+		tx.Rollback()
+		return &Folder{}, err
+	}
+
+	_, err = NewPermission(tx, folder.ID, "folder", userId, PermissionTypeOwner)
+	if err != nil {
+		tx.Rollback()
+		return &Folder{}, nil
+	}
+
+	if err = tx.Commit().Error; err != nil {
+		return &Folder{}, nil
+	}
+
+	return folder, nil
 }
 
 func UpdateFolderById(id string, name string) (*Folder, error) {

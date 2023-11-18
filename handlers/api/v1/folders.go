@@ -28,15 +28,9 @@ func CreateFolder(c *gin.Context) {
 		return
 	}
 
-	folder, err := models.NewFolder(input.Name, models.AccessTypePrivate, &input.ParentFolderId)
+	folder, err := models.CreateFolder(input.Name, models.AccessTypePrivate, &input.ParentFolderId, input.UserId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot create a new folder"})
-		return
-	}
-
-	_, err = models.NewPermission(folder.ID, "folder", input.UserId, models.PermissionTypeOwner)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot create a permission for the folder"})
 		return
 	}
 

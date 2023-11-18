@@ -57,15 +57,9 @@ func CreateDeck(c *gin.Context) {
 		return
 	}
 
-	deck, err := models.NewDeck(input.Name, models.AccessTypePrivate, input.ParentFolderId)
+	deck, err := models.CreateDeck(input.Name, models.AccessTypePrivate, input.ParentFolderId, input.UserId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot create a new deck"})
-		return
-	}
-
-	_, err = models.NewPermission(deck.ID, "deck", input.UserId, models.PermissionTypeOwner)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot create a permission for the deck"})
 		return
 	}
 

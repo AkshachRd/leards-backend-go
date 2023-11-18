@@ -1,5 +1,7 @@
 package models
 
+import "gorm.io/gorm"
+
 const (
 	PermissionTypeOwner = iota
 )
@@ -13,7 +15,7 @@ type Permission struct {
 	PermissionType uint8 `gorm:"not null"`
 }
 
-func NewPermission(storageId string, storageType string, userId string, permissionType uint8) (*Permission, error) {
+func NewPermission(db *gorm.DB, storageId string, storageType string, userId string, permissionType uint8) (*Permission, error) {
 	permission := Permission{StorageID: storageId, StorageType: storageType, UserID: userId, PermissionType: permissionType}
 
 	err := db.Create(&permission).Error

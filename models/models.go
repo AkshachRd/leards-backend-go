@@ -98,13 +98,23 @@ func (c CustomNamingStrategy) ColumnName(table, column string) string {
 }
 
 func MockData() error {
-	rootFolder, err := NewFolder("rootFolder", AccessTypePrivate, nil)
-	user, err := NewUser("Owner", "owner", "12345Q", rootFolder.ID)
-	_, err = NewUserSettings(user.ID)
-	_, err = NewPermission(rootFolder.ID, "folder", user.ID, PermissionTypeOwner)
+	name := "Owner"
+	email := "owner"
+	password := "12345Q"
 
-	deck, err := NewDeck("deck1", AccessTypePrivate, user.RootFolderID)
+	_, err := FetchUserByEmail(email)
+	if err == nil {
+		return nil
+	}
 
+	user, err := CreateUser(name, email, password)
+	if err != nil {
+		return err
+	}
+	deck, err := CreateDeck("deck1", AccessTypePrivate, user.RootFolderID, user.ID)
+	if err != nil {
+		return err
+	}
 	deck.Cards = []Card{
 		{DeckID: deck.ID, FrontSide: "Apple", BackSide: "Яблокоф"},
 		{DeckID: deck.ID, FrontSide: "Banana", BackSide: "Бананоф"},
