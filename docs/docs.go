@@ -515,7 +515,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/CreateDeckRequest"
+                            "$ref": "#/definitions/CreateFolderRequest"
                         }
                     }
                 ],
@@ -1204,6 +1204,27 @@ const docTemplate = `{
         "CreateDeckRequest": {
             "type": "object",
             "required": [
+                "name",
+                "parentFolderId"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "example": "My new deck"
+                },
+                "parentFolderId": {
+                    "type": "string",
+                    "example": "72a30ffb-1896-48b1-b006-985fb055db0f"
+                },
+                "userId": {
+                    "type": "string",
+                    "example": "72a30ffb-1896-48b1-b006-985fb055db0f"
+                }
+            }
+        },
+        "CreateFolderRequest": {
+            "type": "object",
+            "required": [
                 "name"
             ],
             "properties": {
@@ -1212,6 +1233,10 @@ const docTemplate = `{
                     "example": "My new folder"
                 },
                 "parentFolderId": {
+                    "type": "string",
+                    "example": "72a30ffb-1896-48b1-b006-985fb055db0f"
+                },
+                "userId": {
                     "type": "string",
                     "example": "72a30ffb-1896-48b1-b006-985fb055db0f"
                 }
@@ -1381,10 +1406,6 @@ const docTemplate = `{
                 "name"
             ],
             "properties": {
-                "accessType": {
-                    "type": "string",
-                    "example": "public"
-                },
                 "name": {
                     "type": "string",
                     "example": "My new deck"
@@ -1397,10 +1418,6 @@ const docTemplate = `{
                 "name"
             ],
             "properties": {
-                "accessType": {
-                    "type": "string",
-                    "example": "public"
-                },
                 "name": {
                     "type": "string",
                     "example": "My new folder"

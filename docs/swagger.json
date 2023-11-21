@@ -509,7 +509,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/CreateDeckRequest"
+                            "$ref": "#/definitions/CreateFolderRequest"
                         }
                     }
                 ],
@@ -1198,6 +1198,27 @@
         "CreateDeckRequest": {
             "type": "object",
             "required": [
+                "name",
+                "parentFolderId"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "example": "My new deck"
+                },
+                "parentFolderId": {
+                    "type": "string",
+                    "example": "72a30ffb-1896-48b1-b006-985fb055db0f"
+                },
+                "userId": {
+                    "type": "string",
+                    "example": "72a30ffb-1896-48b1-b006-985fb055db0f"
+                }
+            }
+        },
+        "CreateFolderRequest": {
+            "type": "object",
+            "required": [
                 "name"
             ],
             "properties": {
@@ -1206,6 +1227,10 @@
                     "example": "My new folder"
                 },
                 "parentFolderId": {
+                    "type": "string",
+                    "example": "72a30ffb-1896-48b1-b006-985fb055db0f"
+                },
+                "userId": {
                     "type": "string",
                     "example": "72a30ffb-1896-48b1-b006-985fb055db0f"
                 }
@@ -1375,10 +1400,6 @@
                 "name"
             ],
             "properties": {
-                "accessType": {
-                    "type": "string",
-                    "example": "public"
-                },
                 "name": {
                     "type": "string",
                     "example": "My new deck"
@@ -1391,10 +1412,6 @@
                 "name"
             ],
             "properties": {
-                "accessType": {
-                    "type": "string",
-                    "example": "public"
-                },
                 "name": {
                     "type": "string",
                     "example": "My new folder"

@@ -37,9 +37,27 @@ definitions:
   CreateDeckRequest:
     properties:
       name:
+        example: My new deck
+        type: string
+      parentFolderId:
+        example: 72a30ffb-1896-48b1-b006-985fb055db0f
+        type: string
+      userId:
+        example: 72a30ffb-1896-48b1-b006-985fb055db0f
+        type: string
+    required:
+    - name
+    - parentFolderId
+    type: object
+  CreateFolderRequest:
+    properties:
+      name:
         example: My new folder
         type: string
       parentFolderId:
+        example: 72a30ffb-1896-48b1-b006-985fb055db0f
+        type: string
+      userId:
         example: 72a30ffb-1896-48b1-b006-985fb055db0f
         type: string
     required:
@@ -153,9 +171,6 @@ definitions:
     type: object
   UpdateDeckRequest:
     properties:
-      accessType:
-        example: public
-        type: string
       name:
         example: My new deck
         type: string
@@ -164,9 +179,6 @@ definitions:
     type: object
   UpdateFolderRequest:
     properties:
-      accessType:
-        example: public
-        type: string
       name:
         example: My new folder
         type: string
@@ -557,7 +569,7 @@ paths:
         name: createFolderData
         required: true
         schema:
-          $ref: '#/definitions/CreateDeckRequest'
+          $ref: '#/definitions/CreateFolderRequest'
       produces:
       - application/json
       responses:
