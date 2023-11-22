@@ -9,7 +9,7 @@ type Deck struct {
 	Name             string            `gorm:"size:255; not null"`
 	ParentFolderID   string            `gorm:"size:36; not null"`
 	ParentFolder     Folder            `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	AccessType       uint8             `gorm:"not null"`
+	AccessType       uint8             `gorm:"default:0; not null"`
 	Cards            []Card            `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Permissions      []Permission      `gorm:"polymorphic:Storage;polymorphicValue:deck"`
 	FavoriteStorages []FavoriteStorage `gorm:"polymorphic:Storage;polymorphicValue:deck"`
@@ -17,7 +17,7 @@ type Deck struct {
 }
 
 func getDeckPreloadQuery(index int) string {
-	return []string{"Cards", "AccessType"}[index]
+	return []string{"Cards"}[index]
 }
 
 func NewDeck(db *gorm.DB, name string, accessType uint8, parentFolderId string) (*Deck, error) {
@@ -58,7 +58,7 @@ func CreateDeck(name string, accessType uint8, parentFolderId string, userId str
 }
 
 func UpdateDeckById(id string, name string) (*Deck, error) {
-	deck, err := FetchDeckById(id, false, true)
+	deck, err := FetchDeckById(id)
 	if err != nil {
 		return &Deck{}, err
 	}
@@ -70,7 +70,7 @@ func UpdateDeckById(id string, name string) (*Deck, error) {
 		return &Deck{}, err
 	}
 
-	deck, err = FetchDeckById(id, true, true)
+	deck, err = FetchDeckById(id, true)
 	if err != nil {
 		return &Deck{}, err
 	}
