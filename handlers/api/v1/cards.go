@@ -7,27 +7,39 @@ import (
 	"net/http"
 )
 
-// GetCards godoc
-// @Id			 getCardsByDeckId
-// @Summary      Get all deck's cards
-// @Description  fetches cards of the deck from the database
+// GetStorageCards godoc
+// @Id			 getStorageCards
+// @Summary      Get all storage's cards
+// @Description  fetches cards of the storage from the database
 // @Tags         cards
 // @Accept       json
 // @Produce      json
 // @Security     Bearer
-// @Param		 folder_id	  path		string	true	"Folder ID"
-// @Param		 deck_id	  path		string	true	"Deck ID"
+// @Param		 storage_type path		string	true	"Storage type" Enums(deck, folder)
+// @Param		 storage_id	  path		string	true	"Storage ID" minlength(36)  maxlength(36)
 // @Success      200  {object}  httputils.CardsResponse
 // @Failure      400  {object}  httputils.HTTPError
 // @Failure      500  {object}  httputils.HTTPError
-// @Router       /folders/{folder_id}/decks/{deck_id}/cards [get]
-func GetCards(c *gin.Context) {
-	deckId := c.Param("deck_id")
+// @Router       /cards/{storage_type}/{storage_id} [get]
+func GetStorageCards(c *gin.Context) {
+	storageType := c.Param("storage_type")
+	storageId := c.Param("storage_id")
 
-	cards, err := models.FetchCardsByDeckId(deckId)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input or deck doesn't exist"})
-		return
+	var cards *[]models.Card
+	var err error
+	switch storageType {
+	case "deck":
+		cards, err = models.FetchCardsByDeckId(storageId)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input or deck doesn't exist"})
+			return
+		}
+	case "folder":
+		cards, err = models.FetchCardsByFolderId(storageId)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input or deck doesn't exist"})
+			return
+		}
 	}
 
 	var content []httputils.Card
@@ -56,7 +68,7 @@ func GetCards(c *gin.Context) {
 // @Success      200  {object}  httputils.BasicResponse
 // @Failure      400  {object}  httputils.HTTPError
 // @Failure      500  {object}  httputils.HTTPError
-// @Router       /folders/{folder_id}/decks/{deck_id}/cards [put]
+// @Router       /cards/deck/{deck_id} [put]
 func SyncCards(c *gin.Context) {
 	var input httputils.SyncCardsRequest
 

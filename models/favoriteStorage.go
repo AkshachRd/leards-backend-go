@@ -37,7 +37,7 @@ func FetchFavoriteDecksByUserId(id string) (*[]Deck, error) {
 func NewFavoriteStorage(userId string, storageId string, storageType string) (*FavoriteStorage, error) {
 	favoriteStorage := FavoriteStorage{UserID: userId, StorageID: storageId, StorageType: storageType}
 
-	err := db.Save(&favoriteStorage).Error
+	err := db.Create(&favoriteStorage).Error
 	if err != nil {
 		return &FavoriteStorage{}, err
 	}

@@ -8,7 +8,7 @@ import (
 type Folder struct {
 	Model
 	Name             string            `gorm:"size:255; not null"`
-	AccessType       uint8             `gorm:"not null"`
+	AccessType       uint8             `gorm:"default:0; not null"`
 	ParentFolderID   *string           `gorm:"size:36"`
 	ParentFolder     *Folder           `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Folders          []Folder          `gorm:"foreignkey:ParentFolderID"`
@@ -27,12 +27,24 @@ func getFolderPreloadArgs(query string) []interface{} {
 			return d.Preload("ParentFolder", preload)
 		}
 		args = append(args, preload)
+	case "Folders.Folders":
+		var preload func(d *gorm.DB) *gorm.DB
+		preload = func(d *gorm.DB) *gorm.DB {
+			return d.Preload("Decks.Cards").Preload("Folders", preload)
+		}
+		args = append(args, preload)
 	}
 	return args
 }
 
 func getFolderPreloadQuery(index int) string {
-	return []string{"ParentFolder", "Folders", "Decks", "AccessType", "ParentFolder.ParentFolder"}[index]
+	return []string{
+		"ParentFolder",
+		"Folders",
+		"Decks.Cards",
+		"ParentFolder.ParentFolder",
+		"Folders.Folders",
+	}[index]
 }
 
 func NewFolder(db *gorm.DB, name string, accessType uint8, parentFolderId *string) (*Folder, error) {
@@ -79,7 +91,7 @@ func CreateFolder(name string, accessType uint8, parentFolderId *string, userId 
 }
 
 func UpdateFolderById(id string, name string) (*Folder, error) {
-	folder, err := FetchFolderById(id, false, false, false, true, false)
+	folder, err := FetchFolderById(id, false, false, false, false)
 	if err != nil {
 		return &Folder{}, err
 	}
@@ -91,7 +103,7 @@ func UpdateFolderById(id string, name string) (*Folder, error) {
 		return &Folder{}, err
 	}
 
-	folder, err = FetchFolderById(id, false, true, true, true, true)
+	folder, err = FetchFolderById(id, false, true, true, true)
 	if err != nil {
 		return &Folder{}, err
 	}
@@ -159,7 +171,7 @@ func (f *Folder) Delete(db *gorm.DB) error {
 
 // FetchFolderById
 //
-// Preload args: "ParentFolder", "Folders", "Decks", "AccessType", "ParentFolderRecursive"
+// Preload args: "ParentFolder", "Folders", "DecksWithCards", "ParentFolderRecursive", "FoldersRecursive", "FoldersRecursiveWithDecksWithCards"
 func FetchFolderById(id string, preloadArgs ...bool) (*Folder, error) {
 	var folder Folder
 
@@ -167,7 +179,10 @@ func FetchFolderById(id string, preloadArgs ...bool) (*Folder, error) {
 	for i, arg := range preloadArgs {
 		if arg {
 			queryString := getFolderPreloadQuery(i)
-			query = query.Preload(queryString, getFolderPreloadArgs(queryString)...)
+
+			if args := getFolderPreloadArgs(queryString); len(args) != 0 {
+				query = query.Preload(queryString, getFolderPreloadArgs(queryString)...)
+			}
 		}
 	}
 

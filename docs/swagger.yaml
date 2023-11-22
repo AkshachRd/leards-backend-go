@@ -39,15 +39,12 @@ definitions:
       name:
         example: My new deck
         type: string
-      parentFolderId:
-        example: 72a30ffb-1896-48b1-b006-985fb055db0f
-        type: string
       userId:
         example: 72a30ffb-1896-48b1-b006-985fb055db0f
         type: string
     required:
     - name
-    - parentFolderId
+    - userId
     type: object
   CreateFolderRequest:
     properties:
@@ -62,6 +59,7 @@ definitions:
         type: string
     required:
     - name
+    - userId
     type: object
   CreateUserRequest:
     properties:
@@ -557,6 +555,92 @@ paths:
       summary: Refresh user's token
       tags:
       - auth
+  /cards/{storage_type}/{storage_id}:
+    get:
+      consumes:
+      - application/json
+      description: fetches cards of the storage from the database
+      operationId: getStorageCards
+      parameters:
+      - description: Storage type
+        enum:
+        - deck
+        - folder
+        in: path
+        name: storage_type
+        required: true
+        type: string
+      - description: Storage ID
+        in: path
+        maxLength: 36
+        minLength: 36
+        name: storage_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/CardsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/HTTPError'
+      security:
+      - Bearer: []
+      summary: Get all storage's cards
+      tags:
+      - cards
+  /cards/deck/{deck_id}:
+    put:
+      consumes:
+      - application/json
+      description: adds card without id, updates card with id, deletes card if it's
+        not presented inside the request
+      operationId: syncCardsByDeckId
+      parameters:
+      - description: Folder ID
+        in: path
+        name: folder_id
+        required: true
+        type: string
+      - description: Deck ID
+        in: path
+        name: deck_id
+        required: true
+        type: string
+      - description: Sync cards data
+        in: body
+        name: syncCardsRequest
+        required: true
+        schema:
+          $ref: '#/definitions/SyncCardsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/BasicResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/HTTPError'
+      security:
+      - Bearer: []
+      summary: Synchronizes cards
+      tags:
+      - cards
   /folders:
     post:
       consumes:
@@ -823,86 +907,6 @@ paths:
       summary: Updates the deck by id
       tags:
       - decks
-  /folders/{folder_id}/decks/{deck_id}/cards:
-    get:
-      consumes:
-      - application/json
-      description: fetches cards of the deck from the database
-      operationId: getCardsByDeckId
-      parameters:
-      - description: Folder ID
-        in: path
-        name: folder_id
-        required: true
-        type: string
-      - description: Deck ID
-        in: path
-        name: deck_id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/CardsResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/HTTPError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/HTTPError'
-      security:
-      - Bearer: []
-      summary: Get all deck's cards
-      tags:
-      - cards
-    put:
-      consumes:
-      - application/json
-      description: adds card without id, updates card with id, deletes card if it's
-        not presented inside the request
-      operationId: syncCardsByDeckId
-      parameters:
-      - description: Folder ID
-        in: path
-        name: folder_id
-        required: true
-        type: string
-      - description: Deck ID
-        in: path
-        name: deck_id
-        required: true
-        type: string
-      - description: Sync cards data
-        in: body
-        name: syncCardsRequest
-        required: true
-        schema:
-          $ref: '#/definitions/SyncCardsRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/BasicResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/HTTPError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/HTTPError'
-      security:
-      - Bearer: []
-      summary: Synchronizes cards
-      tags:
-      - cards
   /library/{user_id}:
     get:
       consumes:
@@ -942,7 +946,7 @@ paths:
       summary: get favorite storages by user id
       tags:
       - library
-  /library/{user_id}/{storage_type}:
+  /library/{user_id}/{storage_type}/{storage_id}:
     post:
       consumes:
       - application/json

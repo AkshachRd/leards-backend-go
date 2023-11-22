@@ -50,6 +50,7 @@ func GetDeck(c *gin.Context) {
 // @Failure      500  {object}  httputils.HTTPError
 // @Router       /folders/{folder_id}/decks [post]
 func CreateDeck(c *gin.Context) {
+	folderId := c.Param("folder_id")
 	var input httputils.CreateDeckRequest
 
 	if err := c.ShouldBind(&input); err != nil {
@@ -57,7 +58,7 @@ func CreateDeck(c *gin.Context) {
 		return
 	}
 
-	deck, err := models.CreateDeck(input.Name, models.AccessTypePrivate, input.ParentFolderId, input.UserId)
+	deck, err := models.CreateDeck(input.Name, models.AccessTypePrivate, folderId, input.UserId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot create a new deck"})
 		return

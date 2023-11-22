@@ -61,13 +61,12 @@ func SetupRouters() *gin.Engine {
 				decks.POST("", v1.CreateDeck)
 				decksWithId.PUT("", v1.UpdateDeck)
 				decksWithId.DELETE("", v1.DeleteDeck)
-
-				cards := decksWithId.Group("/cards")
-				{
-					cards.GET("", v1.GetCards)
-					cards.PUT("", v1.SyncCards)
-				}
 			}
+		}
+		cards := bearerAuthorizedV1.Group("/cards")
+		{
+			cards.GET(":storage_type/:storage_id", v1.GetStorageCards)
+			cards.PUT("deck/:deck_id", v1.SyncCards)
 		}
 		library := bearerAuthorizedV1.Group("/library")
 		{

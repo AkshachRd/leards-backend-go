@@ -49,7 +49,7 @@ func GetFavoriteStorages(c *gin.Context) {
 // @Param		 storage_id	  path		string	true	"Storage ID" minlength(36)  maxlength(36)
 // @Success      201  {object}  httputils.BasicResponse
 // @Failure      500  {object}  httputils.HTTPError
-// @Router       /library/{user_id}/{storage_type} [post]
+// @Router       /library/{user_id}/{storage_type}/{storage_id} [post]
 func AddStorageToFavorite(c *gin.Context) {
 	userId := c.Param("user_id")
 	storageType := c.Param("storage_type")

@@ -1,8 +1,8 @@
-PUT /api/v1/folders/ed95210e-bbf0-4183-9e53-ce3c311083cc/decks/a487536e-c5bf-49a7-b1c5-4e5e60c9911b/cards HTTP/2.0
+PUT /api/v1/folders/5261d751-35f2-4347-b93e-3f4b37daee4a/decks/c48faa4d-aad6-469f-b5e5-e7f1309c3c09/cards HTTP/2.0
 Host: localhost:8080
 Accept: application/json
 Content-Type: application/json
-Authorization: Bearer OExsUHo2MnpCZjFvRjg4Mm9fcXpKanFHcWRpMTFpTTk=
+Authorization: Bearer NlNlak9VMUpqSGh0bTJrZ1VyOEZCMERUSGphc1ExUng=
 
 {
   "cards": [

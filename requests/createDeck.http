@@ -1,10 +1,10 @@
-POST /api/v1/folders/ed95210e-bbf0-4183-9e53-ce3c311083cc/decks HTTP/2.0
+POST /api/v1/folders/4daa074a-0f42-41b6-be0a-cb466902bcec/decks HTTP/2.0
 Host: localhost:8080
 Accept: application/json
 Content-Type: application/json
-Authorization: Bearer OExsUHo2MnpCZjFvRjg4Mm9fcXpKanFHcWRpMTFpTTk=
+Authorization: Bearer VVN0cTJIc09nX18zTU9BODIzdE82MEdiUWRzNEVnODQ=
 
 {
-  "name": "Test deck1",
-  "parentFolderId": "ed95210e-bbf0-4183-9e53-ce3c311083cc"
+  "name": "Test deck3",
+  "userId": "59a5259a-8094-4e8f-8caf-888c3e32f012"
 }

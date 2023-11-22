@@ -85,3 +85,36 @@ func FetchCardsByDeckId(deckId string) (*[]Card, error) {
 
 	return &cards, nil
 }
+
+func FetchCardsByFolderId(id string) (*[]Card, error) {
+	var cards []Card
+
+	err := db.Table("folder").
+		Select("card.front_side, card.back_side, card.id_card").
+		Joins("left join deck on deck.parent_folder_id = folder.id_folder").
+		Joins("left join card on card.deck_id = deck.id_deck").
+		Where("folder.id_folder = ?", id).
+		Find(&cards).Error
+	if err != nil {
+		return &[]Card{}, err
+	}
+
+	var childFolders []Folder
+	err = db.Table("folder").
+		Select("id_folder, parent_folder_id").
+		Where("parent_folder_id = ?", id).
+		Find(&childFolders).Error
+	if err != nil {
+		return &[]Card{}, err
+	}
+
+	for _, childFolder := range childFolders {
+		childCards, err := FetchCardsByFolderId(childFolder.ID)
+		if err != nil {
+			return &[]Card{}, err
+		}
+		cards = append(cards, *childCards...)
+	}
+
+	return &cards, nil
+}

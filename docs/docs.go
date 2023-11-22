@@ -489,6 +489,135 @@ const docTemplate = `{
                 }
             }
         },
+        "/cards/deck/{deck_id}": {
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "adds card without id, updates card with id, deletes card if it's not presented inside the request",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "cards"
+                ],
+                "summary": "Synchronizes cards",
+                "operationId": "syncCardsByDeckId",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Folder ID",
+                        "name": "folder_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Deck ID",
+                        "name": "deck_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Sync cards data",
+                        "name": "syncCardsRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/SyncCardsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/BasicResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/cards/{storage_type}/{storage_id}": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "fetches cards of the storage from the database",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "cards"
+                ],
+                "summary": "Get all storage's cards",
+                "operationId": "getStorageCards",
+                "parameters": [
+                    {
+                        "enum": [
+                            "deck",
+                            "folder"
+                        ],
+                        "type": "string",
+                        "description": "Storage type",
+                        "name": "storage_type",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "maxLength": 36,
+                        "minLength": 36,
+                        "type": "string",
+                        "description": "Storage ID",
+                        "name": "storage_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/CardsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/HTTPError"
+                        }
+                    }
+                }
+            }
+        },
         "/folders": {
             "post": {
                 "security": [
@@ -901,127 +1030,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/folders/{folder_id}/decks/{deck_id}/cards": {
-            "get": {
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
-                "description": "fetches cards of the deck from the database",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "cards"
-                ],
-                "summary": "Get all deck's cards",
-                "operationId": "getCardsByDeckId",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Folder ID",
-                        "name": "folder_id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Deck ID",
-                        "name": "deck_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/CardsResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/HTTPError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/HTTPError"
-                        }
-                    }
-                }
-            },
-            "put": {
-                "security": [
-                    {
-                        "Bearer": []
-                    }
-                ],
-                "description": "adds card without id, updates card with id, deletes card if it's not presented inside the request",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "cards"
-                ],
-                "summary": "Synchronizes cards",
-                "operationId": "syncCardsByDeckId",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Folder ID",
-                        "name": "folder_id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Deck ID",
-                        "name": "deck_id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Sync cards data",
-                        "name": "syncCardsRequest",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/SyncCardsRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/BasicResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/HTTPError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/HTTPError"
-                        }
-                    }
-                }
-            }
-        },
         "/library/{user_id}": {
             "get": {
                 "security": [
@@ -1081,7 +1089,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/library/{user_id}/{storage_type}": {
+        "/library/{user_id}/{storage_type}/{storage_id}": {
             "post": {
                 "security": [
                     {
@@ -1205,16 +1213,12 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "name",
-                "parentFolderId"
+                "userId"
             ],
             "properties": {
                 "name": {
                     "type": "string",
                     "example": "My new deck"
-                },
-                "parentFolderId": {
-                    "type": "string",
-                    "example": "72a30ffb-1896-48b1-b006-985fb055db0f"
                 },
                 "userId": {
                     "type": "string",
@@ -1225,7 +1229,8 @@ const docTemplate = `{
         "CreateFolderRequest": {
             "type": "object",
             "required": [
-                "name"
+                "name",
+                "userId"
             ],
             "properties": {
                 "name": {
