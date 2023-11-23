@@ -5,7 +5,7 @@ import (
 )
 
 func ConvertDecksToContent(decks *[]models.Deck) *[]Content {
-	var content []Content
+	content := make([]Content, 0)
 
 	for _, deck := range *decks {
 		content = append(content, Content{Id: deck.ID, Name: deck.Name, Type: "deck"})
@@ -15,8 +15,7 @@ func ConvertDecksToContent(decks *[]models.Deck) *[]Content {
 }
 
 func ConvertFolder(folder *models.Folder) *Folder {
-	var path []Path
-	path = append(path, Path{Name: folder.Name, Id: folder.ID})
+	path := []Path{{Name: folder.Name, Id: folder.ID}}
 	for parentFolder := folder.ParentFolder; parentFolder != nil; {
 		path = append(
 			[]Path{{Name: parentFolder.Name, Id: parentFolder.ID}},
@@ -25,7 +24,7 @@ func ConvertFolder(folder *models.Folder) *Folder {
 		parentFolder = parentFolder.ParentFolder
 	}
 
-	var content []Content
+	content := make([]Content, 0)
 	for _, contentFolder := range folder.Folders {
 		content = append(content, Content{Id: contentFolder.ID, Name: contentFolder.Name, Type: "folder"})
 	}
@@ -35,7 +34,7 @@ func ConvertFolder(folder *models.Folder) *Folder {
 }
 
 func ConvertDeck(deck *models.Deck) *Deck {
-	var content []Card
+	content := make([]Card, 0)
 	for _, card := range deck.Cards {
 		content = append(content, Card{CardId: card.ID, FrontSide: card.FrontSide, BackSide: card.BackSide})
 	}
@@ -69,4 +68,14 @@ func ConvertUser(user *models.User, host string) *User {
 	}
 
 	return &convertedUser
+}
+
+func ConvertCards(cards *[]models.Card) *[]Card {
+	convertedCards := make([]Card, 0)
+
+	for _, card := range *cards {
+		convertedCards = append(convertedCards, Card{CardId: card.ID, FrontSide: card.FrontSide, BackSide: card.BackSide})
+	}
+
+	return &convertedCards
 }

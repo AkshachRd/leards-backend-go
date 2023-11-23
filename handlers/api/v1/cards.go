@@ -42,15 +42,9 @@ func GetStorageCards(c *gin.Context) {
 		}
 	}
 
-	var content []httputils.Card
-
-	for _, card := range *cards {
-		content = append(content, httputils.Card{CardId: card.ID, FrontSide: card.FrontSide, BackSide: card.BackSide})
-	}
-
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Cards successfully fetched",
-		"cards":   content,
+		"cards":   *httputils.ConvertCards(cards),
 	})
 }
 
