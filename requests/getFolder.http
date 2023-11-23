@@ -1,5 +1,5 @@
-GET /api/v1/folders/521d2338-f882-485e-89fa-a0c3a8e5baab HTTP/2.0
+GET /api/v1/folders/a5028c10-a3cd-4642-9adf-794778125efc HTTP/2.0
 Host: localhost:8080
 Accept: application/json
 Content-Type: application/json
-Authorization: Bearer bGM5ekNhRHNGSGdfVWdsRDQ0Z295MS14THBpNHBWb0U=
+Authorization: Bearer NG55amZ1cHFNRlRmUERrdzg1akNLdWEwMkd1czFaYlY=

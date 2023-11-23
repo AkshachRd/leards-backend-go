@@ -179,10 +179,7 @@ func FetchFolderById(id string, preloadArgs ...bool) (*Folder, error) {
 	for i, arg := range preloadArgs {
 		if arg {
 			queryString := getFolderPreloadQuery(i)
-
-			if args := getFolderPreloadArgs(queryString); len(args) != 0 {
-				query = query.Preload(queryString, getFolderPreloadArgs(queryString)...)
-			}
+			query = query.Preload(queryString, getFolderPreloadArgs(queryString)...)
 		}
 	}
 
