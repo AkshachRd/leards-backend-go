@@ -93,7 +93,7 @@ func FetchCardsByFolderId(id string) (*[]Card, error) {
 		Select("card.front_side, card.back_side, card.id_card").
 		Joins("left join deck on deck.parent_folder_id = folder.id_folder").
 		Joins("left join card on card.deck_id = deck.id_deck").
-		Where("folder.id_folder = ?", id).
+		Where("card.id_card is not null and folder.id_folder = ?", id).
 		Find(&cards).Error
 	if err != nil {
 		return &[]Card{}, err
