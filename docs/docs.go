@@ -1512,7 +1512,7 @@ const docTemplate = `{
         "BasicAuth": {
             "type": "basic"
         },
-        "Bearer": {
+        "BearerAuth": {
             "description": "ATTENTION! HOW TO USE: Type \"Bearer\" followed by a space and a token. Example: \"Bearer \\\u003ctoken\\\u003e\".",
             "type": "apiKey",
             "name": "Authorization",

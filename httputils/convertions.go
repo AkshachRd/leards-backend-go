@@ -64,7 +64,8 @@ func ConvertUser(user *models.User, host string) *User {
 	}
 
 	if user.ProfileIconPath.Valid {
-		convertedUser.ProfileIcon = host + "/api/v1/accounts/" + user.ID + "/avatar"
+		// TODO: заменить путь до аватарки на хосте на переменную
+		convertedUser.ProfileIcon = host + "/api/v1/accounts/avatars/" + user.ProfileIconPath.String
 	}
 
 	return &convertedUser

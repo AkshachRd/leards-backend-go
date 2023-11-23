@@ -27,7 +27,7 @@ func init() {
 // @BasePath  /api/v1
 
 // @securityDefinitions.basic  BasicAuth
-// @securityDefinitions.apikey Bearer
+// @securityDefinitions.apikey BearerAuth
 // @in header
 // @name Authorization
 // @description ATTENTION! HOW TO USE: Type "Bearer" followed by a space and a token. Example: "Bearer \<token\>".

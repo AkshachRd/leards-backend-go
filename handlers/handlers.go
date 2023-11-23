@@ -4,6 +4,7 @@ import (
 	"github.com/AkshachRd/leards-backend-go/docs"
 	v1 "github.com/AkshachRd/leards-backend-go/handlers/api/v1"
 	"github.com/AkshachRd/leards-backend-go/middlewares"
+	"github.com/AkshachRd/leards-backend-go/settings"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -25,15 +26,17 @@ func SetupRouters() *gin.Engine {
 	basicAuthorizedV1 := apiv1.Group("", middlewares.AuthService(middlewares.BasicAuth))
 	bearerAuthorizedV1 := apiv1.Group("", middlewares.AuthService(middlewares.BearerAuth))
 	{
+
 		accounts := apiv1.Group("/accounts")
 		accountsBasicAuthorized := basicAuthorizedV1.Group("/accounts")
 		accountsBearerAuthorized := bearerAuthorizedV1.Group("/accounts")
 		{
 			accounts.POST("", v1.CreateUser)
-			accounts.PUT(":user_id", v1.UpdateUser)
+			accountsBearerAuthorized.PUT(":user_id", v1.UpdateUser)
 			accountsBasicAuthorized.GET("", v1.LoginUser)
 			accounts.GET(":user_id/avatar", v1.GetAvatar)
-			accounts.PUT(":user_id/avatar", v1.UploadAvatar)
+			accounts.Static("/avatars", settings.AppSettings.EnvVars.AvatarBasePath)
+			accountsBearerAuthorized.PUT(":user_id/avatar", v1.UploadAvatar)
 
 			userSettings := accountsBearerAuthorized.Group(":user_id/settings")
 			{
