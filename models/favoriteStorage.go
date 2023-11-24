@@ -22,8 +22,7 @@ func FetchFavoriteDecksByUserId(id string) (*[]Deck, error) {
 	var decks []Deck
 
 	err := db.Joins("left join permission on deck.id_deck = permission.storage_id and permission.storage_type = 'deck'").
-		Joins("left join favorite_storage on favorite_storage.user_id = permission.user_id and favorite_storage.storage_type = 'deck'").
-		Where("favorite_storage.user_id = ?", id).
+		Joins("left join favorite_storage on favorite_storage.user_id = permission.user_id and favorite_storage.storage_type = 'deck' AND favorite_storage.user_id = ?", id).
 		Find(&decks).
 		Error
 
