@@ -21,6 +21,11 @@ const (
 	AccessTypePublic
 )
 
+const (
+	StorageTypeFolder = "folder"
+	StorageTypeDeck   = "deck"
+)
+
 type Model struct {
 	ID        string `gorm:"primary_key; unique; type:char(36)"`
 	CreatedAt time.Time

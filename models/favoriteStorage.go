@@ -19,8 +19,8 @@ func FetchFavoriteStoragesContentByUserId(userId string) (*[]FavoriteStoragesCon
 	err := db.Table("favorite_storage").
 		Select("favorite_storage.storage_id, favorite_storage.storage_type, CASE favorite_storage.storage_type WHEN 'folder' THEN folder.name ELSE deck.name END as name").
 		Joins("LEFT JOIN permission ON favorite_storage.user_id = permission.user_id").
-		Joins("LEFT JOIN folder ON favorite_storage.storage_type = 'folder' AND favorite_storage.storage_id = folder.id_folder").
-		Joins("LEFT JOIN deck ON favorite_storage.storage_type = 'deck' AND favorite_storage.storage_id = deck.id_deck").
+		Joins("LEFT JOIN folder ON favorite_storage.storage_type = ? AND favorite_storage.storage_id = folder.id_folder", StorageTypeFolder).
+		Joins("LEFT JOIN deck ON favorite_storage.storage_type = ? AND favorite_storage.storage_id = deck.id_deck", StorageTypeDeck).
 		Where("favorite_storage.user_id = ?", userId).
 		Group("favorite_storage.storage_id").Scan(&favoriteStoragesContent).Error
 	if err != nil {
@@ -39,4 +39,9 @@ func NewFavoriteStorage(userId string, storageId string, storageType string) (*F
 	}
 
 	return &favoriteStorage, nil
+}
+
+func DeleteFavoriteStorage(userId string, storageId string, storageType string) error {
+	favoriteStorage := FavoriteStorage{UserID: userId, StorageID: storageId, StorageType: storageType}
+	return db.Delete(&favoriteStorage).Error
 }

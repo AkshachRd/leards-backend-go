@@ -77,7 +77,7 @@ func CreateFolder(name string, accessType uint8, parentFolderId *string, userId 
 		return &Folder{}, err
 	}
 
-	_, err = NewPermission(tx, folder.ID, "folder", userId, PermissionTypeOwner)
+	_, err = NewPermission(tx, folder.ID, StorageTypeFolder, userId, PermissionTypeOwner)
 	if err != nil {
 		tx.Rollback()
 		return &Folder{}, nil

@@ -44,7 +44,7 @@ func CreateDeck(name string, accessType uint8, parentFolderId string, userId str
 		return &Deck{}, err
 	}
 
-	_, err = NewPermission(tx, deck.ID, "deck", userId, PermissionTypeOwner)
+	_, err = NewPermission(tx, deck.ID, StorageTypeDeck, userId, PermissionTypeOwner)
 	if err != nil {
 		tx.Rollback()
 		return &Deck{}, nil

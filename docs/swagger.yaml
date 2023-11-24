@@ -947,6 +947,51 @@ paths:
       tags:
       - library
   /library/{user_id}/{storage_type}/{storage_id}:
+    delete:
+      consumes:
+      - application/json
+      description: deletes the favorite storage in the database
+      operationId: removeStorageFromFavorite
+      parameters:
+      - description: User ID
+        in: path
+        maxLength: 36
+        minLength: 36
+        name: user_id
+        required: true
+        type: string
+      - description: Storage type
+        enum:
+        - models.StorageTypeDeck
+        - models.StorageTypeFolder
+        in: path
+        name: storage_type
+        required: true
+        type: string
+      - description: Storage ID
+        in: path
+        maxLength: 36
+        minLength: 36
+        name: storage_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/BasicResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/HTTPError'
+      security:
+      - BearerAuth: []
+      summary: remove the storage from favorites by user id, storage id and storage
+        type
+      tags:
+      - library
     post:
       consumes:
       - application/json

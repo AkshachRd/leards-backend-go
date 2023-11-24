@@ -23,8 +23,8 @@ func SetupRouters() *gin.Engine {
 
 	apiv1 := r.Group("/api/v1")
 
-	basicAuthorizedV1 := apiv1.Group("", middlewares.AuthService(middlewares.BasicAuth))
-	bearerAuthorizedV1 := apiv1.Group("", middlewares.AuthService(middlewares.BearerAuth))
+	basicAuthorizedV1 := apiv1.Group("", middlewares.Auth(middlewares.BasicAuth))
+	bearerAuthorizedV1 := apiv1.Group("", middlewares.Auth(middlewares.BearerAuth))
 	{
 
 		accounts := apiv1.Group("/accounts")
@@ -75,6 +75,7 @@ func SetupRouters() *gin.Engine {
 		{
 			library.GET(":user_id", v1.GetFavoriteStorages)
 			library.POST(":user_id/:storage_type/:storage_id", v1.AddStorageToFavorite)
+			library.DELETE(":user_id/:storage_type/:storage_id", v1.RemoveStorageFromFavorite)
 		}
 	}
 
