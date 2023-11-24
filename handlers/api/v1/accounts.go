@@ -233,16 +233,16 @@ func UploadAvatar(c *gin.Context) {
 	avatarFilename := fmt.Sprintf("avatar_%s%s", user.ID, ext)
 	avatarSavePath := settings.AppSettings.EnvVars.AvatarBasePath + "/" + avatarFilename
 
-	if err = c.SaveUploadedFile(file, avatarSavePath); err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
-		return
-	}
-
 	if user.ProfileIconPath.Valid {
 		if err = os.Remove(settings.AppSettings.EnvVars.AvatarBasePath + "/" + user.ProfileIconPath.String); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete previous avatar"})
 			return
 		}
+	}
+
+	if err = c.SaveUploadedFile(file, avatarSavePath); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save file"})
+		return
 	}
 
 	if err = user.SetProfileIconPath(avatarFilename); err != nil {
