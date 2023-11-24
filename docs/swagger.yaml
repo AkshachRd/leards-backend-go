@@ -98,7 +98,7 @@ definitions:
     type: object
   FavoriteStoragesResponse:
     properties:
-      content:
+      favoriteStorages:
         items:
           $ref: '#/definitions/Content'
         type: array

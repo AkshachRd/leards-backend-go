@@ -1301,7 +1301,7 @@ const docTemplate = `{
         "FavoriteStoragesResponse": {
             "type": "object",
             "properties": {
-                "content": {
+                "favoriteStorages": {
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/Content"
