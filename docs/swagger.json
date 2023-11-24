@@ -1178,8 +1178,8 @@
                     },
                     {
                         "enum": [
-                            "models.StorageTypeDeck",
-                            "models.StorageTypeFolder"
+                            "deck",
+                            "folder"
                         ],
                         "type": "string",
                         "description": "Storage type",
@@ -1340,6 +1340,9 @@
                     "type": "string"
                 },
                 "name": {
+                    "type": "string"
+                },
+                "parentFolderId": {
                     "type": "string"
                 }
             }

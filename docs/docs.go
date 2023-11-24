@@ -1184,8 +1184,8 @@ const docTemplate = `{
                     },
                     {
                         "enum": [
-                            "models.StorageTypeDeck",
-                            "models.StorageTypeFolder"
+                            "deck",
+                            "folder"
                         ],
                         "type": "string",
                         "description": "Storage type",
@@ -1346,6 +1346,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "name": {
+                    "type": "string"
+                },
+                "parentFolderId": {
                     "type": "string"
                 }
             }

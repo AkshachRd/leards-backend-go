@@ -42,7 +42,12 @@ func ConvertFolder(folder *models.Folder) *Folder {
 }
 
 func ConvertDeck(deck *models.Deck) *Deck {
-	return &Deck{DeckId: deck.ID, Name: deck.Name, Content: *ConvertCards(&deck.Cards)}
+	return &Deck{
+		DeckId:         deck.ID,
+		Name:           deck.Name,
+		Content:        *ConvertCards(&deck.Cards),
+		ParentFolderId: deck.ParentFolderID,
+	}
 }
 
 func ConvertCards(cards *[]models.Card) *[]Card {

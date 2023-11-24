@@ -87,6 +87,8 @@ definitions:
         type: string
       name:
         type: string
+      parentFolderId:
+        type: string
     type: object
   DeckResponse:
     properties:
@@ -962,8 +964,8 @@ paths:
         type: string
       - description: Storage type
         enum:
-        - models.StorageTypeDeck
-        - models.StorageTypeFolder
+        - deck
+        - folder
         in: path
         name: storage_type
         required: true

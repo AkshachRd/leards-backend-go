@@ -9,9 +9,10 @@ type Card struct {
 } // @name Card
 
 type Deck struct {
-	DeckId  string `json:"deckId"`
-	Name    string `json:"name"`
-	Content []Card `json:"content"`
+	DeckId         string `json:"deckId"`
+	Name           string `json:"name"`
+	ParentFolderId string `json:"parentFolderId"`
+	Content        []Card `json:"content"`
 } // @name Deck
 
 type Path struct {
