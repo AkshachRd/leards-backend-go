@@ -7,30 +7,27 @@ type FavoriteStorage struct {
 	StorageType string `gorm:"primaryKey; size:255; not null"`
 }
 
-func FetchFavoriteStoragesByUserId(id string) (*[]FavoriteStorage, error) {
-	var favoriteStorage []FavoriteStorage
-
-	err := db.Find(&favoriteStorage, "id_user = ?", id).Error
-	if err != nil {
-		return &[]FavoriteStorage{}, err
-	}
-
-	return &favoriteStorage, nil
+type FavoriteStoragesContent struct {
+	StorageId   string
+	StorageType string
+	Name        string
 }
 
-func FetchFavoriteDecksByUserId(id string) (*[]Deck, error) {
-	var decks []Deck
+func FetchFavoriteStoragesContentByUserId(userId string) (*[]FavoriteStoragesContent, error) {
+	var favoriteStoragesContent []FavoriteStoragesContent
 
-	err := db.Joins("left join permission on deck.id_deck = permission.storage_id and permission.storage_type = 'deck'").
-		Joins("left join favorite_storage on favorite_storage.user_id = permission.user_id and favorite_storage.storage_type = 'deck' AND favorite_storage.user_id = ?", id).
-		Find(&decks).
-		Error
-
+	err := db.Table("favorite_storage").
+		Select("favorite_storage.storage_id, favorite_storage.storage_type, CASE favorite_storage.storage_type WHEN 'folder' THEN folder.name ELSE deck.name END as name").
+		Joins("LEFT JOIN permission ON favorite_storage.user_id = permission.user_id").
+		Joins("LEFT JOIN folder ON favorite_storage.storage_type = 'folder' AND favorite_storage.storage_id = folder.id_folder").
+		Joins("LEFT JOIN deck ON favorite_storage.storage_type = 'deck' AND favorite_storage.storage_id = deck.id_deck").
+		Where("favorite_storage.user_id = ?", userId).
+		Group("favorite_storage.storage_id").Scan(&favoriteStoragesContent).Error
 	if err != nil {
-		return &[]Deck{}, err
+		return &[]FavoriteStoragesContent{}, err
 	}
 
-	return &decks, nil
+	return &favoriteStoragesContent, nil
 }
 
 func NewFavoriteStorage(userId string, storageId string, storageType string) (*FavoriteStorage, error) {

@@ -36,5 +36,5 @@ type UserSettingsResponse struct {
 
 type FavoriteStoragesResponse struct {
 	BasicResponse
-	Content []Content `json:"content"`
+	FavoriteStorages []Content `json:"content"`
 } // @name FavoriteStoragesResponse

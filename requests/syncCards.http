@@ -1,15 +1,15 @@
-PUT /api/v1/folders/5261d751-35f2-4347-b93e-3f4b37daee4a/decks/c48faa4d-aad6-469f-b5e5-e7f1309c3c09/cards HTTP/2.0
+PUT /api/v1/cards/deck/1ab57acc-4fd7-440d-abc3-90d534be4fca HTTP/2.0
 Host: localhost:8080
 Accept: application/json
 Content-Type: application/json
-Authorization: Bearer NlNlak9VMUpqSGh0bTJrZ1VyOEZCMERUSGphc1ExUng=
+Authorization: Bearer LU5nREhMMldMNVJCcEtMSnJoMnZFbzQ3S1BUaW9oZWI=
 
 {
   "cards": [
     {
       "cardId": "",
-      "frontSide": "Banana",
-      "backSide": "Бананки"
+      "frontSide": "a",
+      "backSide": "a"
     }
   ]
 }

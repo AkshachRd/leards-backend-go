@@ -1,5 +1,5 @@
-GET /api/v1/cards/folder/a5028c10-a3cd-4642-9adf-794778125efc HTTP/2.0
+GET /api/v1/cards/folder/4daa074a-0f42-41b6-be0a-cb466902bcec HTTP/2.0
 Host: localhost:8080
 Accept: application/json
 Content-Type: application/json
-Authorization: Bearer X1NRQ2dYbVVsUU9CS1ppLVRseVEySXNmNnJfVVhDOGc=
+Authorization: Bearer akRCYmVSZjVzZHpLYU5RODU5d2hiX1JLUkd1Y1RfcE0=

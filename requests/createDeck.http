@@ -1,10 +1,10 @@
-POST /api/v1/folders/4daa074a-0f42-41b6-be0a-cb466902bcec/decks HTTP/2.0
+POST /api/v1/folders/a0c8301c-d585-4792-9abc-9de03572035e/decks HTTP/2.0
 Host: localhost:8080
 Accept: application/json
 Content-Type: application/json
-Authorization: Bearer VVN0cTJIc09nX18zTU9BODIzdE82MEdiUWRzNEVnODQ=
+Authorization: Bearer LU5nREhMMldMNVJCcEtMSnJoMnZFbzQ3S1BUaW9oZWI=
 
 {
-  "name": "Test deck3",
+  "name": "Test deck2",
   "userId": "59a5259a-8094-4e8f-8caf-888c3e32f012"
 }

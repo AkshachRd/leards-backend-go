@@ -14,6 +14,16 @@ func ConvertDecksToContent(decks *[]models.Deck) *[]Content {
 	return &content
 }
 
+func ConvertFoldersToContent(folders *[]models.Folder) *[]Content {
+	content := make([]Content, 0)
+
+	for _, folder := range *folders {
+		content = append(content, Content{Id: folder.ID, Name: folder.Name, Type: "folder"})
+	}
+
+	return &content
+}
+
 func ConvertFolder(folder *models.Folder) *Folder {
 	path := []Path{{Name: folder.Name, Id: folder.ID}}
 	for parentFolder := folder.ParentFolder; parentFolder != nil; {
@@ -25,21 +35,24 @@ func ConvertFolder(folder *models.Folder) *Folder {
 	}
 
 	content := make([]Content, 0)
-	for _, contentFolder := range folder.Folders {
-		content = append(content, Content{Id: contentFolder.ID, Name: contentFolder.Name, Type: "folder"})
-	}
+	content = append(content, *ConvertFoldersToContent(&folder.Folders)...)
 	content = append(content, *ConvertDecksToContent(&folder.Decks)...)
 
 	return &Folder{FolderId: folder.ID, Name: folder.Name, Path: path, Content: content}
 }
 
 func ConvertDeck(deck *models.Deck) *Deck {
-	content := make([]Card, 0)
-	for _, card := range deck.Cards {
-		content = append(content, Card{CardId: card.ID, FrontSide: card.FrontSide, BackSide: card.BackSide})
+	return &Deck{DeckId: deck.ID, Name: deck.Name, Content: *ConvertCards(&deck.Cards)}
+}
+
+func ConvertCards(cards *[]models.Card) *[]Card {
+	convertedCards := make([]Card, 0)
+
+	for _, card := range *cards {
+		convertedCards = append(convertedCards, Card{CardId: card.ID, FrontSide: card.FrontSide, BackSide: card.BackSide})
 	}
 
-	return &Deck{DeckId: deck.ID, Name: deck.Name, Content: content}
+	return &convertedCards
 }
 
 func ConvertUserSettings(userSettings *[]models.UserSetting) *Settings {
@@ -70,12 +83,16 @@ func ConvertUser(user *models.User, host string) *User {
 	return &convertedUser
 }
 
-func ConvertCards(cards *[]models.Card) *[]Card {
-	convertedCards := make([]Card, 0)
+func ConvertFavoriteStoragesContentToContent(favoriteStoragesContent *[]models.FavoriteStoragesContent) *[]Content {
+	content := make([]Content, 0)
 
-	for _, card := range *cards {
-		convertedCards = append(convertedCards, Card{CardId: card.ID, FrontSide: card.FrontSide, BackSide: card.BackSide})
+	for _, favoriteStorageContent := range *favoriteStoragesContent {
+		content = append(content, Content{
+			Id:   favoriteStorageContent.StorageId,
+			Type: favoriteStorageContent.StorageType,
+			Name: favoriteStorageContent.Name,
+		})
 	}
 
-	return &convertedCards
+	return &content
 }

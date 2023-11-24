@@ -24,15 +24,15 @@ import (
 func GetFavoriteStorages(c *gin.Context) {
 	userId := c.Param("user_id")
 
-	decks, err := models.FetchFavoriteDecksByUserId(userId)
+	favoriteStoragesContent, err := models.FetchFavoriteStoragesContentByUserId(userId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Favorite storages successfully fetched",
-		"content": *httputils.ConvertDecksToContent(decks),
+		"message":          "Favorite storages successfully fetched",
+		"favoriteStorages": *httputils.ConvertFavoriteStoragesContentToContent(favoriteStoragesContent),
 	})
 }
 
