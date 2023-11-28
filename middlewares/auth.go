@@ -16,7 +16,7 @@ const (
 	BearerAuth
 )
 
-func AuthService(authType AuthType) gin.HandlerFunc {
+func Auth(authType AuthType) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authHeaderContent := strings.SplitN(c.Request.Header.Get("Authorization"), " ", 2)
 
