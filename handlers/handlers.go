@@ -23,8 +23,8 @@ func SetupRouters() *gin.Engine {
 
 	apiv1 := r.Group("/api/v1")
 
-	basicAuthorizedV1 := apiv1.Group("", middlewares.Auth(middlewares.BasicAuth))
-	bearerAuthorizedV1 := apiv1.Group("", middlewares.Auth(middlewares.BearerAuth))
+	basicAuthorizedV1 := apiv1.Group("", middlewares.AuthService(middlewares.BasicAuth))
+	bearerAuthorizedV1 := apiv1.Group("", middlewares.AuthService(middlewares.BearerAuth))
 	{
 
 		accounts := apiv1.Group("/accounts")
@@ -56,15 +56,14 @@ func SetupRouters() *gin.Engine {
 			folders.POST("", v1.CreateFolder)
 			foldersWithId.PUT("", v1.UpdateFolder)
 			foldersWithId.DELETE("", v1.DeleteFolder)
-
-			decks := foldersWithId.Group("/decks")
-			decksWithId := decks.Group(":deck_id")
-			{
-				decksWithId.GET("", v1.GetDeck)
-				decks.POST("", v1.CreateDeck)
-				decksWithId.PUT("", v1.UpdateDeck)
-				decksWithId.DELETE("", v1.DeleteDeck)
-			}
+		}
+		decks := bearerAuthorizedV1.Group("/decks")
+		decksWithId := decks.Group(":deck_id")
+		{
+			decks.POST("", v1.CreateDeck)
+			decksWithId.GET("", v1.GetDeck)
+			decksWithId.PUT("", v1.UpdateDeck)
+			decksWithId.DELETE("", v1.DeleteDeck)
 		}
 		cards := bearerAuthorizedV1.Group("/cards")
 		{

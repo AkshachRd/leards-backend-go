@@ -39,11 +39,15 @@ definitions:
       name:
         example: My new deck
         type: string
+      parentFolderId:
+        example: 72a30ffb-1896-48b1-b006-985fb055db0f
+        type: string
       userId:
         example: 72a30ffb-1896-48b1-b006-985fb055db0f
         type: string
     required:
     - name
+    - parentFolderId
     - userId
     type: object
   CreateFolderRequest:
@@ -643,6 +647,146 @@ paths:
       summary: Synchronizes cards
       tags:
       - cards
+  /decks:
+    post:
+      consumes:
+      - application/json
+      description: creates a new deck in the database
+      operationId: createNewDeck
+      parameters:
+      - description: Folder ID
+        in: path
+        name: folder_id
+        required: true
+        type: string
+      - description: Create deck data
+        in: body
+        name: createDeckData
+        required: true
+        schema:
+          $ref: '#/definitions/CreateDeckRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/DeckResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/HTTPError'
+      security:
+      - Bearer: []
+      summary: Create a new deck
+      tags:
+      - decks
+  /decks/{deck_id}:
+    delete:
+      consumes:
+      - application/json
+      description: deletes the deck in the database
+      operationId: deleteDeckById
+      parameters:
+      - description: Folder ID
+        in: path
+        name: folder_id
+        required: true
+        type: string
+      - description: Deck ID
+        in: path
+        name: deck_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/BasicResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/HTTPError'
+      security:
+      - Bearer: []
+      summary: Delete the deck by id
+      tags:
+      - decks
+    get:
+      consumes:
+      - application/json
+      description: fetches the deck from the database
+      operationId: getDeckById
+      parameters:
+      - description: Deck ID
+        in: path
+        name: deck_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/DeckResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/HTTPError'
+      security:
+      - Bearer: []
+      summary: Get the deck by id
+      tags:
+      - decks
+    put:
+      consumes:
+      - application/json
+      description: updates the deck in the database
+      operationId: updateDeckById
+      parameters:
+      - description: Folder ID
+        in: path
+        name: folder_id
+        required: true
+        type: string
+      - description: Deck ID
+        in: path
+        name: deck_id
+        required: true
+        type: string
+      - description: Update deck data
+        in: body
+        name: updateDeckData
+        required: true
+        schema:
+          $ref: '#/definitions/UpdateDeckRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/DeckResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/HTTPError'
+      security:
+      - Bearer: []
+      summary: Updates the deck by id
+      tags:
+      - decks
   /folders:
     post:
       consumes:
@@ -764,151 +908,6 @@ paths:
       summary: Update the folder by id
       tags:
       - folders
-  /folders/{folder_id}/decks:
-    post:
-      consumes:
-      - application/json
-      description: creates a new deck in the database
-      operationId: createNewDeck
-      parameters:
-      - description: Folder ID
-        in: path
-        name: folder_id
-        required: true
-        type: string
-      - description: Create deck data
-        in: body
-        name: createDeckData
-        required: true
-        schema:
-          $ref: '#/definitions/CreateDeckRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/DeckResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/HTTPError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/HTTPError'
-      security:
-      - Bearer: []
-      summary: Create a new deck
-      tags:
-      - decks
-  /folders/{folder_id}/decks/{deck_id}:
-    delete:
-      consumes:
-      - application/json
-      description: deletes the deck in the database
-      operationId: deleteDeckById
-      parameters:
-      - description: Folder ID
-        in: path
-        name: folder_id
-        required: true
-        type: string
-      - description: Deck ID
-        in: path
-        name: deck_id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/BasicResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/HTTPError'
-      security:
-      - Bearer: []
-      summary: Delete the deck by id
-      tags:
-      - decks
-    get:
-      consumes:
-      - application/json
-      description: fetches the deck from the database
-      operationId: getDeckById
-      parameters:
-      - description: Folder ID
-        in: path
-        name: folder_id
-        required: true
-        type: string
-      - description: Deck ID
-        in: path
-        name: deck_id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/DeckResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/HTTPError'
-      security:
-      - Bearer: []
-      summary: Get the deck by id
-      tags:
-      - decks
-    put:
-      consumes:
-      - application/json
-      description: updates the deck in the database
-      operationId: updateDeckById
-      parameters:
-      - description: Folder ID
-        in: path
-        name: folder_id
-        required: true
-        type: string
-      - description: Deck ID
-        in: path
-        name: deck_id
-        required: true
-        type: string
-      - description: Update deck data
-        in: body
-        name: updateDeckData
-        required: true
-        schema:
-          $ref: '#/definitions/UpdateDeckRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/DeckResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/HTTPError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/HTTPError'
-      security:
-      - Bearer: []
-      summary: Updates the deck by id
-      tags:
-      - decks
   /library/{user_id}:
     get:
       consumes:
