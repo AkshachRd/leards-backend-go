@@ -7,8 +7,9 @@ type CreateUserRequest struct {
 } // @name CreateUserRequest
 
 type CreateDeckRequest struct {
-	Name   string `json:"name" binding:"required" example:"My new deck"`
-	UserId string `json:"userId" binding:"required" example:"72a30ffb-1896-48b1-b006-985fb055db0f"`
+	Name           string `json:"name" binding:"required" example:"My new deck"`
+	ParentFolderId string `json:"parentFolderId" binding:"required" example:"72a30ffb-1896-48b1-b006-985fb055db0f"`
+	UserId         string `json:"userId" binding:"required" example:"72a30ffb-1896-48b1-b006-985fb055db0f"`
 } // @name CreateDeckRequest
 
 type CreateFolderRequest struct {

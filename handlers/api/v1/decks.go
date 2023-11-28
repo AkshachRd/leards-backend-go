@@ -15,11 +15,10 @@ import (
 // @Accept       json
 // @Produce      json
 // @Security     Bearer
-// @Param		 folder_id	  path		string	true	"Folder ID"
 // @Param		 deck_id	  path		string	true	"Deck ID"
 // @Success      200  {object}  httputils.DeckResponse
 // @Failure      400  {object}  httputils.HTTPError
-// @Router       /folders/{folder_id}/decks/{deck_id} [get]
+// @Router       /decks/{deck_id} [get]
 func GetDeck(c *gin.Context) {
 	deckId := c.Param("deck_id")
 
@@ -48,9 +47,8 @@ func GetDeck(c *gin.Context) {
 // @Success      200  {object}  httputils.DeckResponse
 // @Failure      400  {object}  httputils.HTTPError
 // @Failure      500  {object}  httputils.HTTPError
-// @Router       /folders/{folder_id}/decks [post]
+// @Router       /decks [post]
 func CreateDeck(c *gin.Context) {
-	folderId := c.Param("folder_id")
 	var input httputils.CreateDeckRequest
 
 	if err := c.ShouldBind(&input); err != nil {
@@ -58,7 +56,7 @@ func CreateDeck(c *gin.Context) {
 		return
 	}
 
-	deck, err := models.CreateDeck(input.Name, models.AccessTypePrivate, folderId, input.UserId)
+	deck, err := models.CreateDeck(input.Name, models.AccessTypePrivate, input.ParentFolderId, input.UserId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot create a new deck"})
 		return
@@ -84,7 +82,7 @@ func CreateDeck(c *gin.Context) {
 // @Success      200  {object}  httputils.DeckResponse
 // @Failure      400  {object}  httputils.HTTPError
 // @Failure      500  {object}  httputils.HTTPError
-// @Router       /folders/{folder_id}/decks/{deck_id} [put]
+// @Router       /decks/{deck_id} [put]
 func UpdateDeck(c *gin.Context) {
 	var input httputils.UpdateDeckRequest
 
@@ -118,7 +116,7 @@ func UpdateDeck(c *gin.Context) {
 // @Param		 deck_id	  path		string	true	"Deck ID"
 // @Success      200  {object}  httputils.BasicResponse
 // @Failure      400  {object}  httputils.HTTPError
-// @Router       /folders/{folder_id}/decks/{deck_id} [delete]
+// @Router       /decks/{deck_id} [delete]
 func DeleteDeck(c *gin.Context) {
 	deckId := c.Param("deck_id")
 

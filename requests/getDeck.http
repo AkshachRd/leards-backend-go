@@ -1,5 +1,5 @@
-GET /api/v1/folders/8b9f58d3-a2b7-4562-b969-f9f33c447946/decks/7f0383eb-9412-47bc-b7dc-4cbf81985195 HTTP/2.0
+GET /api/v1/decks/00ff477a-f15e-4ebe-bdb2-26c699e166cc HTTP/2.0
 Host: localhost:8080
 Accept: application/json
 Content-Type: application/json
-Authorization: Bearer M2V4dGZHRkZkNU1NMmpqYTNxdXB6R0poT1BHNC1nclM=
+Authorization: Bearer ZE9Oc3Z6QjdVdmNhdlhKTmFaQ2ZUUVdoS3hBdXRvQTU=

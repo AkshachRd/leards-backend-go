@@ -1,0 +1,10 @@
+PUT /api/v1/accounts/9603ac0b-64b8-45f6-8d7d-575c6404d674 HTTP/2.0
+Host: localhost:8080
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer ZnlCdkRhU1cwVWkxcENEbGQyelNSNzRKbl9JMEZnOXo=
+
+
+{
+  "password": "12345Q"
+}
