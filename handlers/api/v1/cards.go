@@ -56,7 +56,6 @@ func GetStorageCards(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Security     Bearer
-// @Param		 folder_id	  path		string	true	"Folder ID"
 // @Param		 deck_id	  path		string	true	"Deck ID"
 // @Param		 syncCardsRequest body httputils.SyncCardsRequest true "Sync cards data"
 // @Success      200  {object}  httputils.BasicResponse
@@ -72,7 +71,6 @@ func SyncCards(c *gin.Context) {
 	}
 
 	deckId := c.Param("deck_id")
-
 	cards, err := models.FetchCardsByDeckId(deckId)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input or deck doesn't exist"})

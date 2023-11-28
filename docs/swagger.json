@@ -505,13 +505,6 @@
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Folder ID",
-                        "name": "folder_id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
                         "description": "Deck ID",
                         "name": "deck_id",
                         "in": "path",

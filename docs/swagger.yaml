@@ -611,11 +611,6 @@ paths:
         not presented inside the request
       operationId: syncCardsByDeckId
       parameters:
-      - description: Folder ID
-        in: path
-        name: folder_id
-        required: true
-        type: string
       - description: Deck ID
         in: path
         name: deck_id
