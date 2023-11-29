@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"time"
 )
 
 // CreateUser godoc
@@ -54,7 +55,7 @@ func CreateUser(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, gin.H{
 		"message": "User successfully created",
-		"user":    *httputils.ConvertUser(user, c.Request.Host),
+		"user":    *httputils.ConvertUser(user),
 	})
 }
 
@@ -108,7 +109,7 @@ func LoginUser(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "User successfully signed in",
-		"user":    *httputils.ConvertUser(user, c.Request.Host),
+		"user":    *httputils.ConvertUser(user),
 	})
 }
 
@@ -152,7 +153,7 @@ func UpdateUser(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "User successfully updated",
-		"user":    *httputils.ConvertUser(user, c.Request.Host),
+		"user":    *httputils.ConvertUser(user),
 	})
 }
 
@@ -230,7 +231,7 @@ func UploadAvatar(c *gin.Context) {
 		return
 	}
 
-	avatarFilename := fmt.Sprintf("avatar_%s%s", user.ID, ext)
+	avatarFilename := fmt.Sprintf("avatar_%v_%s%s", time.Now().Unix(), user.ID, ext)
 	avatarSavePath := settings.AppSettings.EnvVars.AvatarBasePath + "/" + avatarFilename
 
 	if user.ProfileIconPath.Valid {
@@ -252,6 +253,6 @@ func UploadAvatar(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"message":     "Avatar uploaded successfully",
-		"profileIcon": httputils.ConvertProfileIcon(c.Request.Host, avatarFilename),
+		"profileIcon": httputils.ConvertProfileIcon(avatarFilename),
 	})
 }

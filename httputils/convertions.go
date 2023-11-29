@@ -70,12 +70,12 @@ func ConvertUserSettings(userSettings *[]models.UserSetting) *Settings {
 	return &settings
 }
 
-func ConvertProfileIcon(host string, filename string) string {
+func ConvertProfileIcon(filename string) string {
 	// TODO: заменить путь до аватарки на хосте на переменную
-	return host + "/api/v1/accounts/avatars/" + filename
+	return "/api/v1/accounts/avatars/" + filename
 }
 
-func ConvertUser(user *models.User, host string) *User {
+func ConvertUser(user *models.User) *User {
 	convertedUser := User{
 		UserId:       user.ID,
 		Name:         user.Name,
@@ -86,7 +86,7 @@ func ConvertUser(user *models.User, host string) *User {
 	}
 
 	if user.ProfileIconPath.Valid {
-		convertedUser.ProfileIcon = ConvertProfileIcon(host, user.ProfileIconPath.String)
+		convertedUser.ProfileIcon = ConvertProfileIcon(user.ProfileIconPath.String)
 	}
 
 	return &convertedUser
