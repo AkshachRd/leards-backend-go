@@ -200,7 +200,7 @@ func GetAvatar(c *gin.Context) {
 // @Security     BearerAuth
 // @Param		 user_id	  path		string	true	"User ID"
 // @Param avatar formData file true "Avatar image file (JPG, JPEG, PNG, or GIF)"
-// @Success      201  {object}  httputils.BasicResponse
+// @Success      200  {object}  httputils.UpdateAvatarResponse
 // @Failure      400  {object}  httputils.HTTPError
 // @Failure      500  {object}  httputils.HTTPError
 // @Router       /accounts/{user_id}/avatar [put]
@@ -250,5 +250,8 @@ func UploadAvatar(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Avatar uploaded successfully"})
+	c.JSON(http.StatusOK, gin.H{
+		"message":     "Avatar uploaded successfully",
+		"profileIcon": httputils.ConvertProfileIcon(c.Request.Host, avatarFilename),
+	})
 }

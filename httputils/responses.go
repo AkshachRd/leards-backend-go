@@ -38,3 +38,8 @@ type FavoriteStoragesResponse struct {
 	BasicResponse
 	FavoriteStorages []Content `json:"favoriteStorages"`
 } // @name FavoriteStoragesResponse
+
+type UpdateAvatarResponse struct {
+	BasicResponse
+	ProfileIcon string `json:"profileIcon"`
+} // @name UpdateAvatarResponse
