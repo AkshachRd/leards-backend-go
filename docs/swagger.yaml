@@ -173,6 +173,14 @@ definitions:
         example: <token>
         type: string
     type: object
+  UpdateAvatarResponse:
+    properties:
+      message:
+        example: Successfully
+        type: string
+      profileIcon:
+        type: string
+    type: object
   UpdateDeckRequest:
     properties:
       name:
@@ -412,10 +420,10 @@ paths:
       produces:
       - application/json
       responses:
-        "201":
-          description: Created
+        "200":
+          description: OK
           schema:
-            $ref: '#/definitions/BasicResponse'
+            $ref: '#/definitions/UpdateAvatarResponse'
         "400":
           description: Bad Request
           schema:
@@ -1032,6 +1040,62 @@ paths:
       summary: add favorite storage by user id, storage id and storage type
       tags:
       - library
+  /tags/{user_id}/{storage_type}/{storage_id}:
+    post:
+      consumes:
+      - application/json
+      description: creates new tags or takes ones that already exist and links them
+        in the database
+      operationId: addTagsToStorage
+      parameters:
+      - description: User ID
+        in: path
+        maxLength: 36
+        minLength: 36
+        name: user_id
+        required: true
+        type: string
+      - description: Storage type
+        enum:
+        - deck
+        - folder
+        in: path
+        name: storage_type
+        required: true
+        type: string
+      - description: Storage ID
+        in: path
+        maxLength: 36
+        minLength: 36
+        name: storage_id
+        required: true
+        type: string
+      - description: Create deck data
+        in: body
+        name: createDeckData
+        required: true
+        schema:
+          $ref: '#/definitions/CreateDeckRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/DeckResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/HTTPError'
+      security:
+      - Bearer: []
+      summary: Add tags to the storage
+      tags:
+      - tags
 securityDefinitions:
   BasicAuth:
     type: basic

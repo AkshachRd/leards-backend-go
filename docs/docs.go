@@ -263,10 +263,10 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "201": {
-                        "description": "Created",
+                    "200": {
+                        "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/BasicResponse"
+                            "$ref": "#/definitions/UpdateAvatarResponse"
                         }
                     },
                     "400": {
@@ -509,13 +509,6 @@ const docTemplate = `{
                 "summary": "Synchronizes cards",
                 "operationId": "syncCardsByDeckId",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Folder ID",
-                        "name": "folder_id",
-                        "in": "path",
-                        "required": true
-                    },
                     {
                         "type": "string",
                         "description": "Deck ID",
@@ -1211,6 +1204,87 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/tags/{user_id}/{storage_type}/{storage_id}": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "creates new tags or takes ones that already exist and links them in the database",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tags"
+                ],
+                "summary": "Add tags to the storage",
+                "operationId": "addTagsToStorage",
+                "parameters": [
+                    {
+                        "maxLength": 36,
+                        "minLength": 36,
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "enum": [
+                            "deck",
+                            "folder"
+                        ],
+                        "type": "string",
+                        "description": "Storage type",
+                        "name": "storage_type",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "maxLength": 36,
+                        "minLength": 36,
+                        "type": "string",
+                        "description": "Storage ID",
+                        "name": "storage_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Create deck data",
+                        "name": "createDeckData",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/CreateDeckRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/DeckResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/HTTPError"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -1467,6 +1541,18 @@ const docTemplate = `{
                 "token": {
                     "type": "string",
                     "example": "\u003ctoken\u003e"
+                }
+            }
+        },
+        "UpdateAvatarResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "Successfully"
+                },
+                "profileIcon": {
+                    "type": "string"
                 }
             }
         },
