@@ -239,11 +239,11 @@ func UploadAvatar(c *gin.Context) {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete previous avatar"})
 			return
 		}
-	} else {
-		if err = user.SetProfileIconPath(avatarFilename); err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update avatar in DB"})
-			return
-		}
+	}
+
+	if err = user.SetProfileIconPath(avatarFilename); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update avatar in DB"})
+		return
 	}
 
 	if err = c.SaveUploadedFile(file, avatarSavePath); err != nil {
