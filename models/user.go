@@ -192,17 +192,35 @@ func generateRandomToken(length int) (string, error) {
 	return token, nil
 }
 
+func (u *User) RefreshAuthToken() error {
+	return u.Update(db, "auth_token_expiration", sql.NullTime{
+		Time: time.Now().UTC().Add(TokenExpiration), Valid: true,
+	})
+}
+
 func (u *User) GenerateAuthToken() error {
 	randomToken, err := generateRandomToken(TokenLength)
 	if err != nil {
 		return err
 	}
 
-	u.AuthToken = sql.NullString{String: randomToken, Valid: true}
-	u.AuthTokenExpiration = sql.NullTime{Time: time.Now().UTC().Add(TokenExpiration), Valid: true}
+	authToken := sql.NullString{String: randomToken, Valid: true}
+	err = u.Update(db, "auth_token", authToken)
+	if err != nil {
+		return err
+	}
+	u.AuthToken = authToken
 
-	err = db.Save(u).Error
-	return err
+	authTokenExpiration := sql.NullTime{
+		Time: time.Now().UTC().Add(TokenExpiration), Valid: true,
+	}
+	err = u.Update(db, "auth_token_expiration", authTokenExpiration)
+	if err != nil {
+		return err
+	}
+	u.AuthTokenExpiration = authTokenExpiration
+
+	return nil
 }
 
 func (u *User) RevokeAuthToken() error {

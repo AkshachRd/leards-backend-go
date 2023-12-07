@@ -93,10 +93,18 @@ func LoginUser(c *gin.Context) {
 		return
 	}
 
-	err = user.GenerateAuthToken()
-	if err != nil || !user.AuthToken.Valid {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid new token"})
-		return
+	if user.IsTokenValid() {
+		err = user.RefreshAuthToken()
+		if err != nil || !user.AuthToken.Valid {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+	} else {
+		err = user.GenerateAuthToken()
+		if err != nil || !user.AuthToken.Valid {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid new token"})
+			return
+		}
 	}
 
 	userSettings, err := models.FetchUserSettingsByUserId(user.ID)

@@ -31,14 +31,14 @@ func RefreshToken(c *gin.Context) {
 		return
 	}
 
-	err = user.GenerateAuthToken()
+	if !user.AuthToken.Valid {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "User has no token"})
+	}
+
+	err = user.RefreshAuthToken()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Token generation error"})
 		return
-	}
-
-	if !user.AuthToken.Valid {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid token"})
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "Token successfully refreshed", "token": user.AuthToken.String})
