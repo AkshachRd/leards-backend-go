@@ -76,6 +76,11 @@ func SetupRouters() *gin.Engine {
 			library.POST(":user_id/:storage_type/:storage_id", v1.AddStorageToFavorite)
 			library.DELETE(":user_id/:storage_type/:storage_id", v1.RemoveStorageFromFavorite)
 		}
+		tags := bearerAuthorizedV1.Group("/tags")
+		{
+			tags.POST(":user_id/:storage_type/:storage_id", v1.AddTagsToStorage)
+			tags.DELETE(":user_id/:storage_type/:storage_id", v1.RemoveTagsFromStorage)
+		}
 	}
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

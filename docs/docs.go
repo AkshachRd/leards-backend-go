@@ -1255,12 +1255,12 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "Create deck data",
-                        "name": "createDeckData",
+                        "description": "Add tags to storage data",
+                        "name": "addTagsToStorageData",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/CreateDeckRequest"
+                            "$ref": "#/definitions/TagsRequest"
                         }
                     }
                 ],
@@ -1268,7 +1268,86 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/DeckResponse"
+                            "$ref": "#/definitions/BasicResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/HTTPError"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "deletes tags and unlink them from storage in the database",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "tags"
+                ],
+                "summary": "removes tags from the storage",
+                "operationId": "removeTagsFromStorage",
+                "parameters": [
+                    {
+                        "maxLength": 36,
+                        "minLength": 36,
+                        "type": "string",
+                        "description": "User ID",
+                        "name": "user_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "enum": [
+                            "deck",
+                            "folder"
+                        ],
+                        "type": "string",
+                        "description": "Storage type",
+                        "name": "storage_type",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "maxLength": 36,
+                        "minLength": 36,
+                        "type": "string",
+                        "description": "Storage ID",
+                        "name": "storage_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Remove tags to storage data",
+                        "name": "removeTagsToStorageData",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/TagsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/BasicResponse"
                         }
                     },
                     "400": {
@@ -1527,6 +1606,20 @@ const docTemplate = `{
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/Card"
+                    }
+                }
+            }
+        },
+        "TagsRequest": {
+            "type": "object",
+            "required": [
+                "tags"
+            ],
+            "properties": {
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
                     }
                 }
             }

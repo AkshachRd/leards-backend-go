@@ -39,3 +39,7 @@ type UpdateFolderRequest struct {
 type UpdateUserSettingsRequest struct {
 	Settings Settings `json:"settings" binding:"required"`
 } // @name UpdateUserSettingsRequest
+
+type TagsRequest struct {
+	Tags []string `json:"tags" binding:"required"`
+} // @name TagsRequest

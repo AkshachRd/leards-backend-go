@@ -164,6 +164,15 @@ definitions:
     required:
     - cards
     type: object
+  TagsRequest:
+    properties:
+      tags:
+        items:
+          type: string
+        type: array
+    required:
+    - tags
+    type: object
   TokenResponse:
     properties:
       message:
@@ -1041,6 +1050,60 @@ paths:
       tags:
       - library
   /tags/{user_id}/{storage_type}/{storage_id}:
+    delete:
+      consumes:
+      - application/json
+      description: deletes tags and unlink them from storage in the database
+      operationId: removeTagsFromStorage
+      parameters:
+      - description: User ID
+        in: path
+        maxLength: 36
+        minLength: 36
+        name: user_id
+        required: true
+        type: string
+      - description: Storage type
+        enum:
+        - deck
+        - folder
+        in: path
+        name: storage_type
+        required: true
+        type: string
+      - description: Storage ID
+        in: path
+        maxLength: 36
+        minLength: 36
+        name: storage_id
+        required: true
+        type: string
+      - description: Remove tags to storage data
+        in: body
+        name: removeTagsToStorageData
+        required: true
+        schema:
+          $ref: '#/definitions/TagsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/BasicResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/HTTPError'
+      security:
+      - Bearer: []
+      summary: removes tags from the storage
+      tags:
+      - tags
     post:
       consumes:
       - application/json
@@ -1070,19 +1133,19 @@ paths:
         name: storage_id
         required: true
         type: string
-      - description: Create deck data
+      - description: Add tags to storage data
         in: body
-        name: createDeckData
+        name: addTagsToStorageData
         required: true
         schema:
-          $ref: '#/definitions/CreateDeckRequest'
+          $ref: '#/definitions/TagsRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/DeckResponse'
+            $ref: '#/definitions/BasicResponse'
         "400":
           description: Bad Request
           schema:
