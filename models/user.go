@@ -39,6 +39,16 @@ func (u *User) SetProfileIconPath(profileIconPath string) error {
 	return nil
 }
 
+func (u *User) RemoveProfileIconPath() error {
+	err := u.Update(db, "profile_icon_path", nil)
+	if err != nil {
+		return err
+	}
+
+	u.ProfileIconPath = sql.NullString{String: "", Valid: true}
+	return nil
+}
+
 func getUserPreloadQuery(index int) string {
 	return []string{"RootFolder", "Settings"}[index]
 }

@@ -37,7 +37,7 @@ func SetupRouters() *gin.Engine {
 			accounts.GET(":user_id/avatar", v1.GetAvatar)
 			accounts.Static("/avatars", settings.AppSettings.EnvVars.AvatarBasePath)
 			accountsBearerAuthorized.PUT(":user_id/avatar", v1.UploadAvatar)
-
+			accountsBearerAuthorized.DELETE(":user_id/avatar", v1.RemoveAvatar)
 			userSettings := accountsBearerAuthorized.Group(":user_id/settings")
 			{
 				userSettings.GET("", v1.GetUserSettings)
