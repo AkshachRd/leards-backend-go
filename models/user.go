@@ -40,12 +40,14 @@ func (u *User) SetProfileIconPath(profileIconPath string) error {
 }
 
 func (u *User) RemoveProfileIconPath() error {
-	err := u.Update(db, "profile_icon_path", nil)
+	emptyIcon := sql.NullString{Valid: false}
+
+	err := u.Update(db, "profile_icon_path", emptyIcon)
 	if err != nil {
 		return err
 	}
 
-	u.ProfileIconPath = sql.NullString{String: "", Valid: true}
+	u.ProfileIconPath = emptyIcon
 	return nil
 }
 
