@@ -39,11 +39,12 @@ func ConvertFolder(folder *models.Folder) *Folder {
 	content = append(content, *ConvertDecksToContent(&folder.Decks)...)
 
 	return &Folder{
-		FolderId: folder.ID,
-		Name:     folder.Name,
-		Path:     path,
-		Content:  content,
-		Tags:     *ConvertStorageHasTagsToTags(&folder.StorageHasTags),
+		FolderId:   folder.ID,
+		Name:       folder.Name,
+		Path:       path,
+		Content:    content,
+		Tags:       *ConvertStorageHasTagsToTags(&folder.StorageHasTags),
+		AccessType: models.AccessTypeToString(int(folder.AccessType)),
 	}
 }
 
@@ -54,6 +55,7 @@ func ConvertDeck(deck *models.Deck) *Deck {
 		Content:        *ConvertCards(&deck.Cards),
 		ParentFolderId: deck.ParentFolderID,
 		Tags:           *ConvertStorageHasTagsToTags(&deck.StorageHasTags),
+		AccessType:     models.AccessTypeToString(int(deck.AccessType)),
 	}
 }
 
@@ -121,4 +123,20 @@ func ConvertStorageHasTagsToTags(storageHasTags *[]models.StorageHasTag) *[]stri
 	}
 
 	return &tags
+}
+
+func ConvertDeckToStorageSettings(deck *models.Deck) *StorageSettings {
+	return &StorageSettings{
+		Tags:       *ConvertStorageHasTagsToTags(&deck.StorageHasTags),
+		Name:       deck.Name,
+		AccessType: models.AccessTypeToString(int(deck.AccessType)),
+	}
+}
+
+func ConvertFolderToStorageSettings(folder *models.Folder) *StorageSettings {
+	return &StorageSettings{
+		Tags:       *ConvertStorageHasTagsToTags(&folder.StorageHasTags),
+		Name:       folder.Name,
+		AccessType: models.AccessTypeToString(int(folder.AccessType)),
+	}
 }

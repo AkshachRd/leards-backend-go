@@ -72,6 +72,32 @@ func GetFolder(c *gin.Context) {
 	})
 }
 
+// GetFolderSettings godoc
+// @Id           getFolderSettingsByFolderId
+// @Summary      Get the folder's settings by folder id
+// @Description  fetches the folder from the database and returns settings
+// @Tags         folders
+// @Accept       json
+// @Produce      json
+// @Security     Bearer
+// @Param		 folder_id	  path		string	true	"Folder ID"
+// @Success      200  {object}  httputils.StorageSettingsResponse
+// @Failure      400  {object}  httputils.HTTPError
+// @Router       /folders/{folder_id}/settings [get]
+func GetFolderSettings(c *gin.Context) {
+	folderId := c.Param("folder_id")
+	folder, err := models.FetchFolderById(folderId, false, false, false, false, true)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input or folder doesn't exist"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message":         "Folder settings successfully fetched",
+		"storageSettings": *httputils.ConvertFolderToStorageSettings(folder),
+	})
+}
+
 // UpdateFolder godoc
 // @Id           updateFolderById
 // @Summary      Update the folder by id

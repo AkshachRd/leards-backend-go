@@ -14,6 +14,7 @@ type Deck struct {
 	ParentFolderId string   `json:"parentFolderId"`
 	Content        []Card   `json:"content"`
 	Tags           []string `json:"tags"`
+	AccessType     string   `json:"accessType"`
 } // @name Deck
 
 type Path struct {
@@ -28,11 +29,12 @@ type Content struct {
 } // @name Content
 
 type Folder struct {
-	FolderId string    `json:"folderId"`
-	Name     string    `json:"name"`
-	Path     []Path    `json:"path"`
-	Content  []Content `json:"content"`
-	Tags     []string  `json:"tags"`
+	FolderId   string    `json:"folderId"`
+	Name       string    `json:"name"`
+	Path       []Path    `json:"path"`
+	Content    []Content `json:"content"`
+	Tags       []string  `json:"tags"`
+	AccessType string    `json:"accessType"`
 } // @name Folder
 
 type Settings map[models.Setting]string // @name Settings
@@ -46,3 +48,9 @@ type User struct {
 	RootFolderId string   `json:"rootFolderId"`
 	Settings     Settings `json:"settings"`
 } // @name User
+
+type StorageSettings struct {
+	Name       string   `json:"name"`
+	Tags       []string `json:"tags"`
+	AccessType string   `json:"accessType"`
+} // @name StorageSettings

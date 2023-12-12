@@ -56,6 +56,7 @@ func SetupRouters() *gin.Engine {
 			folders.POST("", v1.CreateFolder)
 			foldersWithId.PUT("", v1.UpdateFolder)
 			foldersWithId.DELETE("", v1.DeleteFolder)
+			foldersWithId.GET("settings", v1.GetFolderSettings)
 		}
 		decks := bearerAuthorizedV1.Group("/decks")
 		decksWithId := decks.Group(":deck_id")
@@ -64,6 +65,7 @@ func SetupRouters() *gin.Engine {
 			decksWithId.GET("", v1.GetDeck)
 			decksWithId.PUT("", v1.UpdateDeck)
 			decksWithId.DELETE("", v1.DeleteDeck)
+			decksWithId.GET("settings", v1.GetDeckSettings)
 		}
 		cards := bearerAuthorizedV1.Group("/cards")
 		{

@@ -43,3 +43,8 @@ type UpdateAvatarResponse struct {
 	BasicResponse
 	ProfileIcon string `json:"profileIcon"`
 } // @name UpdateAvatarResponse
+
+type StorageSettingsResponse struct {
+	BasicResponse
+	StorageSettings StorageSettings `json:"storageSettings"`
+} // @name StorageSettingsResponse

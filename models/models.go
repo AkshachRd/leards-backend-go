@@ -21,6 +21,15 @@ const (
 	AccessTypePublic
 )
 
+var accessTypeMap = map[int]string{
+	AccessTypePrivate: "private",
+	AccessTypePublic:  "public",
+}
+
+func AccessTypeToString(accessType int) string {
+	return accessTypeMap[accessType]
+}
+
 const (
 	StorageTypeFolder = "folder"
 	StorageTypeDeck   = "deck"

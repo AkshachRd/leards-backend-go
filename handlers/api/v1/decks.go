@@ -34,6 +34,33 @@ func GetDeck(c *gin.Context) {
 	})
 }
 
+// GetDeckSettings godoc
+// @Id			 getDeckSettingsByDeckId
+// @Summary      Get the deck's settings by deck id
+// @Description  fetches the deck from the database and returns settings
+// @Tags         decks
+// @Accept       json
+// @Produce      json
+// @Security     Bearer
+// @Param		 deck_id	  path		string	true	"Deck ID"
+// @Success      200  {object}  httputils.StorageSettingsResponse
+// @Failure      400  {object}  httputils.HTTPError
+// @Router       /decks/{deck_id}/settings [get]
+func GetDeckSettings(c *gin.Context) {
+	deckId := c.Param("deck_id")
+
+	deck, err := models.FetchDeckById(deckId, false, true)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input or deck doesn't exist"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message":         "Deck settings successfully fetched",
+		"storageSettings": *httputils.ConvertDeckToStorageSettings(deck),
+	})
+}
+
 // CreateDeck godoc
 // @Id			 createNewDeck
 // @Summary      Create a new deck
