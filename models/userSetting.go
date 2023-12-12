@@ -1,6 +1,7 @@
 package models
 
 import (
+	"github.com/AkshachRd/leards-backend-go/settings"
 	"gorm.io/gorm"
 )
 
@@ -21,7 +22,7 @@ type UserSetting struct {
 
 func getUserSettingsMap() map[Setting]string {
 	return map[Setting]string{
-		Locale: "en",
+		Locale: settings.AppSettings.EnvVars.DefaultLocale,
 		Theme:  "light",
 	}
 }

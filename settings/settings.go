@@ -8,6 +8,8 @@ import (
 
 type EnvVars struct {
 	AvatarBasePath string
+	DefaultLocale  string
+	DefaultTheme   string
 }
 
 func getEnv(key, fallback string) string {
@@ -25,6 +27,8 @@ func NewEnvVars() *EnvVars {
 	envVars := EnvVars{}
 
 	envVars.AvatarBasePath = getEnv("AVATAR_BASE_PATH", "./")
+	envVars.DefaultLocale = getEnv("DEFAULT_LOCALE", "en")
+	envVars.DefaultTheme = getEnv("DEFAULT_THEME", "light")
 
 	return &envVars
 }
