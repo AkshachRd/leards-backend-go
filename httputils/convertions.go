@@ -38,7 +38,13 @@ func ConvertFolder(folder *models.Folder) *Folder {
 	content = append(content, *ConvertFoldersToContent(&folder.Folders)...)
 	content = append(content, *ConvertDecksToContent(&folder.Decks)...)
 
-	return &Folder{FolderId: folder.ID, Name: folder.Name, Path: path, Content: content}
+	return &Folder{
+		FolderId: folder.ID,
+		Name:     folder.Name,
+		Path:     path,
+		Content:  content,
+		Tags:     *ConvertStorageHasTagsToTags(&folder.StorageHasTags),
+	}
 }
 
 func ConvertDeck(deck *models.Deck) *Deck {
@@ -47,6 +53,7 @@ func ConvertDeck(deck *models.Deck) *Deck {
 		Name:           deck.Name,
 		Content:        *ConvertCards(&deck.Cards),
 		ParentFolderId: deck.ParentFolderID,
+		Tags:           *ConvertStorageHasTagsToTags(&deck.StorageHasTags),
 	}
 }
 
@@ -104,4 +111,14 @@ func ConvertFavoriteStoragesContentToContent(favoriteStoragesContent *[]models.F
 	}
 
 	return &content
+}
+
+func ConvertStorageHasTagsToTags(storageHasTags *[]models.StorageHasTag) *[]string {
+	tags := make([]string, 0)
+
+	for _, storageHasTag := range *storageHasTags {
+		tags = append(tags, storageHasTag.Tag.Name)
+	}
+
+	return &tags
 }

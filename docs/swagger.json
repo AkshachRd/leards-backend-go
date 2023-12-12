@@ -1495,6 +1495,12 @@
                 },
                 "parentFolderId": {
                     "type": "string"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
                 }
             }
         },
@@ -1544,6 +1550,12 @@
                     "type": "array",
                     "items": {
                         "$ref": "#/definitions/Path"
+                    }
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
                     }
                 }
             }

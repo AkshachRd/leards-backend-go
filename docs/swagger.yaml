@@ -93,6 +93,10 @@ definitions:
         type: string
       parentFolderId:
         type: string
+      tags:
+        items:
+          type: string
+        type: array
     type: object
   DeckResponse:
     properties:
@@ -125,6 +129,10 @@ definitions:
       path:
         items:
           $ref: '#/definitions/Path'
+        type: array
+      tags:
+        items:
+          type: string
         type: array
     type: object
   FolderResponse:

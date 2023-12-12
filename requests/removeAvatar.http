@@ -1,0 +1,5 @@
+DELETE /api/v1/accounts/59a5259a-8094-4e8f-8caf-888c3e32f012/avatar HTTP/2.0
+Host: localhost:8080
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer ZEdPT3c1ZW5rV1BNQXMwMXNaYXBfbmtrQkNjMlFCbWM=

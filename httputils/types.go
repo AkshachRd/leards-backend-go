@@ -9,10 +9,11 @@ type Card struct {
 } // @name Card
 
 type Deck struct {
-	DeckId         string `json:"deckId"`
-	Name           string `json:"name"`
-	ParentFolderId string `json:"parentFolderId"`
-	Content        []Card `json:"content"`
+	DeckId         string   `json:"deckId"`
+	Name           string   `json:"name"`
+	ParentFolderId string   `json:"parentFolderId"`
+	Content        []Card   `json:"content"`
+	Tags           []string `json:"tags"`
 } // @name Deck
 
 type Path struct {
@@ -31,6 +32,7 @@ type Folder struct {
 	Name     string    `json:"name"`
 	Path     []Path    `json:"path"`
 	Content  []Content `json:"content"`
+	Tags     []string  `json:"tags"`
 } // @name Folder
 
 type Settings map[models.Setting]string // @name Settings

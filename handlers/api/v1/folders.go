@@ -34,7 +34,7 @@ func CreateFolder(c *gin.Context) {
 		return
 	}
 
-	folder, err = models.FetchFolderById(folder.ID, false, true, true, true)
+	folder, err = models.FetchFolderById(folder.ID, false, true, true, true, true)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot fetch the created folder"})
 		return
@@ -60,7 +60,7 @@ func CreateFolder(c *gin.Context) {
 // @Router       /folders/{folder_id} [get]
 func GetFolder(c *gin.Context) {
 	folderId := c.Param("folder_id")
-	folder, err := models.FetchFolderById(folderId, true, true, true, true)
+	folder, err := models.FetchFolderById(folderId, true, true, true, true, true)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input or folder doesn't exist"})
 		return

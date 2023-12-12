@@ -27,12 +27,6 @@ func getFolderPreloadArgs(query string) []interface{} {
 			return d.Preload("ParentFolder", preload)
 		}
 		args = append(args, preload)
-	case "Folders.Folders":
-		var preload func(d *gorm.DB) *gorm.DB
-		preload = func(d *gorm.DB) *gorm.DB {
-			return d.Preload("Decks.Cards").Preload("Folders", preload)
-		}
-		args = append(args, preload)
 	}
 	return args
 }
@@ -43,7 +37,7 @@ func getFolderPreloadQuery(index int) string {
 		"Folders",
 		"Decks.Cards",
 		"ParentFolder.ParentFolder",
-		"Folders.Folders",
+		"StorageHasTags.Tag",
 	}[index]
 }
 
@@ -103,7 +97,7 @@ func UpdateFolderById(id string, name string) (*Folder, error) {
 		return &Folder{}, err
 	}
 
-	folder, err = FetchFolderById(id, false, true, true, true)
+	folder, err = FetchFolderById(id, false, true, true, true, true)
 	if err != nil {
 		return &Folder{}, err
 	}
@@ -112,7 +106,7 @@ func UpdateFolderById(id string, name string) (*Folder, error) {
 }
 
 func DeleteFolderById(id string) error {
-	folder, err := FetchFolderById(id, false, true, true)
+	folder, err := FetchFolderById(id, false, true, true, false, true)
 	if err != nil {
 		return err
 	}
@@ -161,6 +155,23 @@ func (f *Folder) Delete(db *gorm.DB) error {
 		}
 	}
 
+	storageHasTags := f.StorageHasTags
+	if storageHasTags == nil {
+		if err := db.Find(
+			&storageHasTags,
+			"storage_id = ? AND storage_type = ?",
+			f.ID, StorageTypeFolder).Error; err != nil {
+			return err
+		}
+	}
+
+	if len(storageHasTags) != 0 {
+		err := db.Delete(&storageHasTags).Error
+		if err != nil {
+			return err
+		}
+	}
+
 	err := db.Delete(f).Error
 	if err != nil {
 		return err
@@ -171,7 +182,7 @@ func (f *Folder) Delete(db *gorm.DB) error {
 
 // FetchFolderById
 //
-// Preload args: "ParentFolder", "Folders", "DecksWithCards", "ParentFolderRecursive", "FoldersRecursive", "FoldersRecursiveWithDecksWithCards"
+// Preload args: "ParentFolder", "Folders", "DecksWithCards", "ParentFolderRecursive", "Tags"
 func FetchFolderById(id string, preloadArgs ...bool) (*Folder, error) {
 	var folder Folder
 

@@ -17,7 +17,7 @@ type Deck struct {
 }
 
 func getDeckPreloadQuery(index int) string {
-	return []string{"Cards"}[index]
+	return []string{"Cards", "StorageHasTags.Tag"}[index]
 }
 
 func NewDeck(db *gorm.DB, name string, accessType uint8, parentFolderId string) (*Deck, error) {
@@ -70,7 +70,7 @@ func UpdateDeckById(id string, name string) (*Deck, error) {
 		return &Deck{}, err
 	}
 
-	deck, err = FetchDeckById(id, true)
+	deck, err = FetchDeckById(id, true, true)
 	if err != nil {
 		return &Deck{}, err
 	}
@@ -79,7 +79,7 @@ func UpdateDeckById(id string, name string) (*Deck, error) {
 }
 
 func DeleteDeckById(id string) error {
-	deck, err := FetchDeckById(id, true)
+	deck, err := FetchDeckById(id, true, true)
 	if err != nil {
 		return err
 	}
@@ -114,6 +114,23 @@ func (d *Deck) Delete(db *gorm.DB) error {
 		}
 	}
 
+	storageHasTags := d.StorageHasTags
+	if storageHasTags == nil {
+		if err := db.Find(
+			&storageHasTags,
+			"storage_id = ? AND storage_type = ?",
+			d.ID, StorageTypeDeck).Error; err != nil {
+			return err
+		}
+	}
+
+	if len(storageHasTags) != 0 {
+		err := db.Delete(&storageHasTags).Error
+		if err != nil {
+			return err
+		}
+	}
+
 	err := db.Delete(d).Error
 	if err != nil {
 		return err
@@ -124,7 +141,7 @@ func (d *Deck) Delete(db *gorm.DB) error {
 
 // FetchDeckById
 //
-// Preload args: Cards, AccessType
+// Preload args: Cards, Tags
 func FetchDeckById(id string, preloadArgs ...bool) (*Deck, error) {
 	var deck Deck
 

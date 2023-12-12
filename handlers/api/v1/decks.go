@@ -22,7 +22,7 @@ import (
 func GetDeck(c *gin.Context) {
 	deckId := c.Param("deck_id")
 
-	deck, err := models.FetchDeckById(deckId, true)
+	deck, err := models.FetchDeckById(deckId, true, true)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input or deck doesn't exist"})
 		return
