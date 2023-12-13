@@ -83,6 +83,8 @@ definitions:
     type: object
   Deck:
     properties:
+      accessType:
+        type: string
       content:
         items:
           $ref: '#/definitions/Card'
@@ -118,6 +120,8 @@ definitions:
     type: object
   Folder:
     properties:
+      accessType:
+        type: string
       content:
         items:
           $ref: '#/definitions/Content'
@@ -159,9 +163,43 @@ definitions:
       name:
         type: string
     type: object
+  SearchResult:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      rating:
+        type: integer
+      tags:
+        items:
+          type: string
+        type: array
+      type:
+        type: string
+    type: object
   Settings:
     additionalProperties:
       type: string
+    type: object
+  StorageSettings:
+    properties:
+      accessType:
+        type: string
+      name:
+        type: string
+      tags:
+        items:
+          type: string
+        type: array
+    type: object
+  StorageSettingsResponse:
+    properties:
+      message:
+        example: Successfully
+        type: string
+      storageSettings:
+        $ref: '#/definitions/StorageSettings'
     type: object
   SyncCardsRequest:
     properties:
@@ -807,6 +845,34 @@ paths:
       summary: Updates the deck by id
       tags:
       - decks
+  /decks/{deck_id}/settings:
+    get:
+      consumes:
+      - application/json
+      description: fetches the deck from the database and returns settings
+      operationId: getDeckSettingsByDeckId
+      parameters:
+      - description: Deck ID
+        in: path
+        name: deck_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/StorageSettingsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/HTTPError'
+      security:
+      - Bearer: []
+      summary: Get the deck's settings by deck id
+      tags:
+      - decks
   /folders:
     post:
       consumes:
@@ -926,6 +992,34 @@ paths:
       security:
       - Bearer: []
       summary: Update the folder by id
+      tags:
+      - folders
+  /folders/{folder_id}/settings:
+    get:
+      consumes:
+      - application/json
+      description: fetches the folder from the database and returns settings
+      operationId: getFolderSettingsByFolderId
+      parameters:
+      - description: Folder ID
+        in: path
+        name: folder_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/StorageSettingsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/HTTPError'
+      security:
+      - Bearer: []
+      summary: Get the folder's settings by folder id
       tags:
       - folders
   /library/{user_id}:
@@ -1057,6 +1151,82 @@ paths:
       summary: add favorite storage by user id, storage id and storage type
       tags:
       - library
+  /search:
+    get:
+      consumes:
+      - application/json
+      description: fetches public storages from the database
+      operationId: searchPublicStorages
+      parameters:
+      - description: Page
+        in: query
+        minimum: 1
+        name: page
+        type: integer
+      - description: Page size
+        in: query
+        maximum: 100
+        minimum: 10
+        name: page_size
+        type: integer
+      - description: Search type
+        enum:
+        - all
+        - tag
+        - name
+        in: query
+        name: search_type
+        required: true
+        type: string
+      - description: Sort type
+        enum:
+        - rating
+        - name
+        in: query
+        name: sort_type
+        required: true
+        type: string
+      - description: Order by
+        enum:
+        - asc
+        - desc
+        in: query
+        name: order_by
+        required: true
+        type: string
+      - description: Name
+        in: query
+        name: name
+        type: string
+      - collectionFormat: csv
+        description: Tags
+        in: query
+        items:
+          type: string
+        name: tags
+        type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/SearchResult'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/HTTPError'
+      security:
+      - Bearer: []
+      summary: Get public storages with search
+      tags:
+      - search
   /tags/{user_id}/{storage_type}/{storage_id}:
     delete:
       consumes:

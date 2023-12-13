@@ -827,6 +827,50 @@ const docTemplate = `{
                 }
             }
         },
+        "/decks/{deck_id}/settings": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "fetches the deck from the database and returns settings",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "decks"
+                ],
+                "summary": "Get the deck's settings by deck id",
+                "operationId": "getDeckSettingsByDeckId",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Deck ID",
+                        "name": "deck_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/StorageSettingsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/HTTPError"
+                        }
+                    }
+                }
+            }
+        },
         "/folders": {
             "post": {
                 "security": [
@@ -1016,6 +1060,50 @@ const docTemplate = `{
                 }
             }
         },
+        "/folders/{folder_id}/settings": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "fetches the folder from the database and returns settings",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "folders"
+                ],
+                "summary": "Get the folder's settings by folder id",
+                "operationId": "getFolderSettingsByFolderId",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Folder ID",
+                        "name": "folder_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/StorageSettingsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/HTTPError"
+                        }
+                    }
+                }
+            }
+        },
         "/library/{user_id}": {
             "get": {
                 "security": [
@@ -1194,6 +1282,117 @@ const docTemplate = `{
                         "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/BasicResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/search": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "fetches public storages from the database",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "search"
+                ],
+                "summary": "Get public storages with search",
+                "operationId": "searchPublicStorages",
+                "parameters": [
+                    {
+                        "minimum": 1,
+                        "type": "integer",
+                        "description": "Page",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "maximum": 100,
+                        "minimum": 10,
+                        "type": "integer",
+                        "description": "Page size",
+                        "name": "page_size",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "all",
+                            "tag",
+                            "name"
+                        ],
+                        "type": "string",
+                        "description": "Search type",
+                        "name": "search_type",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "enum": [
+                            "rating",
+                            "name"
+                        ],
+                        "type": "string",
+                        "description": "Sort type",
+                        "name": "sort_type",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "enum": [
+                            "asc",
+                            "desc"
+                        ],
+                        "type": "string",
+                        "description": "Order by",
+                        "name": "order_by",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Name",
+                        "name": "name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "csv",
+                        "description": "Tags",
+                        "name": "tags",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/SearchResult"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/HTTPError"
                         }
                     },
                     "500": {
@@ -1487,6 +1686,9 @@ const docTemplate = `{
         "Deck": {
             "type": "object",
             "properties": {
+                "accessType": {
+                    "type": "string"
+                },
                 "content": {
                     "type": "array",
                     "items": {
@@ -1540,6 +1742,9 @@ const docTemplate = `{
         "Folder": {
             "type": "object",
             "properties": {
+                "accessType": {
+                    "type": "string"
+                },
                 "content": {
                     "type": "array",
                     "items": {
@@ -1602,10 +1807,62 @@ const docTemplate = `{
                 }
             }
         },
+        "SearchResult": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "rating": {
+                    "type": "integer"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
         "Settings": {
             "type": "object",
             "additionalProperties": {
                 "type": "string"
+            }
+        },
+        "StorageSettings": {
+            "type": "object",
+            "properties": {
+                "accessType": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "StorageSettingsResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "Successfully"
+                },
+                "storageSettings": {
+                    "$ref": "#/definitions/StorageSettings"
+                }
             }
         },
         "SyncCardsRequest": {

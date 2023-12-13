@@ -9,7 +9,7 @@ type TagService struct {
 }
 
 func NewTagService(storageId string, storageType string) (*TagService, error) {
-	fetchedTags, err := models.FetchTagsByStorageIdByStorageId(storageId, storageType)
+	fetchedTags, err := models.FetchTagsByStorageIdAndStorageType(storageId, storageType)
 	if err != nil {
 		return &TagService{}, nil
 	}

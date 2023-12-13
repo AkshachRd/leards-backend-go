@@ -17,7 +17,7 @@ func FetchOrCreateTagByName(name string) (*Tag, error) {
 	return &tag, nil
 }
 
-func FetchTagsByStorageIdByStorageId(storageId string, storageType string) (*[]Tag, error) {
+func FetchTagsByStorageIdAndStorageType(storageId string, storageType string) (*[]Tag, error) {
 	var tags []Tag
 
 	err := db.Table("tag").

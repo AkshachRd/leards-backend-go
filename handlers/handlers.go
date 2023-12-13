@@ -83,6 +83,10 @@ func SetupRouters() *gin.Engine {
 			tags.POST(":user_id/:storage_type/:storage_id", v1.AddTagsToStorage)
 			tags.DELETE(":user_id/:storage_type/:storage_id", v1.RemoveTagsFromStorage)
 		}
+		search := bearerAuthorizedV1.Group("/search")
+		{
+			search.GET("", v1.SearchPublicStorages)
+		}
 	}
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
