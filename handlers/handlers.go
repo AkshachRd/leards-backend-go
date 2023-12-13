@@ -87,6 +87,10 @@ func SetupRouters() *gin.Engine {
 		{
 			search.GET("", v1.SearchPublicStorages)
 		}
+		sharing := bearerAuthorizedV1.Group("/sharing")
+		{
+			sharing.PUT(":storage_type/:storage_id", v1.SetStorageAccess)
+		}
 	}
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

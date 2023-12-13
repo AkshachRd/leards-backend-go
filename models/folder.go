@@ -212,3 +212,14 @@ func FetchFoldersByParentFolderId(parentFolderId string) (*[]Folder, error) {
 
 	return &folders, nil
 }
+
+func (f *Folder) SetAccessType(accessType uint8) error {
+	err := db.Model(f).Update("access_type", accessType).Error
+	if err != nil {
+		return err
+	}
+
+	f.AccessType = accessType
+
+	return nil
+}

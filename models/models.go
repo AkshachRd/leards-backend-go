@@ -19,11 +19,13 @@ var db *gorm.DB
 const (
 	AccessTypePrivate = iota
 	AccessTypePublic
+	AccessTypeShared
 )
 
 var accessTypeMap = map[int]string{
 	AccessTypePrivate: "private",
 	AccessTypePublic:  "public",
+	AccessTypeShared:  "shared",
 }
 
 func AccessTypeToString(accessType int) string {

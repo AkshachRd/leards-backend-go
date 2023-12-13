@@ -1119,21 +1119,6 @@
                 "operationId": "getFavoriteStorages",
                 "parameters": [
                     {
-                        "minimum": 1,
-                        "type": "integer",
-                        "description": "Page",
-                        "name": "page",
-                        "in": "query"
-                    },
-                    {
-                        "maximum": 100,
-                        "minimum": 10,
-                        "type": "integer",
-                        "description": "Page size",
-                        "name": "page_size",
-                        "in": "query"
-                    },
-                    {
                         "type": "string",
                         "description": "User ID",
                         "name": "user_id",
@@ -1381,6 +1366,78 @@
                             "items": {
                                 "$ref": "#/definitions/SearchResult"
                             }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/sharing/{storage_type}/{storage_id}": {
+            "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "sets the storage's access type in the database",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "sharing"
+                ],
+                "summary": "Set the storage's access type",
+                "operationId": "setStorageAccess",
+                "parameters": [
+                    {
+                        "enum": [
+                            "deck",
+                            "folder"
+                        ],
+                        "type": "string",
+                        "description": "Storage type",
+                        "name": "storage_type",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "maxLength": 36,
+                        "minLength": 36,
+                        "type": "string",
+                        "description": "Storage ID",
+                        "name": "storage_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Set storage access data",
+                        "name": "SetStorageAccessData",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/SetStorageAccessRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/BasicResponse"
                         }
                     },
                     "400": {
@@ -1824,6 +1881,23 @@
                 },
                 "type": {
                     "type": "string"
+                }
+            }
+        },
+        "SetStorageAccessRequest": {
+            "type": "object",
+            "required": [
+                "type"
+            ],
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "shared",
+                        "public",
+                        "private"
+                    ],
+                    "example": "public"
                 }
             }
         },

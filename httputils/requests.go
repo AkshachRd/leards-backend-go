@@ -43,3 +43,7 @@ type UpdateUserSettingsRequest struct {
 type TagsRequest struct {
 	Tags []string `json:"tags" binding:"required"`
 } // @name TagsRequest
+
+type SetStorageAccessRequest struct {
+	Type string `json:"type" binding:"required" example:"public" enums:"shared,public,private"`
+} // @name SetStorageAccessRequest

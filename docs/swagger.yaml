@@ -180,6 +180,18 @@ definitions:
       type:
         type: string
     type: object
+  SetStorageAccessRequest:
+    properties:
+      type:
+        enum:
+        - shared
+        - public
+        - private
+        example: public
+        type: string
+    required:
+    - type
+    type: object
   Settings:
     additionalProperties:
       type: string
@@ -1031,17 +1043,6 @@ paths:
       description: returns the user's favorite storages
       operationId: getFavoriteStorages
       parameters:
-      - description: Page
-        in: query
-        minimum: 1
-        name: page
-        type: integer
-      - description: Page size
-        in: query
-        maximum: 100
-        minimum: 10
-        name: page_size
-        type: integer
       - description: User ID
         in: path
         name: user_id
@@ -1229,6 +1230,54 @@ paths:
       summary: Get public storages with search
       tags:
       - search
+  /sharing/{storage_type}/{storage_id}:
+    put:
+      consumes:
+      - application/json
+      description: sets the storage's access type in the database
+      operationId: setStorageAccess
+      parameters:
+      - description: Storage type
+        enum:
+        - deck
+        - folder
+        in: path
+        name: storage_type
+        required: true
+        type: string
+      - description: Storage ID
+        in: path
+        maxLength: 36
+        minLength: 36
+        name: storage_id
+        required: true
+        type: string
+      - description: Set storage access data
+        in: body
+        name: SetStorageAccessData
+        required: true
+        schema:
+          $ref: '#/definitions/SetStorageAccessRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/BasicResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/HTTPError'
+      security:
+      - Bearer: []
+      summary: Set the storage's access type
+      tags:
+      - sharing
   /tags/{user_id}/{storage_type}/{storage_id}:
     delete:
       consumes:

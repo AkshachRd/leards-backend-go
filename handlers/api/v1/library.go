@@ -15,8 +15,6 @@ import (
 // @Accept       json
 // @Produce      json
 // @Security     BearerAuth
-// @Param        page         query     int     false    "Page" minimum(1)
-// @Param        page_size    query     int     false    "Page size" minimum(10)    maximum(100)
 // @Param		 user_id	  path		string	true	"User ID"
 // @Success      200  {object}  httputils.FavoriteStoragesResponse
 // @Failure      500  {object}  httputils.HTTPError

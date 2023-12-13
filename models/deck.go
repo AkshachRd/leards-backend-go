@@ -181,3 +181,14 @@ func FetchPublicDecksWithPagination(page int, pageSize int) (*[]Deck, error) {
 
 	return &decks, nil
 }
+
+func (d *Deck) SetAccessType(accessType uint8) error {
+	err := db.Model(d).Update("access_type", accessType).Error
+	if err != nil {
+		return err
+	}
+
+	d.AccessType = accessType
+
+	return nil
+}
