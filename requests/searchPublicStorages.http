@@ -1,6 +1,6 @@
 GET /api/v1/search
     ?page=1
-    &page_size=10
+    &page_size=2
     &search_type=name
     &sort_type=rating
     &order_by=desc
@@ -8,5 +8,5 @@ GET /api/v1/search
 Host: localhost:8080
 Accept: application/json
 Content-Type: application/json
-Authorization: Bearer VXFjd2ItRm8tc09zQzdkTzJCY1Y0NUdLNnk3eEt1YjE=
+Authorization: Bearer MHQ3bkpid1BPcWZxd21zam1XbU5UX3NwUnlSblQ3OEI=
 
