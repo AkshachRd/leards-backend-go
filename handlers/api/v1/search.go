@@ -22,7 +22,7 @@ import (
 // @Param        sort_type    query     string    true     "Sort type" Enums(rating, name)
 // @Param        order_by     query     string    true     "Order by" Enums(asc, desc)
 // @Param        name		  query     string    false    "Name"
-// @Param        tags		  query     []string  false    "Tags"
+// @Param        tags		  query     []string  false    "Tags" collectionFormat(multi)
 // @Success      200  {array}   services.SearchResult
 // @Failure      400  {object}  httputils.HTTPError
 // @Failure      500  {object}  httputils.HTTPError

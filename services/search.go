@@ -14,6 +14,20 @@ type SearchResult struct {
 	Tags            []string `json:"tags"`
 } // @name SearchResult
 
+func (sr *SearchResult) fetchTags() error {
+	tagNames, err := models.FetchTagNamesByStorageIdAndStorageType(sr.ID, sr.Type)
+	if err != nil {
+		return err
+	}
+
+	if tagNames == nil {
+		tagNames = &[]string{}
+	}
+
+	sr.Tags = *tagNames
+	return nil
+}
+
 type SearchService struct {
 	page       int
 	pageSize   int
@@ -77,51 +91,39 @@ func (ss *SearchService) Search(
 	name string,
 	tags []string,
 ) (*[]SearchResult, error) {
-	results := &[]SearchResult{}
-	var err error
+	results := make([]SearchResult, 0)
 
+	var err error
+	var searchResults *[]models.SearchResult
 	switch ss.searchType {
 	case "all":
+		searchResults, err = models.SearchByNameOrTagsWithPagination(name, tags, ss.sortType, ss.orderBy, ss.page, ss.pageSize)
 	case "tag":
+		searchResults, err = models.SearchByTagsWithPagination(tags, ss.sortType, ss.orderBy, ss.page, ss.pageSize)
 	case "name":
-		results, err = ss.searchByName(name)
+		searchResults, err = models.SearchByNameWithPagination(name, ss.sortType, ss.orderBy, ss.page, ss.pageSize)
 	default:
-		return &[]SearchResult{}, fmt.Errorf("unknown search type: %s", ss.searchType)
+		err = fmt.Errorf("unknown search type: %s", ss.searchType)
 	}
 	if err != nil {
 		return &[]SearchResult{}, err
 	}
-
-	for i, result := range *results {
-		tags, err := models.FetchTagsByStorageIdAndStorageType(result.ID, result.Type)
-		if err != nil {
-			return &[]SearchResult{}, err
-		}
-		for _, tag := range *tags {
-			(*results)[i].Tags = append((*results)[i].Tags, tag.Name)
-		}
-	}
-
-	return results, nil
-}
-
-func (ss *SearchService) searchByName(name string) (*[]SearchResult, error) {
-	searchResults, err := models.SearchByNameWithPagination(name, ss.sortType, ss.orderBy, ss.page, ss.pageSize)
-	if err != nil {
-		return &[]SearchResult{}, err
-	}
-
-	var results []SearchResult
 
 	for _, searchResult := range *searchResults {
-		results = append(results, SearchResult{
+		result := SearchResult{
 			ID:              searchResult.ID,
 			Name:            searchResult.Name,
 			Rating:          searchResult.Rating,
 			Type:            searchResult.Type,
 			ProfileIconPath: searchResult.ProfileIconPath,
 			Tags:            make([]string, 0),
-		})
+		}
+
+		if err := result.fetchTags(); err != nil {
+			return &[]SearchResult{}, err
+		}
+
+		results = append(results, result)
 	}
 
 	return &results, nil

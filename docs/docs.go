@@ -1373,7 +1373,7 @@ const docTemplate = `{
                         "items": {
                             "type": "string"
                         },
-                        "collectionFormat": "csv",
+                        "collectionFormat": "multi",
                         "description": "Tags",
                         "name": "tags",
                         "in": "query"
@@ -1814,6 +1814,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "name": {
+                    "type": "string"
+                },
+                "profileIconPath": {
                     "type": "string"
                 },
                 "rating": {
