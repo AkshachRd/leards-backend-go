@@ -30,8 +30,7 @@ func (u *User) Update(db *gorm.DB, column string, value interface{}) error {
 }
 
 func (u *User) SetProfileIconPath(profileIconPath string) error {
-	err := u.Update(db, "profile_icon_path", profileIconPath)
-	if err != nil {
+	if err := u.Update(db, "profile_icon_path", profileIconPath); err != nil {
 		return err
 	}
 
@@ -42,8 +41,7 @@ func (u *User) SetProfileIconPath(profileIconPath string) error {
 func (u *User) RemoveProfileIconPath() error {
 	emptyIcon := sql.NullString{Valid: false}
 
-	err := u.Update(db, "profile_icon_path", emptyIcon)
-	if err != nil {
+	if err := u.Update(db, "profile_icon_path", emptyIcon); err != nil {
 		return err
 	}
 
