@@ -264,3 +264,41 @@ func UploadAvatar(c *gin.Context) {
 		"profileIcon": httputils.ConvertProfileIcon(avatarFilename),
 	})
 }
+
+// RemoveAvatar godoc
+// @Id			 removeAvatarByUserId
+// @Summary      remove avatar by user id
+// @Description  removes the user's avatar
+// @Tags         accounts
+// @Produce      json
+// @Security     BearerAuth
+// @Param		 user_id	  path		string	true	"User ID"
+// @Success      200  {object}  httputils.BasicResponse
+// @Failure      400  {object}  httputils.HTTPError
+// @Failure      500  {object}  httputils.HTTPError
+// @Router       /accounts/{user_id}/avatar [delete]
+func RemoveAvatar(c *gin.Context) {
+	userId := c.Param("user_id")
+
+	user, err := models.FetchUserById(userId)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "User not found"})
+		return
+	}
+
+	if user.ProfileIconPath.Valid {
+		if err = os.Remove(settings.AppSettings.EnvVars.AvatarBasePath + "/" + user.ProfileIconPath.String); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to remove previous avatar"})
+			return
+		}
+	}
+
+	if err = user.RemoveProfileIconPath(); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to remove avatar in DB"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Avatar removed successfully",
+	})
+}
