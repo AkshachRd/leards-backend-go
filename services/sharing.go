@@ -50,7 +50,7 @@ func (ss *SharingService) convertAccessTypeToInt(accessType string) (uint8, bool
 		return models.AccessTypePublic, true
 	case "private":
 		return models.AccessTypePrivate, true
-	case "sharing":
+	case "shared":
 		return models.AccessTypeShared, true
 	default:
 		return 0, false

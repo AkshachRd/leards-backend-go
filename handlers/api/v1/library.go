@@ -59,7 +59,7 @@ func AddStorageToFavorite(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusInternalServerError, gin.H{
+	c.JSON(http.StatusOK, gin.H{
 		"message": "Successfully added the storage to favorites",
 	})
 }
