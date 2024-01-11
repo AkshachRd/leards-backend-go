@@ -2,6 +2,7 @@ package services
 
 import (
 	"fmt"
+	"github.com/AkshachRd/leards-backend-go/httputils"
 	"github.com/AkshachRd/leards-backend-go/models"
 )
 
@@ -11,6 +12,7 @@ type SearchResult struct {
 	Rating          uint     `json:"rating"`
 	Type            string   `json:"type"`
 	ProfileIconPath string   `json:"profileIconPath"`
+	AuthorName      string   `json:"authorName"`
 	Tags            []string `json:"tags"`
 } // @name SearchResult
 
@@ -115,8 +117,13 @@ func (ss *SearchService) Search(
 			Name:            searchResult.Name,
 			Rating:          searchResult.Rating,
 			Type:            searchResult.Type,
-			ProfileIconPath: searchResult.ProfileIconPath,
+			AuthorName:      searchResult.AuthorName,
+			ProfileIconPath: searchResult.ProfileIconPath.String,
 			Tags:            make([]string, 0),
+		}
+
+		if searchResult.ProfileIconPath.Valid {
+			result.ProfileIconPath = httputils.ConvertProfileIcon(searchResult.ProfileIconPath.String)
 		}
 
 		if err := result.fetchTags(); err != nil {

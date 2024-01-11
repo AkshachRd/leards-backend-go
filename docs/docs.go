@@ -1912,6 +1912,9 @@ const docTemplate = `{
         "SearchResult": {
             "type": "object",
             "properties": {
+                "authorName": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "string"
                 },
