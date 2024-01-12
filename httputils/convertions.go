@@ -2,6 +2,7 @@ package httputils
 
 import (
 	"github.com/AkshachRd/leards-backend-go/models"
+	"github.com/AkshachRd/leards-backend-go/services"
 )
 
 func ConvertDecksToContent(decks *[]models.Deck) *[]Content {
@@ -139,4 +140,27 @@ func ConvertFolderToStorageSettings(folder *models.Folder) *StorageSettings {
 		Name:       folder.Name,
 		AccessType: models.AccessTypeToString(int(folder.AccessType)),
 	}
+}
+
+func ConvertSearchResults(searchResults *[]services.SearchResult) []SearchResult {
+	remappedSearchResults := make([]SearchResult, 0)
+
+	for _, searchResult := range *searchResults {
+		result := SearchResult{
+			ID:         searchResult.ID,
+			Name:       searchResult.Name,
+			Rating:     searchResult.Rating,
+			Type:       searchResult.Type,
+			AuthorName: searchResult.AuthorName,
+			Tags:       make([]string, 0),
+		}
+
+		if len(searchResult.ProfileIconPath) > 0 {
+			result.ProfileIcon = ConvertProfileIcon(searchResult.ProfileIconPath)
+		}
+
+		remappedSearchResults = append(remappedSearchResults, result)
+	}
+
+	return remappedSearchResults
 }

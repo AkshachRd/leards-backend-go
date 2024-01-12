@@ -1921,7 +1921,7 @@ const docTemplate = `{
                 "name": {
                     "type": "string"
                 },
-                "profileIconPath": {
+                "profileIcon": {
                     "type": "string"
                 },
                 "rating": {

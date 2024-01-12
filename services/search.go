@@ -2,7 +2,6 @@ package services
 
 import (
 	"fmt"
-	"github.com/AkshachRd/leards-backend-go/httputils"
 	"github.com/AkshachRd/leards-backend-go/models"
 )
 
@@ -120,10 +119,6 @@ func (ss *SearchService) Search(
 			AuthorName:      searchResult.AuthorName,
 			ProfileIconPath: searchResult.ProfileIconPath.String,
 			Tags:            make([]string, 0),
-		}
-
-		if searchResult.ProfileIconPath.Valid {
-			result.ProfileIconPath = httputils.ConvertProfileIcon(searchResult.ProfileIconPath.String)
 		}
 
 		if err := result.fetchTags(); err != nil {
