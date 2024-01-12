@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"github.com/AkshachRd/leards-backend-go/httputils"
 	_ "github.com/AkshachRd/leards-backend-go/httputils"
 	"github.com/AkshachRd/leards-backend-go/services"
 	"github.com/gin-gonic/gin"
@@ -23,7 +24,7 @@ import (
 // @Param        order_by     query     string    true     "Order by" Enums(asc, desc)
 // @Param        name		  query     string    false    "Name"
 // @Param        tags		  query     []string  false    "Tags" collectionFormat(multi)
-// @Success      200  {array}   services.SearchResult
+// @Success      200  {array}   httputils.SearchResult
 // @Failure      400  {object}  httputils.HTTPError
 // @Failure      500  {object}  httputils.HTTPError
 // @Router       /search [get]
@@ -62,5 +63,5 @@ func SearchPublicStorages(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, *searchResults)
+	c.JSON(http.StatusOK, httputils.ConvertSearchResults(searchResults))
 }

@@ -11,6 +11,7 @@ type SearchResult struct {
 	Rating          uint     `json:"rating"`
 	Type            string   `json:"type"`
 	ProfileIconPath string   `json:"profileIconPath"`
+	AuthorName      string   `json:"authorName"`
 	Tags            []string `json:"tags"`
 } // @name SearchResult
 
@@ -115,7 +116,8 @@ func (ss *SearchService) Search(
 			Name:            searchResult.Name,
 			Rating:          searchResult.Rating,
 			Type:            searchResult.Type,
-			ProfileIconPath: searchResult.ProfileIconPath,
+			AuthorName:      searchResult.AuthorName,
+			ProfileIconPath: searchResult.ProfileIconPath.String,
 			Tags:            make([]string, 0),
 		}
 

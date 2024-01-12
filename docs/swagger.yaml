@@ -165,11 +165,13 @@ definitions:
     type: object
   SearchResult:
     properties:
+      authorName:
+        type: string
       id:
         type: string
       name:
         type: string
-      profileIconPath:
+      profileIcon:
         type: string
       rating:
         type: integer

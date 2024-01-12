@@ -54,3 +54,13 @@ type StorageSettings struct {
 	Tags       []string `json:"tags"`
 	AccessType string   `json:"accessType"`
 } // @name StorageSettings
+
+type SearchResult struct {
+	ID          string   `json:"id"`
+	Name        string   `json:"name"`
+	Rating      uint     `json:"rating"`
+	Type        string   `json:"type"`
+	ProfileIcon string   `json:"profileIcon,omitempty"`
+	AuthorName  string   `json:"authorName"`
+	Tags        []string `json:"tags"`
+} // @name SearchResult

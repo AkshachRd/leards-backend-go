@@ -1912,13 +1912,16 @@ const docTemplate = `{
         "SearchResult": {
             "type": "object",
             "properties": {
+                "authorName": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "string"
                 },
                 "name": {
                     "type": "string"
                 },
-                "profileIconPath": {
+                "profileIcon": {
                     "type": "string"
                 },
                 "rating": {
