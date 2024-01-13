@@ -152,7 +152,7 @@ func ConvertSearchResults(searchResults *[]services.SearchResult) []SearchResult
 			Rating:     searchResult.Rating,
 			Type:       searchResult.Type,
 			AuthorName: searchResult.AuthorName,
-			Tags:       make([]string, 0),
+			Tags:       searchResult.Tags,
 		}
 
 		if len(searchResult.ProfileIconPath) > 0 {
