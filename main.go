@@ -7,8 +7,8 @@ import (
 )
 
 func init() {
-	models.Setup()
 	settings.Setup()
+	models.Setup()
 }
 
 // @title           Leards Backend API
