@@ -53,17 +53,31 @@ func FetchNextRepetitionCardByUserId(userID string) (*Card, error) {
 	return &repetition.Card, nil
 }
 
-func FetchNextRepetitionByUserIdAndStorageIdAndStorageType(userID string, storageID string, storageType string) (*Repetition, error) {
+func FetchNextRepetitionByUserIdAndStorageIdAndStorageType(userID string, storageId string, storageType string) (*Repetition, error) {
 	var repetition Repetition
+
+	var cards *[]Card
 	var err error
 
-	// TODO: make for folders
-	if storageType == StorageTypeDeck {
-		err = db.Joins("Card").Where("user_id = ? AND card.deck_id = ?", userID, storageID).Order("due ASC").First(&repetition).Error
+	if storageType == StorageTypeFolder {
+		cards, err = FetchCardsByFolderId(storageId)
+	} else if storageType == StorageTypeDeck {
+		cards, err = FetchCardsByDeckId(storageId)
 	} else {
 		return &Repetition{}, fmt.Errorf("unknown storage type: %s", storageType)
 	}
 
+	cardIds := make([]string, 0)
+	for _, card := range *cards {
+		cardIds = append(cardIds, card.ID)
+	}
+
+	err = db.
+		Joins("Card").
+		Where("repetition.card_id IN (?) AND repetition.user_id = ?", cardIds, userID).
+		Order("due ASC").
+		First(&repetition).
+		Error
 	if err != nil {
 		return &Repetition{}, err
 	}
