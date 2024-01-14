@@ -40,20 +40,24 @@ func Auth(authType AuthType) gin.HandlerFunc {
 			}
 
 			email, password := parsedPayload[0], parsedPayload[1]
-			if !basicAuth(email, password) {
+			user, isCorrectPassword := basicAuth(email, password)
+			if !isCorrectPassword {
 				respondWithError(http.StatusUnauthorized, "Unauthorized", c)
 				return
 			}
 
+			c.Set("user_id", user.ID)
 			c.Set("email", email)
 			c.Set("password", password)
 		case BearerAuth:
 			token := string(payload)
-			if !tokenAuth(token) {
+			user, isValidToken := tokenAuth(token)
+			if !isValidToken {
 				respondWithError(http.StatusUnauthorized, "Unauthorized", c)
 				return
 			}
 
+			c.Set("user_id", user.ID)
 			c.Set("token", token)
 		default:
 			respondWithError(http.StatusBadRequest, "Bad Request", c)
@@ -64,22 +68,32 @@ func Auth(authType AuthType) gin.HandlerFunc {
 	}
 }
 
-func basicAuth(email, password string) bool {
+func basicAuth(email, password string) (*models.User, bool) {
 	user, err := models.FetchUserByEmail(email)
 	if err != nil {
-		return false
+		return &models.User{}, false
 	}
 
-	return user.IsPasswordCorrect(password)
+	isPasswordCorrect := user.IsPasswordCorrect(password)
+	if !isPasswordCorrect {
+		return &models.User{}, false
+	}
+
+	return user, isPasswordCorrect
 }
 
-func tokenAuth(token string) bool {
+func tokenAuth(token string) (*models.User, bool) {
 	user, err := models.FetchUserByToken(token)
 	if err != nil {
-		return false
+		return &models.User{}, false
 	}
 
-	return user.IsTokenValid()
+	isValidToken := user.IsTokenValid()
+	if !isValidToken {
+		return &models.User{}, false
+	}
+
+	return user, isValidToken
 }
 
 func respondWithError(code int, message string, c *gin.Context) {

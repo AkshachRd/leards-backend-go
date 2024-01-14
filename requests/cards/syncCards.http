@@ -2,14 +2,14 @@ PUT /api/v1/cards/deck/1ab57acc-4fd7-440d-abc3-90d534be4fca HTTP/2.0
 Host: localhost:8080
 Accept: application/json
 Content-Type: application/json
-Authorization: Bearer LU5nREhMMldMNVJCcEtMSnJoMnZFbzQ3S1BUaW9oZWI=
+Authorization: Bearer cUhycE1pMVFJR2hHMEkwN2tqckZPUUJHMU1SNFd6b3Q=
 
 {
   "cards": [
     {
       "cardId": "",
-      "frontSide": "a",
-      "backSide": "a"
+      "frontSide": "карта6",
+      "backSide": "card6"
     }
   ]
 }
