@@ -1,8 +1,10 @@
 package v1
 
 import (
+	"fmt"
 	"github.com/AkshachRd/leards-backend-go/httputils"
 	"github.com/AkshachRd/leards-backend-go/models"
+	"github.com/AkshachRd/leards-backend-go/services"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -104,10 +106,29 @@ func SyncCards(c *gin.Context) {
 		deleteCards = append(deleteCards, deleteCard)
 	}
 
-	err = models.CreateCards(createCards)
+	// TODO: extract into a service
+	cards, err = models.CreateCards(&createCards)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot create cards"})
 		return
+	}
+
+	if len(createCards) != 0 {
+		repetitionService := services.NewRepetitionService()
+		userId, exists := c.Get("user_id")
+		if !exists {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot create repetitions without user logined"})
+			return
+		}
+		for _, card := range *cards {
+			err = repetitionService.CreateRepetition(userId.(string), card.ID)
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{
+					"error": fmt.Sprintf("Cannot create repetition: %s", err.Error()),
+				})
+				return
+			}
+		}
 	}
 
 	err = models.UpdateCards(updateCards)

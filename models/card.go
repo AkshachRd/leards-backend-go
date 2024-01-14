@@ -38,9 +38,10 @@ func UpdateCards(cards []Card) error {
 	return tx.Commit().Error
 }
 
-func CreateCards(cards []Card) error {
+func CreateCards(rowCards *[]Card) (*[]Card, error) {
+	cards := *rowCards
 	if len(cards) == 0 {
-		return nil
+		return rowCards, nil
 	}
 
 	tx := db.Begin()
@@ -50,14 +51,14 @@ func CreateCards(cards []Card) error {
 		}
 	}()
 
-	for _, card := range cards {
-		if err := tx.Create(&card).Error; err != nil {
+	for i, _ := range cards {
+		if err := tx.Create(&cards[i]).Error; err != nil {
 			tx.Rollback()
-			return err
+			return rowCards, err
 		}
 	}
 
-	return tx.Commit().Error
+	return &cards, tx.Commit().Error
 }
 
 func DeleteCards(cards []Card) error {

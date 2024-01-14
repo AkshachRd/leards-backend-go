@@ -1,9 +1,7 @@
 package services
 
 import (
-	"errors"
 	"fmt"
-	"gorm.io/gorm"
 	"time"
 
 	"github.com/AkshachRd/leards-backend-go/models"
@@ -27,15 +25,10 @@ func (r *RepetitionService) ReviewCard(userId string, cardId string, reviewAnswe
 
 	repetition, err := models.FetchRepetitionByUserIDAndCardID(userId, cardId)
 	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			card = fsrs.NewCard()
-		} else {
-			return err
-		}
-	} else {
-		card = r.repetitionToFSRSCard(repetition)
+		return err
 	}
 
+	card = r.repetitionToFSRSCard(repetition)
 	now := time.Now()
 
 	rating, err := r.reviewAnswerToFSRSRating(reviewAnswer)
@@ -53,22 +46,27 @@ func (r *RepetitionService) ReviewCard(userId string, cardId string, reviewAnswe
 	return nil
 }
 
+func (r *RepetitionService) CreateRepetition(userId, cardId string) error {
+	card := fsrs.NewCard()
+	err := models.UpdateRepetition(r.fsrsCardToRepetition(card, userId, cardId))
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (r *RepetitionService) FetchNextRepetitionCard(userId, storageId, storageType string) (*models.Card, error) {
 	repetition, err := models.FetchNextRepetitionByUserIdAndStorageIdAndStorageType(userId, storageId, storageType)
-	if !repetition.Due.Before(time.Now().Add(MAX_REPETITION_TIME_OFFSET)) {
-		return &models.Card{}, nil
-	}
-
-	card := &repetition.Card
-	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
-		card, err = models.FetchRandomCardByStorageIdAndStorageType(storageType, storageId)
-	}
-
 	if err != nil {
 		return &models.Card{}, err
 	}
 
-	return card, nil
+	if !repetition.Due.Before(time.Now().Add(MAX_REPETITION_TIME_OFFSET)) {
+		return &models.Card{}, nil
+	}
+
+	return &repetition.Card, nil
 }
 
 func (r *RepetitionService) GetStorageStats(userId, storageId, storageType string) (*RepetitionStats, error) {
