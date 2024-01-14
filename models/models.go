@@ -68,6 +68,16 @@ func (base *Model) BeforeCreate(tx *gorm.DB) (err error) {
 	return
 }
 
+type MockUserData struct {
+	name     string
+	email    string
+	password string
+}
+
+func GetDatabase() *gorm.DB {
+	return db
+}
+
 // Setup initializes the database instance
 func Setup() {
 	newLogger := logger.New(
@@ -107,11 +117,6 @@ func Setup() {
 	if err != nil {
 		log.Fatalf("Error setting up database: %v", err)
 	}
-
-	err = MockData()
-	if err != nil {
-		log.Fatalf("Error mocking up data in database: %v", err)
-	}
 }
 
 type CustomNamingStrategy struct {
@@ -129,36 +134,6 @@ func (c CustomNamingStrategy) ColumnName(table, column string) string {
 	snake := matchFirstCap.ReplaceAllString(column, "${1}_${2}")
 	snake = matchAllCap.ReplaceAllString(snake, "${1}_${2}")
 	return strings.ToLower(snake)
-}
-
-func MockData() error {
-	name := "Owner"
-	email := "owner"
-	password := "12345Q"
-
-	_, err := FetchUserByEmail(email)
-	if err == nil {
-		return nil
-	}
-
-	user, err := CreateUser(name, email, password)
-	if err != nil {
-		return err
-	}
-	deck, err := CreateDeck("deck1", AccessTypePrivate, user.RootFolderID, user.ID)
-	if err != nil {
-		return err
-	}
-	deck.Cards = []Card{
-		{DeckID: deck.ID, FrontSide: "Apple", BackSide: "Яблокоф"},
-		{DeckID: deck.ID, FrontSide: "Banana", BackSide: "Бананоф"},
-	}
-	err = db.Save(&deck).Error
-	if err != nil {
-		return err
-	}
-
-	return nil
 }
 
 func Paginate(page int, pageSize int) func(db *gorm.DB) *gorm.DB {

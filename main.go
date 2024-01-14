@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/AkshachRd/leards-backend-go/handlers"
+	"github.com/AkshachRd/leards-backend-go/mocks"
 	"github.com/AkshachRd/leards-backend-go/models"
 	"github.com/AkshachRd/leards-backend-go/settings"
 )
@@ -9,6 +10,7 @@ import (
 func init() {
 	settings.Setup()
 	models.Setup()
+	mocks.MockData(models.GetDatabase())
 }
 
 // @title           Leards Backend API
