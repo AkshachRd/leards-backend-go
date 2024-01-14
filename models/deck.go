@@ -202,13 +202,15 @@ func CloneDeck(deckId string, userId string, parentFolderId string) (*Deck, erro
 	clonedDeck, err := CreateDeck(deck.Name+" (copy)", AccessTypePrivate, parentFolderId, userId)
 	if err != nil {
 		return &Deck{}, err
+	}
 
+	for i := range deck.Cards {
+		deck.Cards[i].DeckID = clonedDeck.ID
 	}
 
 	clonedCards, err := CreateCards(&deck.Cards)
 	if err != nil {
 		return &Deck{}, err
-
 	}
 
 	clonedDeck.Cards = *clonedCards
