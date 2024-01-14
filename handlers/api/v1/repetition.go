@@ -66,9 +66,7 @@ func GetNextCard(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"card": *httputils.ConvertCard(card),
-	})
+	c.JSON(http.StatusOK, *httputils.ConvertCard(card))
 }
 
 // GetStorageStats godoc
@@ -97,5 +95,5 @@ func GetStorageStats(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, httputils.ConvertRepetitionStats(repetitionStats))
+	c.JSON(http.StatusOK, *httputils.ConvertRepetitionStats(repetitionStats))
 }
