@@ -155,3 +155,35 @@ func DeleteDeck(c *gin.Context) {
 		"message": "Deck successfully deleted",
 	})
 }
+
+// CloneDeck godoc
+// @Id			 cloneDeckById
+// @Summary      Clones the deck by id
+// @Description  clones the deck in the database
+// @Tags         decks
+// @Accept       json
+// @Produce      json
+// @Security     Bearer
+// @Success      200  {object}  httputils.DeckResponse
+// @Failure      400  {object}  httputils.HTTPError
+// @Failure      500  {object}  httputils.HTTPError
+// @Router       /decks/clone [post]
+func CloneDeck(c *gin.Context) {
+	var input httputils.CloneDeckRequest
+
+	if err := c.ShouldBind(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
+		return
+	}
+
+	deck, err := models.CloneDeck(input.DeckId, input.UserId, input.ParentFolderId)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Deck successfully cloned",
+		"deck":    *httputils.ConvertDeck(deck),
+	})
+}

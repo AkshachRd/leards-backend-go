@@ -53,3 +53,9 @@ type ReviewCardRequest struct {
 	CardId       string `json:"cardId" binding:"required" example:"72a30ffb-1896-48b1-b006-985fb055db0f"`
 	ReviewAnswer string `json:"reviewAnswer" binding:"required" example:"good" enums:"repeat,hard,good,easy"`
 } // @name ReviewCardRequest
+
+type CloneDeckRequest struct {
+	DeckId         string `json:"deckId" binding:"required" example:"72a30ffb-1896-48b1-b006-985fb055db0f"`
+	ParentFolderId string `json:"parentFolderId" binding:"required" example:"72a30ffb-1896-48b1-b006-985fb055db0f"`
+	UserId         string `json:"userId" binding:"required" example:"72a30ffb-1896-48b1-b006-985fb055db0f"`
+} // @name CloneDeckRequest
