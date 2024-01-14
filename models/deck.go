@@ -9,7 +9,7 @@ type Deck struct {
 	Name             string            `gorm:"size:255; not null"`
 	ParentFolderID   string            `gorm:"size:36; not null"`
 	ParentFolder     Folder            `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
-	AccessType       uint8             `gorm:"default:0; not null"`
+	AccessType       AccessType        `gorm:"default:0; not null"`
 	Cards            []Card            `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Permissions      []Permission      `gorm:"polymorphic:Storage;polymorphicValue:deck"`
 	FavoriteStorages []FavoriteStorage `gorm:"polymorphic:Storage;polymorphicValue:deck"`
@@ -20,7 +20,7 @@ func getDeckPreloadQuery(index int) string {
 	return []string{"Cards", "StorageHasTags.Tag"}[index]
 }
 
-func NewDeck(db *gorm.DB, name string, accessType uint8, parentFolderId string) (*Deck, error) {
+func NewDeck(db *gorm.DB, name string, accessType AccessType, parentFolderId string) (*Deck, error) {
 	deck := Deck{Name: name, AccessType: accessType, ParentFolderID: parentFolderId}
 	err := db.Create(&deck).Error
 	if err != nil {
@@ -30,7 +30,7 @@ func NewDeck(db *gorm.DB, name string, accessType uint8, parentFolderId string) 
 	return &deck, nil
 }
 
-func CreateDeck(name string, accessType uint8, parentFolderId string, userId string) (*Deck, error) {
+func CreateDeck(name string, accessType AccessType, parentFolderId string, userId string) (*Deck, error) {
 	tx := db.Begin()
 	defer func() {
 		if r := recover(); r != nil {
@@ -182,7 +182,7 @@ func FetchPublicDecksWithPagination(page int, pageSize int) (*[]Deck, error) {
 	return &decks, nil
 }
 
-func (d *Deck) SetAccessType(accessType uint8) error {
+func (d *Deck) SetAccessType(accessType AccessType) error {
 	err := db.Model(d).Update("access_type", accessType).Error
 	if err != nil {
 		return err

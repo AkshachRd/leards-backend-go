@@ -2,6 +2,7 @@ package models
 
 import (
 	"database/sql"
+	"fmt"
 	"github.com/glebarez/sqlite"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -16,20 +17,38 @@ import (
 
 var db *gorm.DB
 
+type AccessType uint8
+
 const (
-	AccessTypePrivate = iota
+	AccessTypePrivate AccessType = iota
 	AccessTypePublic
 	AccessTypeShared
 )
 
-var accessTypeMap = map[int]string{
-	AccessTypePrivate: "private",
-	AccessTypePublic:  "public",
-	AccessTypeShared:  "shared",
+func (at AccessType) String() (string, error) {
+	switch at {
+	case AccessTypePrivate:
+		return "private", nil
+	case AccessTypePublic:
+		return "public", nil
+	case AccessTypeShared:
+		return "shared", nil
+	}
+
+	return "", fmt.Errorf("unknown access type: %d", at)
 }
 
-func AccessTypeToString(accessType int) string {
-	return accessTypeMap[accessType]
+func AccessTypeToString(accessTypeString string) (AccessType, error) {
+	switch accessTypeString {
+	case "public":
+		return AccessTypePublic, nil
+	case "private":
+		return AccessTypePrivate, nil
+	case "shared":
+		return AccessTypeShared, nil
+	default:
+		return 0, fmt.Errorf("unknown access type: %s", accessTypeString)
+	}
 }
 
 const (
@@ -76,7 +95,6 @@ func Setup() {
 		&Folder{},
 		&Permission{},
 		&Repetition{},
-		&RepetitionState{},
 		&StorageHasTag{},
 		&Tag{},
 		&User{},

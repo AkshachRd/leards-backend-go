@@ -54,3 +54,10 @@ type StorageSettings struct {
 	Tags       []string `json:"tags"`
 	AccessType string   `json:"accessType"`
 } // @name StorageSettings
+
+type RepetitionStats struct {
+	New        int `json:"new"`
+	Learning   int `json:"learning"`
+	Review     int `json:"review"`
+	Relearning int `json:"relearning"`
+} // @name RepetitionStats

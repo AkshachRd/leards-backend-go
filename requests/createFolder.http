@@ -2,11 +2,11 @@ POST /api/v1/folders HTTP/2.0
 Host: localhost:8080
 Accept: application/json
 Content-Type: application/json
-Authorization: Bearer LU5nREhMMldMNVJCcEtMSnJoMnZFbzQ3S1BUaW9oZWI=
+Authorization: Bearer UFlzbExteXFRRERPQTdHUjg2MUhqWVVZekdoR1QycDc=
 
 
 {
-  "name": "Test folder for decks",
-  "parentFolderId": "a5028c10-a3cd-4642-9adf-794778125efc",
+  "name": "Subfolder 4",
+  "parentFolderId": "830b3090-e2cd-4537-bfbc-2f892f399b2a",
   "userId": "59a5259a-8094-4e8f-8caf-888c3e32f012"
 }

@@ -91,6 +91,12 @@ func SetupRouters() *gin.Engine {
 		{
 			sharing.PUT(":storage_type/:storage_id", v1.SetStorageAccess)
 		}
+		repetition := apiv1.Group("/repetition")
+		{
+			repetition.PUT("", v1.ReviewCard)
+			repetition.GET(":storage_type/:storage_id", v1.GetNextCard)
+			repetition.GET(":storage_type/:storage_id/stats", v1.GetStorageStats)
+		}
 	}
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

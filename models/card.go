@@ -1,5 +1,10 @@
 package models
 
+import (
+	"math/rand"
+	"time"
+)
+
 type Card struct {
 	Model
 	FrontSide string `gorm:"type:text; not null"`
@@ -117,4 +122,32 @@ func FetchCardsByFolderId(id string) (*[]Card, error) {
 	}
 
 	return &cards, nil
+}
+
+func FetchRandomCardByStorageIdAndStorageType(storageType, storageId string) (*Card, error) {
+	source := rand.NewSource(time.Now().Unix())
+	r := rand.New(source)
+
+	// TODO: write queries for fetching random card
+	if storageType == StorageTypeFolder {
+		rowCards, err := FetchCardsByFolderId(storageId)
+		cards := *rowCards
+		if err != nil {
+			return &Card{}, err
+		}
+
+		elementIndex := r.Intn(len(cards))
+		return &cards[elementIndex], nil
+	} else if storageType == StorageTypeDeck {
+		rowCards, err := FetchCardsByDeckId(storageId)
+		cards := *rowCards
+		if err != nil {
+			return &Card{}, err
+		}
+
+		elementIndex := r.Intn(len(cards))
+		return &cards[elementIndex], nil
+	} else {
+		return &Card{}, nil
+	}
 }

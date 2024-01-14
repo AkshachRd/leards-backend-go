@@ -8,7 +8,7 @@ import (
 type Folder struct {
 	Model
 	Name             string            `gorm:"size:255; not null"`
-	AccessType       uint8             `gorm:"default:0; not null"`
+	AccessType       AccessType        `gorm:"default:0; not null"`
 	ParentFolderID   *string           `gorm:"size:36"`
 	ParentFolder     *Folder           `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	Folders          []Folder          `gorm:"foreignkey:ParentFolderID"`
@@ -41,7 +41,7 @@ func getFolderPreloadQuery(index int) string {
 	}[index]
 }
 
-func NewFolder(db *gorm.DB, name string, accessType uint8, parentFolderId *string) (*Folder, error) {
+func NewFolder(db *gorm.DB, name string, accessType AccessType, parentFolderId *string) (*Folder, error) {
 	folder := Folder{Name: name, AccessType: accessType}
 	if parentFolderId != nil {
 		if _, err := uuid.Parse(*parentFolderId); err == nil {
@@ -57,7 +57,7 @@ func NewFolder(db *gorm.DB, name string, accessType uint8, parentFolderId *strin
 	return &folder, nil
 }
 
-func CreateFolder(name string, accessType uint8, parentFolderId *string, userId string) (*Folder, error) {
+func CreateFolder(name string, accessType AccessType, parentFolderId *string, userId string) (*Folder, error) {
 	tx := db.Begin()
 	defer func() {
 		if r := recover(); r != nil {
@@ -213,7 +213,7 @@ func FetchFoldersByParentFolderId(parentFolderId string) (*[]Folder, error) {
 	return &folders, nil
 }
 
-func (f *Folder) SetAccessType(accessType uint8) error {
+func (f *Folder) SetAccessType(accessType AccessType) error {
 	err := db.Model(f).Update("access_type", accessType).Error
 	if err != nil {
 		return err

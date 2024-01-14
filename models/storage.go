@@ -37,7 +37,7 @@ func SearchByNameWithPagination(name string, sortType string, orderBy string, pa
 		Joins("LEFT JOIN permission ON permission.storage_id = storage.id AND permission.storage_type = storage.type").
 		Joins("LEFT JOIN user ON permission.user_id = user.id_user").
 		Where("storage.name LIKE ? AND storage.access_type = ?",
-			fmt.Sprintf("%%%s%%", strings.ToLower(name)), AccessTypePublic).
+			fmt.Sprintf("%%%s%%", name), AccessTypePublic).
 		Group("storage.id").
 		Order(fmt.Sprintf("%s %s", sortType, orderBy)).
 		Scopes(Paginate(page, pageSize)).
@@ -106,10 +106,10 @@ func SearchByNameOrTagsWithPagination(name string, tags []string, sortType strin
 		query = query.Where("tag.name IN (?) AND storage.access_type = ?", tagNames, AccessTypePublic)
 	} else if len(tags) == 0 {
 		query = query.Where("storage.name LIKE ? AND storage.access_type = ?",
-			fmt.Sprintf("%%%s%%", strings.ToLower(name)), AccessTypePublic)
+			fmt.Sprintf("%%%s%%", name), AccessTypePublic)
 	} else {
 		query = query.Where("(tag.name IN (?) OR storage.name LIKE ?) AND storage.access_type = ?",
-			tagNames, fmt.Sprintf("%%%s%%", strings.ToLower(name)), AccessTypePublic)
+			tagNames, fmt.Sprintf("%%%s%%", name), AccessTypePublic)
 	}
 
 	err := query.

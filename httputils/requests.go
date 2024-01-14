@@ -47,3 +47,9 @@ type TagsRequest struct {
 type SetStorageAccessRequest struct {
 	Type string `json:"type" binding:"required" example:"public" enums:"shared,public,private"`
 } // @name SetStorageAccessRequest
+
+type ReviewCardRequest struct {
+	UserId       string `json:"userId" binding:"required" example:"72a30ffb-1896-48b1-b006-985fb055db0f"`
+	CardId       string `json:"cardId" binding:"required" example:"72a30ffb-1896-48b1-b006-985fb055db0f"`
+	ReviewAnswer string `json:"reviewAnswer" binding:"required" example:"good" enums:"repeat,hard,good,easy"`
+} // @name ReviewCardRequest

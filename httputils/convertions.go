@@ -2,6 +2,7 @@ package httputils
 
 import (
 	"github.com/AkshachRd/leards-backend-go/models"
+	"github.com/AkshachRd/leards-backend-go/services"
 )
 
 func ConvertDecksToContent(decks *[]models.Deck) *[]Content {
@@ -37,6 +38,7 @@ func ConvertFolder(folder *models.Folder) *Folder {
 	content := make([]Content, 0)
 	content = append(content, *ConvertFoldersToContent(&folder.Folders)...)
 	content = append(content, *ConvertDecksToContent(&folder.Decks)...)
+	accessType, _ := folder.AccessType.String()
 
 	return &Folder{
 		FolderId:   folder.ID,
@@ -44,26 +46,32 @@ func ConvertFolder(folder *models.Folder) *Folder {
 		Path:       path,
 		Content:    content,
 		Tags:       *ConvertStorageHasTagsToTags(&folder.StorageHasTags),
-		AccessType: models.AccessTypeToString(int(folder.AccessType)),
+		AccessType: accessType,
 	}
 }
 
 func ConvertDeck(deck *models.Deck) *Deck {
+	accessType, _ := deck.AccessType.String()
+
 	return &Deck{
 		DeckId:         deck.ID,
 		Name:           deck.Name,
 		Content:        *ConvertCards(&deck.Cards),
 		ParentFolderId: deck.ParentFolderID,
 		Tags:           *ConvertStorageHasTagsToTags(&deck.StorageHasTags),
-		AccessType:     models.AccessTypeToString(int(deck.AccessType)),
+		AccessType:     accessType,
 	}
+}
+
+func ConvertCard(card *models.Card) *Card {
+	return &Card{card.ID, card.FrontSide, card.BackSide}
 }
 
 func ConvertCards(cards *[]models.Card) *[]Card {
 	convertedCards := make([]Card, 0)
 
 	for _, card := range *cards {
-		convertedCards = append(convertedCards, Card{CardId: card.ID, FrontSide: card.FrontSide, BackSide: card.BackSide})
+		convertedCards = append(convertedCards, *ConvertCard(&card))
 	}
 
 	return &convertedCards
@@ -126,17 +134,30 @@ func ConvertStorageHasTagsToTags(storageHasTags *[]models.StorageHasTag) *[]stri
 }
 
 func ConvertDeckToStorageSettings(deck *models.Deck) *StorageSettings {
+	accessType, _ := deck.AccessType.String()
+
 	return &StorageSettings{
 		Tags:       *ConvertStorageHasTagsToTags(&deck.StorageHasTags),
 		Name:       deck.Name,
-		AccessType: models.AccessTypeToString(int(deck.AccessType)),
+		AccessType: accessType,
 	}
 }
 
 func ConvertFolderToStorageSettings(folder *models.Folder) *StorageSettings {
+	accessType, _ := folder.AccessType.String()
+
 	return &StorageSettings{
 		Tags:       *ConvertStorageHasTagsToTags(&folder.StorageHasTags),
 		Name:       folder.Name,
-		AccessType: models.AccessTypeToString(int(folder.AccessType)),
+		AccessType: accessType,
+	}
+}
+
+func ConvertRepetitionStats(repetitionStats *services.RepetitionStats) *RepetitionStats {
+	return &RepetitionStats{
+		New:        (*repetitionStats)[0],
+		Learning:   (*repetitionStats)[1],
+		Review:     (*repetitionStats)[2],
+		Relearning: (*repetitionStats)[3],
 	}
 }

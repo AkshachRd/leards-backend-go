@@ -163,6 +163,38 @@ definitions:
       name:
         type: string
     type: object
+  RepetitionStatsData:
+    properties:
+      learning:
+        type: integer
+      new:
+        type: integer
+      relearning:
+        type: integer
+      review:
+        type: integer
+    type: object
+  ReviewCardRequest:
+    properties:
+      cardId:
+        example: 72a30ffb-1896-48b1-b006-985fb055db0f
+        type: string
+      reviewAnswer:
+        enum:
+        - repeat
+        - hard
+        - good
+        - easy
+        example: good
+        type: string
+      userId:
+        example: 72a30ffb-1896-48b1-b006-985fb055db0f
+        type: string
+    required:
+    - cardId
+    - reviewAnswer
+    - userId
+    type: object
   SearchResult:
     properties:
       id:
@@ -726,11 +758,6 @@ paths:
       description: creates a new deck in the database
       operationId: createNewDeck
       parameters:
-      - description: Folder ID
-        in: path
-        name: folder_id
-        required: true
-        type: string
       - description: Create deck data
         in: body
         name: createDeckData
@@ -764,11 +791,6 @@ paths:
       description: deletes the deck in the database
       operationId: deleteDeckById
       parameters:
-      - description: Folder ID
-        in: path
-        name: folder_id
-        required: true
-        type: string
       - description: Deck ID
         in: path
         name: deck_id
@@ -823,11 +845,6 @@ paths:
       description: updates the deck in the database
       operationId: updateDeckById
       parameters:
-      - description: Folder ID
-        in: path
-        name: folder_id
-        required: true
-        type: string
       - description: Deck ID
         in: path
         name: deck_id
@@ -1154,6 +1171,127 @@ paths:
       summary: add favorite storage by user id, storage id and storage type
       tags:
       - library
+  /repetition:
+    put:
+      consumes:
+      - application/json
+      description: reviews card and updates repetition in the database
+      operationId: reviewCard
+      parameters:
+      - description: Review card data
+        in: body
+        name: reviewCardRequest
+        required: true
+        schema:
+          $ref: '#/definitions/ReviewCardRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/SearchResult'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/HTTPError'
+      security:
+      - Bearer: []
+      summary: Review card
+      tags:
+      - repetition
+  /repetition/{storage_type}/{storage_id}:
+    get:
+      consumes:
+      - application/json
+      description: fetches next card for repetition from the database
+      operationId: getNextCard
+      parameters:
+      - description: User ID
+        in: query
+        name: user_id
+        required: true
+        type: string
+      - description: Storage type
+        enum:
+        - deck
+        - folder
+        in: path
+        name: storage_type
+        required: true
+        type: string
+      - description: Storage ID
+        in: path
+        maxLength: 36
+        minLength: 36
+        name: storage_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/Card'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/HTTPError'
+      security:
+      - Bearer: []
+      summary: Get next card for repetition
+      tags:
+      - repetition
+  /repetition/{storage_type}/{storage_id}/stats:
+    get:
+      consumes:
+      - application/json
+      description: fetches stats of storage after repetition from the database
+      operationId: getStorageStats
+      parameters:
+      - description: User ID
+        in: query
+        name: user_id
+        required: true
+        type: string
+      - description: Storage type
+        enum:
+        - deck
+        - folder
+        in: path
+        name: storage_type
+        required: true
+        type: string
+      - description: Storage ID
+        in: path
+        maxLength: 36
+        minLength: 36
+        name: storage_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/RepetitionStatsData'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/HTTPError'
+      security:
+      - Bearer: []
+      summary: Get stats of a storage after repetition
+      tags:
+      - repetition
   /search:
     get:
       consumes:

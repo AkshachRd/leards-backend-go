@@ -1,10 +1,11 @@
 package v1
 
 import (
+	"net/http"
+
 	"github.com/AkshachRd/leards-backend-go/httputils"
 	"github.com/AkshachRd/leards-backend-go/models"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 // GetDeck godoc
@@ -69,7 +70,6 @@ func GetDeckSettings(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Security     Bearer
-// @Param		 folder_id	  path		string	true	"Folder ID"
 // @Param		 createDeckData body httputils.CreateDeckRequest true "Create deck data"
 // @Success      200  {object}  httputils.DeckResponse
 // @Failure      400  {object}  httputils.HTTPError
@@ -103,7 +103,6 @@ func CreateDeck(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Security     Bearer
-// @Param		 folder_id	  path		string	true	"Folder ID"
 // @Param		 deck_id	  path		string	true	"Deck ID"
 // @Param		 updateDeckData body httputils.UpdateDeckRequest true "Update deck data"
 // @Success      200  {object}  httputils.DeckResponse
@@ -139,7 +138,6 @@ func UpdateDeck(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Security     Bearer
-// @Param		 folder_id	  path		string	true	"Folder ID"
 // @Param		 deck_id	  path		string	true	"Deck ID"
 // @Success      200  {object}  httputils.BasicResponse
 // @Failure      400  {object}  httputils.HTTPError
