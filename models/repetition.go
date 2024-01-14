@@ -46,7 +46,7 @@ func UpdateRepetition(repetition *Repetition) error {
 
 func FetchNextRepetitionCardByUserId(userID string) (*Card, error) {
 	var repetition Repetition
-	err := db.Preload("card").Where("user_id = ?", userID).Order("due ASC").First(&repetition).Error
+	err := db.Joins("Card").Where("user_id = ?", userID).Order("due ASC").First(&repetition).Error
 	if err != nil {
 		return &Card{}, err
 	}
@@ -59,7 +59,7 @@ func FetchNextRepetitionByUserIdAndStorageIdAndStorageType(userID string, storag
 
 	// TODO: make for folders
 	if storageType == StorageTypeDeck {
-		err = db.Preload("card").Where("user_id = ? AND card.deck_id = ?", userID, storageID).Order("due ASC").First(&repetition).Error
+		err = db.Joins("Card").Where("user_id = ? AND card.deck_id = ?", userID, storageID).Order("due ASC").First(&repetition).Error
 	} else {
 		return &Repetition{}, fmt.Errorf("unknown storage type: %s", storageType)
 	}

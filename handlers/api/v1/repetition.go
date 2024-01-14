@@ -29,7 +29,7 @@ func ReviewCard(c *gin.Context) {
 	}
 
 	repetitionService := services.NewRepetitionService()
-	err := repetitionService.ReviewCard(input.CardId, input.CardId, input.ReviewAnswer)
+	err := repetitionService.ReviewCard(input.UserId, input.CardId, input.ReviewAnswer)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -63,6 +63,11 @@ func GetNextCard(c *gin.Context) {
 	card, err := repetitionService.FetchNextRepetitionCard(userId, storageId, storageType)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	if card.ID == "" {
+		c.JSON(http.StatusOK, nil)
 		return
 	}
 
