@@ -25,6 +25,22 @@ definitions:
         example: Successfully
         type: string
     type: object
+  CloneDeckRequest:
+    properties:
+      deckId:
+        example: 72a30ffb-1896-48b1-b006-985fb055db0f
+        type: string
+      parentFolderId:
+        example: 72a30ffb-1896-48b1-b006-985fb055db0f
+        type: string
+      userId:
+        example: 72a30ffb-1896-48b1-b006-985fb055db0f
+        type: string
+    required:
+    - deckId
+    - parentFolderId
+    - userId
+    type: object
   Content:
     properties:
       id:
@@ -941,6 +957,13 @@ paths:
       - application/json
       description: clones the deck in the database
       operationId: cloneDeckById
+      parameters:
+      - description: Clone deck data
+        in: body
+        name: cloneDeckData
+        required: true
+        schema:
+          $ref: '#/definitions/CloneDeckRequest'
       produces:
       - application/json
       responses:

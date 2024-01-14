@@ -164,6 +164,7 @@ func DeleteDeck(c *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Security     Bearer
+// @Param		 cloneDeckData body httputils.CloneDeckRequest true "Clone deck data"
 // @Success      200  {object}  httputils.DeckResponse
 // @Failure      400  {object}  httputils.HTTPError
 // @Failure      500  {object}  httputils.HTTPError

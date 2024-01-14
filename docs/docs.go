@@ -727,6 +727,17 @@ const docTemplate = `{
                 ],
                 "summary": "Clones the deck by id",
                 "operationId": "cloneDeckById",
+                "parameters": [
+                    {
+                        "description": "Clone deck data",
+                        "name": "cloneDeckData",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/CloneDeckRequest"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1906,6 +1917,28 @@ const docTemplate = `{
                 "message": {
                     "type": "string",
                     "example": "Successfully"
+                }
+            }
+        },
+        "CloneDeckRequest": {
+            "type": "object",
+            "required": [
+                "deckId",
+                "parentFolderId",
+                "userId"
+            ],
+            "properties": {
+                "deckId": {
+                    "type": "string",
+                    "example": "72a30ffb-1896-48b1-b006-985fb055db0f"
+                },
+                "parentFolderId": {
+                    "type": "string",
+                    "example": "72a30ffb-1896-48b1-b006-985fb055db0f"
+                },
+                "userId": {
+                    "type": "string",
+                    "example": "72a30ffb-1896-48b1-b006-985fb055db0f"
                 }
             }
         },
