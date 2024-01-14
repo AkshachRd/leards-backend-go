@@ -1,6 +1,8 @@
 package v1
 
 import (
+	"fmt"
+	"github.com/AkshachRd/leards-backend-go/services"
 	"net/http"
 
 	"github.com/AkshachRd/leards-backend-go/httputils"
@@ -181,6 +183,20 @@ func CloneDeck(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
+	}
+
+	if len(deck.Cards) != 0 {
+		repetitionService := services.NewRepetitionService()
+
+		for _, card := range deck.Cards {
+			err = repetitionService.CreateRepetition(input.UserId, card.ID)
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{
+					"error": fmt.Sprintf("Cannot create repetition: %s", err.Error()),
+				})
+				return
+			}
+		}
 	}
 
 	c.JSON(http.StatusOK, gin.H{
