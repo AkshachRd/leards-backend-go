@@ -708,6 +708,47 @@ const docTemplate = `{
                 }
             }
         },
+        "/decks/clone": {
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "description": "clones the deck in the database",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "decks"
+                ],
+                "summary": "Clones the deck by id",
+                "operationId": "cloneDeckById",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/DeckResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/HTTPError"
+                        }
+                    }
+                }
+            }
+        },
         "/decks/{deck_id}": {
             "get": {
                 "security": [
@@ -1473,7 +1514,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/RepetitionStatsData"
+                            "$ref": "#/definitions/RepetitionStats"
                         }
                     },
                     "500": {
@@ -2071,7 +2112,7 @@ const docTemplate = `{
                 }
             }
         },
-        "RepetitionStatsData": {
+        "RepetitionStats": {
             "type": "object",
             "properties": {
                 "learning": {

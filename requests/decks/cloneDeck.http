@@ -1,0 +1,11 @@
+POST /api/v1/decks/clone HTTP/2.0
+Host: localhost:8080
+Accept: application/json
+Content-Type: application/json
+Authorization: Bearer Zk9wUlF6XzluVkZCcEFrRTVqYldrUGdhYm9SREY5TTM=
+
+{
+  "deckId": "88851e4c-50f1-4210-b3d7-abdeb4e88bf0",
+  "parentFolderId": "6bc84f34-c3a2-473b-b6b5-2ccfb5c48757",
+  "userId": "59a5259a-8094-4e8f-8caf-888c3e32f012"
+}

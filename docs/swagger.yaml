@@ -163,7 +163,7 @@ definitions:
       name:
         type: string
     type: object
-  RepetitionStatsData:
+  RepetitionStats:
     properties:
       learning:
         type: integer
@@ -935,6 +935,32 @@ paths:
       summary: Get the deck's settings by deck id
       tags:
       - decks
+  /decks/clone:
+    post:
+      consumes:
+      - application/json
+      description: clones the deck in the database
+      operationId: cloneDeckById
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/DeckResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/HTTPError'
+      security:
+      - Bearer: []
+      summary: Clones the deck by id
+      tags:
+      - decks
   /folders:
     post:
       consumes:
@@ -1313,7 +1339,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/RepetitionStatsData'
+            $ref: '#/definitions/RepetitionStats'
         "500":
           description: Internal Server Error
           schema:

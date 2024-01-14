@@ -66,6 +66,7 @@ func SetupRouters() *gin.Engine {
 			decksWithId.PUT("", v1.UpdateDeck)
 			decksWithId.DELETE("", v1.DeleteDeck)
 			decksWithId.GET("settings", v1.GetDeckSettings)
+			decks.POST("clone", v1.CloneDeck)
 		}
 		cards := bearerAuthorizedV1.Group("/cards")
 		{

@@ -192,3 +192,26 @@ func (d *Deck) SetAccessType(accessType AccessType) error {
 
 	return nil
 }
+
+func CloneDeck(deckId string, userId string, parentFolderId string) (*Deck, error) {
+	deck, err := FetchDeckById(deckId, true)
+	if err != nil {
+		return &Deck{}, err
+	}
+
+	clonedDeck, err := CreateDeck(deck.Name+" (copy)", AccessTypePrivate, parentFolderId, userId)
+	if err != nil {
+		return &Deck{}, err
+
+	}
+
+	clonedCards, err := CreateCards(&deck.Cards)
+	if err != nil {
+		return &Deck{}, err
+
+	}
+
+	clonedDeck.Cards = *clonedCards
+
+	return clonedDeck, nil
+}

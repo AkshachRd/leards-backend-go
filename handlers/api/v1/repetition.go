@@ -85,7 +85,7 @@ func GetNextCard(c *gin.Context) {
 // @Param		 user_id	  query		string	true	"User ID"
 // @Param		 storage_type path		string	true	"Storage type" Enums(deck, folder)
 // @Param		 storage_id	  path		string	true	"Storage ID" minlength(36)  maxlength(36)
-// @Success      200  {object}  httputils.RepetitionStatsData
+// @Success      200  {object}  httputils.RepetitionStats
 // @Failure      500  {object}  httputils.HTTPError
 // @Router       /repetition/{storage_type}/{storage_id}/stats [get]
 func GetStorageStats(c *gin.Context) {
