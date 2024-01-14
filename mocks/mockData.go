@@ -170,6 +170,15 @@ func createMockDeck(user *models.User) error {
 
 	err = db.Save(&deck).Error
 
+	repetitionService := services.NewRepetitionService()
+
+	for _, card := range deck.Cards {
+		err := repetitionService.CreateRepetition(user.ID, card.ID)
+		if err != nil {
+			return err
+		}
+	}
+
 	if err != nil {
 		return err
 	}
