@@ -161,3 +161,26 @@ func ConvertRepetitionStats(repetitionStats *services.RepetitionStats) *Repetiti
 		Relearning: (*repetitionStats)[3],
 	}
 }
+
+func ConvertSearchResults(searchResults *[]services.SearchResult) []SearchResult {
+	remappedSearchResults := make([]SearchResult, 0)
+
+	for _, searchResult := range *searchResults {
+		result := SearchResult{
+			ID:         searchResult.ID,
+			Name:       searchResult.Name,
+			Rating:     searchResult.Rating,
+			Type:       searchResult.Type,
+			AuthorName: searchResult.AuthorName,
+			Tags:       searchResult.Tags,
+		}
+
+		if len(searchResult.ProfileIconPath) > 0 {
+			result.ProfileIcon = ConvertProfileIcon(searchResult.ProfileIconPath)
+		}
+
+		remappedSearchResults = append(remappedSearchResults, result)
+	}
+
+	return remappedSearchResults
+}

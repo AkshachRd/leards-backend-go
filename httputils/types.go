@@ -61,3 +61,13 @@ type RepetitionStats struct {
 	Review     int `json:"review"`
 	Relearning int `json:"relearning"`
 } // @name RepetitionStats
+
+type SearchResult struct {
+	ID          string   `json:"id"`
+	Name        string   `json:"name"`
+	Rating      uint     `json:"rating"`
+	Type        string   `json:"type"`
+	ProfileIcon string   `json:"profileIcon,omitempty"`
+	AuthorName  string   `json:"authorName"`
+	Tags        []string `json:"tags"`
+} // @name SearchResult

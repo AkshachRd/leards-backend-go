@@ -1,6 +1,7 @@
 package models
 
 import (
+	"database/sql"
 	"fmt"
 	"gorm.io/gorm"
 	"strings"
@@ -17,11 +18,12 @@ func getStorageQuery() *gorm.DB {
 }
 
 type SearchResult struct {
-	ID              string `gorm:"column:id"`
-	Name            string `gorm:"column:name"`
-	Rating          uint   `gorm:"column:rating"`
-	Type            string `gorm:"column:type"`
-	ProfileIconPath string `gorm:"column:profile_icon_path"`
+	ID              string         `gorm:"column:id"`
+	Name            string         `gorm:"column:name"`
+	Rating          uint           `gorm:"column:rating"`
+	Type            string         `gorm:"column:type"`
+	ProfileIconPath sql.NullString `gorm:"column:profile_icon_path"`
+	AuthorName      string         `gorm:"column:author_name"`
 }
 
 func SearchByNameWithPagination(name string, sortType string, orderBy string, page int, pageSize int) (*[]SearchResult, error) {
@@ -32,7 +34,7 @@ func SearchByNameWithPagination(name string, sortType string, orderBy string, pa
 	}
 
 	err := getStorageQuery().
-		Select("storage.id, storage.name, storage.type, COUNT(favorite_storage.storage_id) AS rating, user.profile_icon_path").
+		Select("storage.id, storage.name, storage.type, COUNT(favorite_storage.storage_id) AS rating, user.profile_icon_path, user.name AS author_name").
 		Joins("LEFT JOIN favorite_storage ON favorite_storage.storage_id = storage.id AND favorite_storage.storage_type = storage.type").
 		Joins("LEFT JOIN permission ON permission.storage_id = storage.id AND permission.storage_type = storage.type").
 		Joins("LEFT JOIN user ON permission.user_id = user.id_user").
@@ -63,7 +65,7 @@ func SearchByTagsWithPagination(tags []string, sortType string, orderBy string, 
 	}
 
 	err := getStorageQuery().
-		Select("storage.id, storage.name, storage.type, COUNT(favorite_storage.storage_id) AS rating, user.profile_icon_path").
+		Select("storage.id, storage.name, storage.type, COUNT(favorite_storage.storage_id) AS rating, user.profile_icon_path, user.name AS author_name").
 		Joins("LEFT JOIN storage_has_tag ON storage_has_tag.storage_id = storage.id AND storage_has_tag.storage_type = storage.type").
 		Joins("LEFT JOIN tag ON tag.id_tag = storage_has_tag.tag_id").
 		Joins("LEFT JOIN favorite_storage ON favorite_storage.storage_id = storage.id AND favorite_storage.storage_type = storage.type").
@@ -95,7 +97,7 @@ func SearchByNameOrTagsWithPagination(name string, tags []string, sortType strin
 	}
 
 	query := getStorageQuery().
-		Select("storage.id, storage.name, storage.type, COUNT(favorite_storage.storage_id) AS rating, user.profile_icon_path").
+		Select("storage.id, storage.name, storage.type, COUNT(favorite_storage.storage_id) AS rating, user.profile_icon_path, user.name AS author_name").
 		Joins("LEFT JOIN storage_has_tag ON storage_has_tag.storage_id = storage.id AND storage_has_tag.storage_type = storage.type").
 		Joins("LEFT JOIN tag ON tag.id_tag = storage_has_tag.tag_id").
 		Joins("LEFT JOIN favorite_storage ON favorite_storage.storage_id = storage.id AND favorite_storage.storage_type = storage.type").

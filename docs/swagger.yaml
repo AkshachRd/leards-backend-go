@@ -197,11 +197,13 @@ definitions:
     type: object
   SearchResult:
     properties:
+      authorName:
+        type: string
       id:
         type: string
       name:
         type: string
-      profileIconPath:
+      profileIcon:
         type: string
       rating:
         type: integer
@@ -470,6 +472,35 @@ paths:
       tags:
       - accounts
   /accounts/{user_id}/avatar:
+    delete:
+      description: removes the user's avatar
+      operationId: removeAvatarByUserId
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/BasicResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/HTTPError'
+      security:
+      - BearerAuth: []
+      summary: remove avatar by user id
+      tags:
+      - accounts
     get:
       consumes:
       - application/json
