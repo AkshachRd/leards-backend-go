@@ -97,7 +97,5 @@ func GetStorageStats(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"data": *httputils.ConvertRepetitionStats(repetitionStats),
-	})
+	c.JSON(http.StatusOK, httputils.ConvertRepetitionStats(repetitionStats))
 }
