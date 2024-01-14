@@ -4,9 +4,8 @@ GET /api/v1/search
     &search_type=all
     &sort_type=rating
     &order_by=desc
-    &name=test
-    &tags=apple&tags=test HTTP/2.0
+    &name=te HTTP/2.0
 Host: localhost:8080
 Accept: application/json
 Content-Type: application/json
-Authorization: Bearer MzhyaGxGQmZwVTBwN2VXTkxpYlBwWVg4ZFpLT1kwUXc=
+Authorization: Bearer QU5mMjN6bElEYk9jaWZoMDJ1cF9UMmRMSDhoZEhIalE=
